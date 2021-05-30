@@ -27,8 +27,12 @@ main ()
     {"FeatureFoo-enabled", "", ""},
   };
 
+
+  int req_len = strlen ("test_canfigger.conf") + strlen (SOURCE_DIR) + 1 + 1;
+  char test_config_file[req_len];
+  sprintf (test_config_file, "%s/test_canfigger.conf", SOURCE_DIR);
   st_canfigger_list *list =
-    canfigger_parse_file ("../test_canfigger.conf", ',');
+    canfigger_parse_file (test_config_file, ',');
 
   // create a pointer to the head of the list before examining the list.
   st_canfigger_list *head = list;

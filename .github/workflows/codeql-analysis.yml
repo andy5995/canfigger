@@ -63,9 +63,8 @@ jobs:
 
     - run: |
        mkdir _build
-       cd _build
-       cmake ..
-       make all test
+       cmake -B _build
+       make -C _build all test
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v1

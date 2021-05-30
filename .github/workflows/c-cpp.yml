@@ -16,14 +16,12 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - run: mkdir _build
-    - run: cd _build
-    - run: cmake ..
-    - run: make all test
+    - run: cmake -B _build
+    - run: make -C _build all test
   macos:
     runs-on: macos-latest
     steps:
     - uses: actions/checkout@v2
     - run: mkdir _build
-    - run: cd _build
-    - run: cmake ..
-    - run: make all test
+    - run: cmake -B _build
+    - run: make -C _build all test

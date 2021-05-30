@@ -56,3 +56,16 @@ Attribute: %s\n", list->key, list->value, list->attribute);
 `st_canfigger_node *canfigger_parse_file (const char *file, const char delimiter)`
 
 `void canfigger_free (st_canfigger_node *node)`
+
+## Building
+
+```
+mkdir _build
+cmake -B _build
+```
+
+## Run the tests
+
+```
+make -C _build all test
+```

@@ -60,12 +60,26 @@ Attribute: %s\n", list->key, list->value, list->attribute);
 ## Building
 
 ```
-mkdir _build
-cmake -B _build
+meson _build
+ninja -C _build
 ```
 
 ## Run the tests
 
 ```
-make -C _build all test
+ninja -C _build test
+```
+
+## Install/Uninstall
+
+```
+ninja -C _build install
+```
+
+Or if you want to install without superuser privileges, first run
+
+    meson -Dprefix=$HOME/.local _build
+
+```
+ninja -C _build uninstall
 ```

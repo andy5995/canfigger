@@ -15,13 +15,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - run: mkdir _build
-    - run: cmake -B _build
-    - run: make -C _build all test
+    - run: sudo apt-get install -y meson
+    - run: |
+       meson _build
+       ninja -C _build
+       ninja -C _build test
   macos:
     runs-on: macos-latest
     steps:
     - uses: actions/checkout@v2
-    - run: mkdir _build
-    - run: cmake -B _build
-    - run: make -C _build all test
+    - run: brew install meson
+    - run: |
+       meson _build
+       ninja -C _build
+       ninja -C _build test

@@ -31,7 +31,8 @@ static st_canfigger_node *root;
 
 typedef st_canfigger_node st_list;
 
-void canfigger_free (st_canfigger_node *node)
+void
+canfigger_free (st_canfigger_node * node)
 {
   if (node != NULL)
   {
@@ -107,19 +108,22 @@ trim_whitespace (char *str)
   return;
 }
 
-static void grab_str_segment (const char *begin, const char *end, char *str)
+static void
+grab_str_segment (const char *begin, const char *end, char *str)
 {
   do
   {
     *str++ = *begin++;
-  } while (begin < end);
+  }
+  while (begin < end);
 
   *str = '\0';
   return;
 }
 
 
-st_canfigger_node *canfigger_parse_file (const char *file, const char delimiter)
+st_canfigger_node *
+canfigger_parse_file (const char *file, const char delimiter)
 {
   root = NULL;
   st_list *list = NULL;

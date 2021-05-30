@@ -9,22 +9,26 @@
 
 #include "canfigger.h"
 
-struct expected {
+struct expected
+{
   const char *key;
   const char *value;
   const char *attribute;
 };
 // #define ARRAY_SIZE(a) (sizeof(a) / sizeof(a[0]))
 
-int main() {
+int
+main ()
+{
 
   const struct expected data[] = {
-    { "foo", "bar", "" },
-    { "blue", "green", "color" },
-    { "FeatureFoo-enabled", "", "" },
+    {"foo", "bar", ""},
+    {"blue", "green", "color"},
+    {"FeatureFoo-enabled", "", ""},
   };
 
-  st_canfigger_node *list = canfigger_parse_file ("../test_canfigger.conf", ',');
+  st_canfigger_node *list =
+    canfigger_parse_file ("../test_canfigger.conf", ',');
 
   // create a pointer to the head of the list before examining the list.
   st_canfigger_node *head = list;

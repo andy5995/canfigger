@@ -21,13 +21,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 typedef struct st_canfigger_node st_canfigger_node;
 
-struct st_canfigger_node {
+struct st_canfigger_node
+{
   char key[BUFSIZ];
   char value[BUFSIZ];
   char attribute[BUFSIZ];
   st_canfigger_node *next;
 };
 
-st_canfigger_node *canfigger_parse_file (const char *file, const char delimiter);
+st_canfigger_node *canfigger_parse_file (const char *file,
+                                         const char delimiter);
 
-void canfigger_free (st_canfigger_node *node);
+void canfigger_free (st_canfigger_node * node);

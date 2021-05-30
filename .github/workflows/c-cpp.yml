@@ -1,0 +1,29 @@
+name: C/C++ CI
+
+on:
+  push:
+    paths-ignore:
+    - '**/*.md'
+    - 'docs/**'
+  pull_request:
+    paths-ignore:
+    - '**/*.md'
+    - 'docs/**'
+
+jobs:
+  ubuntu:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - run: mkdir _build
+    - run: cd _build
+    - run: cmake ..
+    - run: make all test
+  macos:
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v2
+    - run: mkdir _build
+    - run: cd _build
+    - run: cmake ..
+    - run: make all test

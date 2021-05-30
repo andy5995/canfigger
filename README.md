@@ -3,9 +3,12 @@
 Library for parsing config files
 
 [![codeql-badge]][codeql-url]
+[![actions-c-badge]][actions-c-url]
 
 [codeql-badge]: https://github.com/andy5995/canfigger/workflows/CodeQL/badge.svg
 [codeql-url]: https://github.com/andy5995/canfigger/actions?query=workflow%3ACodeQL
+[actions-c-badge]: https://github.com/andy5995/canfigger/actions/workflows/c-cpp.yml/badge.svg
+[actions-c-url]: https://github.com/andy5995/canfigger/actions/workflows/c-cpp.yml
 
 This library will parse simple configuration files, using a key/value
 pair with an optional attribute.
@@ -42,6 +45,7 @@ Attribute: %s\n", list->key, list->value, list->attribute);
     list = list->next;
   }
 
+  // pass the head pointer to canfigger_free when done
   canfigger_free (head);
 ```
 

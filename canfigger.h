@@ -20,7 +20,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define CANFIGGER_VERSION LIB_VERSION
 
 typedef struct st_canfigger_node st_canfigger_node;
-
 struct st_canfigger_node
 {
   char key[BUFSIZ];
@@ -28,8 +27,9 @@ struct st_canfigger_node
   char attribute[BUFSIZ];
   st_canfigger_node *next;
 };
+typedef st_canfigger_node st_canfigger_list;
 
-st_canfigger_node *canfigger_parse_file (const char *file,
+st_canfigger_list *canfigger_parse_file (const char *file,
                                          const char delimiter);
 
 void canfigger_free (st_canfigger_node * node);

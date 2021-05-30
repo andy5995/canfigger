@@ -27,11 +27,11 @@ main ()
     {"FeatureFoo-enabled", "", ""},
   };
 
-  st_canfigger_node *list =
+  st_canfigger_list *list =
     canfigger_parse_file ("../test_canfigger.conf", ',');
 
   // create a pointer to the head of the list before examining the list.
-  st_canfigger_node *head = list;
+  st_canfigger_list *head = list;
 
   if (list == NULL)
   {

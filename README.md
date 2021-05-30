@@ -24,10 +24,10 @@ FeatureFoo-enabled
 ## Example usage
 
 ```c
-  st_canfigger_node *list = canfigger_parse_file ("../test_canfigger.conf", ',');
+  st_canfigger_list *list = canfigger_parse_file ("../test_canfigger.conf", ',');
 
   // create a pointer to the head of the list before examining the list.
-  st_canfigger_node *head = list;
+  st_canfigger_list *head = list;
 
   if (list == NULL)
   {
@@ -53,7 +53,7 @@ Attribute: %s\n", list->key, list->value, list->attribute);
 
 **CANFIGGER_VERSION** String containing the the version of the library
 
-`st_canfigger_node *canfigger_parse_file (const char *file, const char delimiter)`
+`st_canfigger_list *canfigger_parse_file (const char *file, const char delimiter)`
 
 `void canfigger_free (st_canfigger_node *node)`
 

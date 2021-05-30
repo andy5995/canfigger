@@ -29,8 +29,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 static st_canfigger_node *root;
 
-typedef st_canfigger_node st_list;
-
 void
 canfigger_free (st_canfigger_node * node)
 {
@@ -122,11 +120,11 @@ grab_str_segment (const char *begin, const char *end, char *str)
 }
 
 
-st_canfigger_node *
+st_canfigger_list *
 canfigger_parse_file (const char *file, const char delimiter)
 {
   root = NULL;
-  st_list *list = NULL;
+  st_canfigger_list *list = NULL;
 
   FILE *fd = fopen (file, "r");
   if (fd == NULL)

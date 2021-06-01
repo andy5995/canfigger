@@ -21,13 +21,17 @@ blue = green, color
 FeatureFoo-enabled
 ```
 
+`canfigger_parse_file()` returns a [linked
+list](https://www.learn-c.org/en/Linked_lists), each node in the list
+corresponds to a parsed line in your configuration file.
+
 ## Example usage
 
 ```c
   st_canfigger_list *list = canfigger_parse_file ("../test_canfigger.conf", ',');
 
-  // create a pointer to the head of the list before examining the list.
-  st_canfigger_list *head = list;
+  // create a pointer to the first node in the list before moving through the list
+  st_canfigger_list *root = list;
 
   if (list == NULL)
   {
@@ -45,8 +49,8 @@ Attribute: %s\n", list->key, list->value, list->attribute);
     list = list->next;
   }
 
-  // pass the head pointer to canfigger_free when done
-  canfigger_free (head);
+  // pass the root pointer to canfigger_free when done
+  canfigger_free (root);
 ```
 
 ## API

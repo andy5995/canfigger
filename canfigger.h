@@ -17,14 +17,15 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#define MAX_LINE 2048
 #define CANFIGGER_VERSION "0.1.0-dev"
 
 typedef struct st_canfigger_node st_canfigger_node;
 struct st_canfigger_node
 {
-  char key[BUFSIZ];
-  char value[BUFSIZ];
-  char attribute[BUFSIZ];
+  char key[MAX_LINE];
+  char value[MAX_LINE];
+  char attribute[MAX_LINE];
   st_canfigger_node *next;
 };
 typedef st_canfigger_node st_canfigger_list;

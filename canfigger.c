@@ -25,8 +25,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "canfigger.h"
 
-#define MAX_LINE 2048
-
 void
 canfigger_free (st_canfigger_node * node)
 {

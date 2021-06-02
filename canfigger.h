@@ -17,6 +17,9 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#ifndef __CANFIGGER_H
+#define __CANFIGGER_H
+
 #define CANFIGGER_VERSION "0.1.0-dev"
 
 typedef struct st_canfigger_node st_canfigger_node;
@@ -33,3 +36,5 @@ st_canfigger_list *canfigger_parse_file (const char *file,
                                          const char delimiter);
 
 void canfigger_free (st_canfigger_node * node);
+
+#endif // header guard

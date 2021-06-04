@@ -5,9 +5,11 @@ vg = find_program('valgrind', required : false)
 env = environment()
 env.set('TEST_ENV', '1')
 
+if vg.found()
 add_test_setup('valgrind',
   exe_wrapper : [vg, '--error-exitcode=1', '--leak-check=full'],
   env : env)
+endif
 
 test_lib = static_library(
 	meson.project_name() + '_test',

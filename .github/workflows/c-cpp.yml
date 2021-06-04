@@ -15,11 +15,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - run: sudo apt-get install -y meson
+    - run: sudo apt-get install -y meson valgrind
     - run: |
        meson _build
-       ninja -C _build
-       ninja -C _build test
+       cd _build
+       ninja
+       ninja test
+       meson test --setup=valgrind
+
   macos:
     runs-on: macos-latest
     steps:
@@ -27,5 +30,8 @@ jobs:
     - run: brew install meson
     - run: |
        meson _build
-       ninja -C _build
-       ninja -C _build test
+       cd _bulid
+       ninja
+       ninja test
+
+

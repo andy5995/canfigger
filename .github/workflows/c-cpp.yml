@@ -30,7 +30,7 @@ jobs:
     - run: brew install meson
     - run: |
        meson _build
-       cd _bulid
+       cd _build
        ninja
        ninja test
 

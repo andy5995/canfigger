@@ -1,5 +1,5 @@
 incdir = include_directories('..')
-vg = find_program('valgrind')
+vg = find_program('valgrind', required : false)
 
 # This is only set when running under Valgrind test setup.
 env = environment()

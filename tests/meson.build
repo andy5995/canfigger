@@ -24,3 +24,9 @@ e1 = executable(
 	include_directories : incdir,
 	dependencies : [main_lib])
 test('test_parse_file2', e1)
+
+colons = executable(
+	'test_parse_file_colons', 'test_parse_file_colons.c',
+	include_directories : incdir,
+	dependencies : [main_lib])
+test('test_parse_file_colons', colons)

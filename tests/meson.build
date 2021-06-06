@@ -30,3 +30,9 @@ colons = executable(
 	include_directories : incdir,
 	dependencies : [main_lib])
 test('test_parse_file_colons', colons)
+
+unicode = executable(
+	'test_unicode', 'test_unicode.c',
+	include_directories : incdir,
+	dependencies : [main_lib])
+test('test_unicode', unicode)

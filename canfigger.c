@@ -150,6 +150,7 @@ canfigger_parse_file (const char *file, const char delimiter)
     trim_whitespace (fd_line);
     char *line_ptr = fd_line;
     line_ptr = del_char_shift_left (' ', line_ptr);
+    line_ptr = del_char_shift_left ('\t', line_ptr);
     switch (*line_ptr)
     {
     case '#':
@@ -203,7 +204,6 @@ canfigger_parse_file (const char *file, const char delimiter)
         if (tmp_value == NULL)
         {
           trim_whitespace (r_value);
-
           req_len = strlen (r_value) + 1;
           tmp_node->value = alloc_chk (tmp_node->value, req_len, root);
           if (!tmp_node->value)
@@ -220,6 +220,7 @@ canfigger_parse_file (const char *file, const char delimiter)
         {
           char value[BUFSIZ];
           grab_str_segment (r_value, tmp_value, value);
+          trim_whitespace (value);
 
           req_len = strlen (value) + 1;
           tmp_node->value = alloc_chk (tmp_node->value, req_len, root);

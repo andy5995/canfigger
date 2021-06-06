@@ -161,7 +161,7 @@ canfigger_parse_file (const char *file, const char delimiter)
     st_canfigger_node *tmp_node = malloc (sizeof (struct st_canfigger_node));
     if (tmp_node != NULL)
     {
-      if (root)
+      if (list != NULL)
         list->next = tmp_node;
 
       char *tmp_key = strchr (line_ptr, '=');

@@ -7,7 +7,3 @@
 #include <stdio.h>
 #include <string.h>
 #include "canfigger.h"
-
-void test_parse_file (void);
-
-void test_parse_file2 (void);

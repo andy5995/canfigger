@@ -1,6 +1,7 @@
 #include "test.h"
 
-int main (void)
+int
+main (void)
 {
   struct expected
   {
@@ -15,19 +16,21 @@ int main (void)
     {"FeatureFooEnabled", "", ""},
   };
 
-  int req_len = strlen ("test_canfigger.conf") + strlen (SOURCE_DIR) + strlen ("tests") + 1 + 1 + 1;
+  int req_len =
+    strlen ("test_canfigger.conf") + strlen (SOURCE_DIR) + strlen ("tests") +
+    1 + 1 + 1;
   char test_config_file[req_len];
   sprintf (test_config_file, "%s/tests/test_canfigger.conf", SOURCE_DIR);
-  st_canfigger_list *list =
-    canfigger_parse_file (test_config_file, ',');
+
+  // call the primary library function to read your config file
+  st_canfigger_list *list = canfigger_parse_file (test_config_file, ',');
 
   // create a pointer to the head of the list before examining the list.
-  st_canfigger_list *head = list;
-
+  st_canfigger_list *root = list;
   if (list == NULL)
   {
     fprintf (stderr, "Error");
-    return 1;
+    return -1;
   }
 
   int i = 0;
@@ -39,7 +42,6 @@ Value: %s\n\
 Attribute: %s\n", list->key, list->value, list->attribute);
 
     assert (strcmp (data[i].key, list->key) == 0);
-    // printf ("value = '%s' '%s'\n", data[i].value, list->value);
     assert (strcmp (data[i].value, list->value) == 0);
     assert (strcmp (data[i].attribute, list->attribute) == 0);
     i++;
@@ -47,7 +49,8 @@ Attribute: %s\n", list->key, list->value, list->attribute);
     list = list->next;
   }
 
-  canfigger_free (head);
+  // free the list
+  canfigger_free (root);
 
   return 0;
 }

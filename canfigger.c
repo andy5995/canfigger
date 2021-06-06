@@ -25,15 +25,19 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "canfigger.h"
 
+
 void
 canfigger_free (st_canfigger_node * node)
 {
   if (node != NULL)
   {
     canfigger_free (node->next);
-    free (node->key);
-    free (node->value);
-    free (node->attribute);
+    if (node->key)
+      free (node->key);
+    if (node->value)
+      free (node->value);
+    if (node->attribute)
+      free (node->attribute);
     free (node);
   }
   return;

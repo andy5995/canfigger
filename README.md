@@ -1,6 +1,6 @@
-# canfigger-0.1.0-dev
+# canfigger v0.1.0
 
-Library for parsing config files
+Simple configuration file parser library
 
 [![codeql-badge]][codeql-url]
 [![actions-c-badge]][actions-c-url]
@@ -12,8 +12,8 @@ Library for parsing config files
 
 website: https://github.com/andy5995/canfigger
 
-This library will parse simple configuration files, using a key/value
-pair with an optional attribute.
+This library contains a function that parses simple configuration files
+that use a key/value pair with an optional attribute.
 
 ```
 foo = bar

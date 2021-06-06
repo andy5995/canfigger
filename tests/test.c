@@ -7,7 +7,6 @@ struct expected
   const char *attribute;
 };
 
-
 void test_parse_file (void)
 {
   const struct expected data[] = {
@@ -67,5 +66,3 @@ void test_parse_file2 (void)
 
   return;
 }
-
-

@@ -169,6 +169,13 @@ canfigger_parse_file (const char *file, const char delimiter)
       if (list != NULL)
         list->next = tmp_node;
 
+      // If the function returns early due to error, it frees the list, but
+      // first checks each field for !NULL before freeing. This makes sure
+      // that the fields are at least initialized.
+      tmp_node->key = NULL;
+      tmp_node->value = NULL;
+      tmp_node->attribute = NULL;
+
       char *tmp_key = strchr (line_ptr, '=');
       if (tmp_key == NULL)
       {

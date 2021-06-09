@@ -4,7 +4,7 @@ project(
 	version: '0.1.0',
 	default_options: ['warning_level=3']
 	)
-extra_args = ['-DSOURCE_DIR="' + meson.source_root() + '"']
+extra_args = ['-DSOURCE_DIR="@0@"'.format(meson.source_root())]
 add_global_arguments(
 	'-fno-common',
 	'-DCANFIGGER_VERSION="@0@"'.format(meson.project_version()),

@@ -1,7 +1,7 @@
 project(
 	'canfigger',
 	'c',
-	version: '0.1.0',
+	version: '0.1.1',
 	default_options: ['warning_level=3']
 	)
 extra_args = ['-DSOURCE_DIR="@0@"'.format(meson.source_root())]

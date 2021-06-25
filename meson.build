@@ -2,7 +2,7 @@ project(
   'canfigger',
   'c',
   version: '0.1.1',
-  default_options: ['warning_level=3']
+  default_options: ['warning_level=2']
   )
 extra_args = ['-DSOURCE_DIR="@0@"'.format(meson.source_root())]
 add_global_arguments(
@@ -33,5 +33,7 @@ pkg.generate(
   description : 'Simple configuration file parser library')
 
 install_headers('canfigger.h')
+install_data(files('README.md', 'LICENSE', 'ChangeLog'),
+        install_dir : get_option('docdir'))
 
 subdir('tests')

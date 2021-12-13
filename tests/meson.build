@@ -26,7 +26,8 @@ foreach case : test_cases
     case,
     case + '.c',
     include_directories : incdir,
-    dependencies : [main_lib]
+    dependencies : [main_lib],
+    c_args: '-DSOURCE_DIR="@0@"'.format(meson.source_root())
   )
   test(case, exe)
 endforeach

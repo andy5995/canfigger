@@ -4,25 +4,23 @@ project(
   version: '0.1.1999',
   default_options: ['warning_level=3']
   )
-extra_args = ['-DSOURCE_DIR="@0@"'.format(meson.source_root())]
-add_global_arguments(
+
+cc = meson.get_compiler('c')
+extra_flags = [
   '-fno-common',
   '-Wshadow',
   '-Wstrict-overflow=5',
   '-fanalyzer',
   '-Wformat-security',
   '-Wformat-overflow=2',
-  '-DCANFIGGER_VERSION="@0@"'.format(meson.project_version()),
-  extra_args,
-  language : 'c'
-  )
-compiler = meson.get_compiler('c')
-if compiler.has_argument('-fstack-protector-strong')
-  add_project_arguments('-fstack-protector-strong', language: 'c')
-endif
-if compiler.has_argument('-fanalyzer')
-  add_project_arguments('-fanalyzer', language: 'c')
-endif
+  '-DCANFIGGER_VERSION="@0@"'.format(meson.project_version())
+]
+
+foreach cflag : extra_flags
+  if cc.has_argument(cflag)
+    add_project_arguments(cflag, language: 'c')
+  endif
+endforeach
 
 src = (meson.source_root() / 'canfigger.c')
 buildtarget = both_libraries(

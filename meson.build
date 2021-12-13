@@ -2,11 +2,16 @@ project(
   'canfigger',
   'c',
   version: '0.1.1999',
-  default_options: ['warning_level=2']
+  default_options: ['warning_level=3']
   )
 extra_args = ['-DSOURCE_DIR="@0@"'.format(meson.source_root())]
 add_global_arguments(
   '-fno-common',
+  '-Wshadow',
+  '-Wstrict-overflow=5',
+  '-fanalyzer',
+  '-Wformat-security',
+  '-Wformat-overflow=2',
   '-DCANFIGGER_VERSION="@0@"'.format(meson.project_version()),
   extra_args,
   language : 'c'

@@ -144,15 +144,15 @@ canfigger_parse_file (const char *file, const char delimiter)
   static st_canfigger_node *root = NULL;
   st_canfigger_list *list = NULL;
 
-  FILE *fd = fopen (file, "r");
-  if (fd == NULL)
+  FILE *fp = fopen (file, "r");
+  if (fp == NULL)
     return NULL;
 
-  char fd_line[BUFSIZ];
-  while (fgets (fd_line, sizeof fd_line, fd) != NULL)
+  char line[BUFSIZ];
+  while (fgets (line, sizeof line, fp) != NULL)
   {
-    trim_whitespace (fd_line);
-    char *line_ptr = fd_line;
+    trim_whitespace (line);
+    char *line_ptr = line;
     line_ptr = del_char_shift_left (' ', line_ptr);
     line_ptr = del_char_shift_left ('\t', line_ptr);
     switch (*line_ptr)
@@ -185,7 +185,7 @@ canfigger_parse_file (const char *file, const char delimiter)
         tmp_node->key = alloc_chk (tmp_node->key, req_len, root);
         if (!tmp_node->key)
         {
-          fclose (fd);
+          fclose (fp);
           return NULL;
         }
 
@@ -195,7 +195,7 @@ canfigger_parse_file (const char *file, const char delimiter)
         tmp_node->attribute = alloc_chk (tmp_node->attribute, 1, root);
         if (!tmp_node->value || !tmp_node->attribute)
         {
-          fclose (fd);
+          fclose (fp);
           return NULL;
         }
 
@@ -212,7 +212,7 @@ canfigger_parse_file (const char *file, const char delimiter)
         tmp_node->key = alloc_chk (tmp_node->key, req_len, root);
         if (!tmp_node->key)
         {
-          fclose (fd);
+          fclose (fp);
           return NULL;
         }
 
@@ -228,7 +228,7 @@ canfigger_parse_file (const char *file, const char delimiter)
           tmp_node->value = alloc_chk (tmp_node->value, req_len, root);
           if (!tmp_node->value)
           {
-            fclose (fd);
+            fclose (fp);
             return NULL;
           }
 
@@ -237,7 +237,7 @@ canfigger_parse_file (const char *file, const char delimiter)
           tmp_node->attribute = alloc_chk (tmp_node->attribute, 1, root);
           if (!tmp_node->attribute)
           {
-            fclose (fd);
+            fclose (fp);
             return NULL;
           }
 
@@ -253,7 +253,7 @@ canfigger_parse_file (const char *file, const char delimiter)
           tmp_node->value = alloc_chk (tmp_node->value, req_len, root);
           if (!tmp_node->value)
           {
-            fclose (fd);
+            fclose (fp);
             return NULL;
           }
 
@@ -266,7 +266,7 @@ canfigger_parse_file (const char *file, const char delimiter)
           tmp_node->attribute = alloc_chk (tmp_node->attribute, req_len, root);
           if (!tmp_node->attribute)
           {
-            fclose (fd);
+            fclose (fp);
             return NULL;
           }
 
@@ -284,12 +284,12 @@ canfigger_parse_file (const char *file, const char delimiter)
       if (root != NULL)
         canfigger_free (root);
 
-      fclose (fd);
+      fclose (fp);
       return NULL;
     }
   }
 
-  int r = fclose (fd);
+  int r = fclose (fp);
   if (r != 0)
   {
     return NULL;

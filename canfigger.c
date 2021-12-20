@@ -32,12 +32,6 @@ canfigger_free (st_canfigger_node * node)
   if (node != NULL)
   {
     canfigger_free (node->next);
-    if (node->key)
-      free (node->key);
-    if (node->value)
-      free (node->value);
-    if (node->attribute)
-      free (node->attribute);
     free (node);
   }
   return;
@@ -123,20 +117,6 @@ grab_str_segment (const char *begin, const char *end, char *str)
   return;
 }
 
-static void*
-alloc_chk (void *ptr, int req_len, st_canfigger_list *root)
-{
-  ptr = malloc (req_len);
-  if (ptr)
-    return ptr;
-
-  if (root)
-    canfigger_free (root);
-
-  errno = ENOMEM;
-  return NULL;
-}
-
 
 st_canfigger_list *
 canfigger_parse_file (const char *file, const char delimiter)
@@ -148,7 +128,7 @@ canfigger_parse_file (const char *file, const char delimiter)
   if (fp == NULL)
     return NULL;
 
-  char line[BUFSIZ];
+  char line[__CFG_LEN_MAX_LINE];
   while (fgets (line, sizeof line, fp) != NULL)
   {
     trim_whitespace (line);
@@ -169,54 +149,23 @@ canfigger_parse_file (const char *file, const char delimiter)
       if (list != NULL)
         list->next = tmp_node;
 
-      // If the function returns early due to error, it frees the list, but
-      // first checks each field for !NULL before freeing. This makes sure
-      // that the fields are at least initialized.
-      tmp_node->key = NULL;
-      tmp_node->value = NULL;
-      tmp_node->attribute = NULL;
+      *tmp_node->key = '\0';
+      *tmp_node->value = '\0';
+      *tmp_node->attribute = '\0';
 
       char *tmp_key = strchr (line_ptr, '=');
       if (tmp_key == NULL)
       {
         trim_whitespace (line_ptr);
-        int req_len = strlen (line_ptr) + 1;
-
-        tmp_node->key = alloc_chk (tmp_node->key, req_len, root);
-        if (!tmp_node->key)
-        {
-          fclose (fp);
-          return NULL;
-        }
-
-        strcpy (tmp_node->key, line_ptr);
-
-        tmp_node->value = alloc_chk (tmp_node->value, 1, root);
-        tmp_node->attribute = alloc_chk (tmp_node->attribute, 1, root);
-        if (!tmp_node->value || !tmp_node->attribute)
-        {
-          fclose (fp);
-          return NULL;
-        }
-
-        *tmp_node->value = '\0';
-        *tmp_node->attribute = '\0';
+        snprintf (tmp_node->key, sizeof tmp_node->key, "%s", line_ptr);
       }
       else
       {
-        char key[BUFSIZ];
+        char key[__CFG_LEN_MAX_LINE];
         grab_str_segment (line_ptr, tmp_key, key);
         trim_whitespace (key);
-        int req_len = strlen (key) + 1;
+        snprintf (tmp_node->key, sizeof tmp_node->key, "%s", key);
 
-        tmp_node->key = alloc_chk (tmp_node->key, req_len, root);
-        if (!tmp_node->key)
-        {
-          fclose (fp);
-          return NULL;
-        }
-
-        strcpy (tmp_node->key, key);
         tmp_key++;
         tmp_key = del_char_shift_left (' ', tmp_key);
         char *r_value = tmp_key;
@@ -224,53 +173,18 @@ canfigger_parse_file (const char *file, const char delimiter)
         if (tmp_value == NULL)
         {
           trim_whitespace (r_value);
-          req_len = strlen (r_value) + 1;
-          tmp_node->value = alloc_chk (tmp_node->value, req_len, root);
-          if (!tmp_node->value)
-          {
-            fclose (fp);
-            return NULL;
-          }
-
-          strcpy (tmp_node->value, r_value);
-
-          tmp_node->attribute = alloc_chk (tmp_node->attribute, 1, root);
-          if (!tmp_node->attribute)
-          {
-            fclose (fp);
-            return NULL;
-          }
-
-          *tmp_node->attribute = '\0';
+          snprintf (tmp_node->value, sizeof tmp_node->value, "%s", r_value);
         }
         else
         {
-          char value[BUFSIZ];
+          char value[__CFG_LEN_MAX_LINE];
           grab_str_segment (r_value, tmp_value, value);
           trim_whitespace (value);
+          snprintf (tmp_node->value, sizeof tmp_node->value, "%s", value);
 
-          req_len = strlen (value) + 1;
-          tmp_node->value = alloc_chk (tmp_node->value, req_len, root);
-          if (!tmp_node->value)
-          {
-            fclose (fp);
-            return NULL;
-          }
-
-          strcpy (tmp_node->value, value);
           tmp_value++;
-          tmp_value = del_char_shift_left (' ', tmp_value);
-          char *tmp_attribute = tmp_value;
-
-          req_len = strlen (tmp_attribute) + 1;
-          tmp_node->attribute = alloc_chk (tmp_node->attribute, req_len, root);
-          if (!tmp_node->attribute)
-          {
-            fclose (fp);
-            return NULL;
-          }
-
-          strcpy (tmp_node->attribute, tmp_attribute);
+          char *tmp_attribute = del_char_shift_left (' ', tmp_value);
+          snprintf (tmp_node->attribute, sizeof tmp_node->attribute, "%s", tmp_attribute);
         }
       }
       tmp_node->next = NULL;

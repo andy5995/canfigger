@@ -38,23 +38,22 @@ canfigger_free (st_canfigger_node * node)
 }
 
 
-/*!
- * If haystack begins with 'needle', returns a pointer to the first occurrence
- * in the string after 'needle'.
- * ex1: char *ptr = del_char_shift ('/', string);
- * '*string' will still point to 'string[0]'
+/*
+ * returns a pointer to the first character after lc
+ * If lc appears more than once, the pointer
+ * will move past that as well.
  *
- * ex2: string = del_char_shift ('/', string);
- * '*string' may change
+ * Ex1: "__Hello World": the pointer will be set to the 'H'.
+ * Ex2: "_H_ello World": Again, the pointer will be set to the 'H'.
  */
 static char *
-del_char_shift_left (const char needle, char *haystack)
+erase_lead_char (const char lc, char *haystack)
 {
   char *ptr = haystack;
-  if (*ptr != needle)
+  if (*ptr != lc)
     return ptr;
 
-  while (*ptr == needle)
+  while (*ptr == lc)
     ptr++;
 
   return ptr;
@@ -133,8 +132,8 @@ canfigger_parse_file (const char *file, const char delimiter)
   {
     trim_whitespace (line);
     char *line_ptr = line;
-    line_ptr = del_char_shift_left (' ', line_ptr);
-    line_ptr = del_char_shift_left ('\t', line_ptr);
+    line_ptr = erase_lead_char (' ', line_ptr);
+    line_ptr = erase_lead_char ('\t', line_ptr);
     switch (*line_ptr)
     {
     case '#':
@@ -167,7 +166,7 @@ canfigger_parse_file (const char *file, const char delimiter)
         snprintf (tmp_node->key, sizeof tmp_node->key, "%s", key);
 
         tmp_key++;
-        tmp_key = del_char_shift_left (' ', tmp_key);
+        tmp_key = erase_lead_char (' ', tmp_key);
         char *r_value = tmp_key;
         char *tmp_value = strchr (r_value, delimiter);
         if (tmp_value == NULL)
@@ -183,7 +182,7 @@ canfigger_parse_file (const char *file, const char delimiter)
           snprintf (tmp_node->value, sizeof tmp_node->value, "%s", value);
 
           tmp_value++;
-          char *tmp_attribute = del_char_shift_left (' ', tmp_value);
+          char *tmp_attribute = erase_lead_char (' ', tmp_value);
           snprintf (tmp_node->attribute, sizeof tmp_node->attribute, "%s", tmp_attribute);
         }
       }

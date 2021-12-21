@@ -63,8 +63,11 @@ struct st_canfigger_directory
   char dataroot[PATH_MAX];
 };
 
-const st_canfigger_directory *canfigger_get_directories (void);
 
 //
 // Frees the list returned by canfigger_parse_file()
 void canfigger_free (st_canfigger_node * node);
+
+const st_canfigger_directory *canfigger_get_directories (void);
+
+unsigned short canfigger_realize_str (char *str, const char *homedir);

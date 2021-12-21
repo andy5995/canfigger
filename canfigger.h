@@ -19,6 +19,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 
+#include <limits.h>
+
 #ifndef CANFIGGER_VERSION
 #define CANFIGGER_VERSION "0.1.1999"
 #endif
@@ -53,6 +55,15 @@ typedef st_canfigger_node st_canfigger_list;
 st_canfigger_list *canfigger_parse_file (const char *file,
                                          const char delimiter);
 
+typedef struct st_canfigger_directory st_canfigger_directory;
+struct st_canfigger_directory
+{
+  const char *home;
+  char configroot[PATH_MAX];
+  char dataroot[PATH_MAX];
+};
+
+const st_canfigger_directory *canfigger_get_directories (void);
 
 //
 // Frees the list returned by canfigger_parse_file()

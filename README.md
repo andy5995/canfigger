@@ -13,7 +13,9 @@ Simple configuration file parser library
 website: https://github.com/andy5995/canfigger
 
 This library contains a function that parses simple configuration files
-that use a key/value pair with an optional attribute.
+that use a key/value pair with an optional attribute. A function is
+also provided that can retrieve a user's home, config, and data
+directory.
 
 ```
 foo=bar
@@ -107,6 +109,18 @@ struct st_canfigger_node
 
 String containing the version of the library
 CANFIGGER_VERSION
+
+// Holds paths to frequently used directories
+struct st_canfigger_directory
+{
+  const char *home;
+  char configroot[PATH_MAX];
+  char dataroot[PATH_MAX];
+};
+
+Example: See tests/test_get_directories
+
+
 ```
 
 ## Building

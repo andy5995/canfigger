@@ -18,7 +18,8 @@ test_cases = [
   'test_parse_file',
   'test_parse_file2',
   'test_parse_file_colons',
-  'test_unicode'
+  'test_unicode',
+  'test_get_directories'
   ]
 
 foreach case : test_cases

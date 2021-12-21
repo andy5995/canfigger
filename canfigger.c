@@ -183,7 +183,8 @@ canfigger_parse_file (const char *file, const char delimiter)
 
           tmp_value++;
           char *tmp_attribute = erase_lead_char (' ', tmp_value);
-          snprintf (tmp_node->attribute, sizeof tmp_node->attribute, "%s", tmp_attribute);
+          snprintf (tmp_node->attribute, sizeof tmp_node->attribute,
+                    "%s", tmp_attribute);
         }
       }
       tmp_node->next = NULL;
@@ -210,4 +211,34 @@ canfigger_parse_file (const char *file, const char delimiter)
 
   list = root;
   return list;
+}
+
+
+const st_canfigger_directory *
+canfigger_get_directories (void)
+{
+  static st_canfigger_directory st_directory;
+  st_directory.home = getenv ("HOME");
+  if (st_directory.home == NULL)
+    return NULL;
+
+  const char *xdg_configroot = getenv ("XDG_CONFIG_HOME");
+  if (xdg_configroot == NULL)
+    snprintf (st_directory.configroot,
+              sizeof st_directory.configroot,
+              "%s/.config", st_directory.home);
+  else
+    snprintf (st_directory.configroot,
+              sizeof st_directory.configroot, "%s", xdg_configroot);
+
+  const char *xdg_dataroot = getenv ("XDG_DATA_HOME");
+  if (xdg_dataroot == NULL)
+    snprintf (st_directory.dataroot,
+              sizeof st_directory.dataroot,
+              "%s/.local/share", st_directory.home);
+  else
+    snprintf (st_directory.dataroot,
+              sizeof st_directory.dataroot, "%s", xdg_dataroot);
+
+  return &st_directory;
 }

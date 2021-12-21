@@ -30,12 +30,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "canfigger.h"
 
-struct st_vars_to_check
-{
-  const char *name;
-  const char *value;
-};
-
 
 void
 canfigger_free (st_canfigger_node * node)
@@ -336,7 +330,11 @@ canfigger_realize_str (char *str, const char *homedir)
   if ((size_t) snprintf (UID, sizeof UID, "%u", pwd->pw_uid) >= sizeof UID)
     return -1;
 
-  struct st_vars_to_check st_var[] = {
+  struct st_vars_to_check
+  {
+    const char *name;
+    const char *value;
+  } st_var[] = {
     {"~", homedir},
     {"$HOME", homedir},
     {"$UID", UID},

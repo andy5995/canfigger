@@ -7,8 +7,10 @@ main (void)
   assert (st_directory != NULL);
   assert (st_directory->home != NULL);
 
-  if (fopen ("/home/andy/src", "r") != NULL)
+  FILE *fp = fopen ("/home/andy/src", "r");
+  if (fp != NULL)
   {
+    assert (fclose (fp) == 0);
     assert (strcmp (st_directory->home, "/home/andy") == 0);
     assert (strcmp (st_directory->configroot, "/home/andy/.config") == 0);
     assert (strcmp (st_directory->dataroot, "/home/andy/.local/share") == 0);

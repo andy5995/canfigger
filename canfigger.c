@@ -308,6 +308,7 @@ strrepl (char *src, const char *str, char *repl)
   dest = realloc (dest, strlen (dest) + 1);
   if (dest == NULL)
     return NULL;
+
   return dest;
 }
 
@@ -351,7 +352,9 @@ canfigger_realize_str (char *str, const char *homedir)
         return -1;
 
       if (snprintf (str, PATH_MAX, "%s", dest) >= PATH_MAX)
-        free (dest);
+        return -1;
+
+      free (dest);
 
       /* check the string again, in case str contains something like
        * $HOME/Trash-$UID (which would be rare, if ever, but... */

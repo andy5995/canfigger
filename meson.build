@@ -22,13 +22,19 @@ foreach cflag : extra_flags
   endif
 endforeach
 
-src = (meson.source_root() / 'canfigger.c')
+inc = include_directories('.')
+
+src = ('canfigger.c')
 buildtarget = both_libraries(
   meson.project_name(),
   src,
+  include_directories : inc,
   version : meson.project_version(),
   soversion : '0',
   install: true)
+
+canfigger_dep = declare_dependency(include_directories : inc,
+  link_with : buildtarget)
 
 pkg = import('pkgconfig')
 pkg.generate(

@@ -29,7 +29,7 @@ foreach case : test_cases
     case + '.c',
     include_directories : incdir,
     dependencies : [main_lib],
-    c_args: '-DSOURCE_DIR="@0@"'.format(meson.source_root())
+    c_args: '-DSOURCE_DIR="@0@"'.format(meson.current_source_dir())
   )
   test(case, exe)
 endforeach

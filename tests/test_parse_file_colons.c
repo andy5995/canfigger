@@ -17,7 +17,7 @@ int main (void)
 
   int req_len = strlen ("test_canfigger_colons.conf") + strlen (SOURCE_DIR) + strlen ("tests") + 1 + 1 + 1;
   char test_config_file[req_len];
-  sprintf (test_config_file, "%s/tests/test_canfigger_colons.conf", SOURCE_DIR);
+  sprintf (test_config_file, "%s/test_canfigger_colons.conf", SOURCE_DIR);
   st_canfigger_list *list =
     canfigger_parse_file (test_config_file, ':');
 

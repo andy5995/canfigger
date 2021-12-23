@@ -19,7 +19,7 @@ main (void)
     strlen ("test_unicode.conf") + strlen (SOURCE_DIR) + strlen ("tests") +
     1 + 1 + 1;
   char test_config_file[req_len];
-  sprintf (test_config_file, "%s/tests/test_unicode.conf", SOURCE_DIR);
+  sprintf (test_config_file, "%s/test_unicode.conf", SOURCE_DIR);
 
   // call the primary library function to read your config file
   st_canfigger_list *list = canfigger_parse_file (test_config_file, ';');

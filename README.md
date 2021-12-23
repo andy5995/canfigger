@@ -13,9 +13,10 @@ Simple configuration file parser library
 website: https://github.com/andy5995/canfigger
 
 This library contains a function that parses simple configuration files
-that use a key/value pair with an optional attribute. A function is
-also provided that can retrieve a user's home, config, and data
-directory.
+that use a key/value pair with an optional attribute. Convenience
+function are also provided that can retrieve a user's home, config, and
+data directory, and convert '$HOME', '$UID', and '~' to their literal
+counterparts.
 
 ```
 foo=bar
@@ -35,43 +36,15 @@ corresponds to a parsed line in your configuration file.
 
 ## Example usage
 
-```c
-#include <stdio.h>
-#include "canfigger.h"
+See [tests/test_parse_file.c](https://github.com/andy5995/canfigger/blob/trunk/tests/test_parse_file.c)
 
-int
-main (void)
-{
-  // call the primary library function to read your config file
-  st_canfigger_list *list = canfigger_parse_file ("test_file.conf", ',');
+`canfigger_get_directories` returns a struct containing the absolute
+path of the user's home, dataroot, and configroot directories. If
+$XDG_DATA_HOME or $XDG_CONFIG_HOME exist as environmental variables,
+those will be used. Otherwise dataroot will be appended to $HOME as
+'/.local/share' and configroot will be appended as '/.config'.
 
-  // create a pointer to the head of the list before examining the list.
-  st_canfigger_list *root = list;
-  if (list == NULL)
-  {
-    fprintf (stderr, "Error");
-    return -1;
-  }
-
-  int i = 0;
-  while (list != NULL)
-  {
-    printf ("\n\
-Key: %s\n\
-Value: %s\n\
-Attribute: %s\n", list->key, list->value, list->attribute);
-
-    i++;
-
-    list = list->next;
-  }
-
-  // free the list
-  canfigger_free (root);
-
-  return 0;
-}
-```
+See [tests/test_get_directories.c](https://github.com/andy5995/canfigger/blob/trunk/tests/test_get_directories.c)
 
 ## API
 

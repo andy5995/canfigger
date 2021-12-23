@@ -219,6 +219,13 @@ canfigger_parse_file (const char *file, const char delimiter)
 }
 
 
+// Returns a struct containing the absolute path of the user's home,
+// dataroot, and configroot directories. If $XDG_DATA_HOME or $XDG_CONFIG_HOME
+// exist as environmental variables, those will be used. Otherwise dataroot
+// will be appended to $HOME as '/.local/share' and configroot will be
+// appended as '/.config'.
+//
+// TODO: make it compatible with Windows systems.
 const st_canfigger_directory *
 canfigger_get_directories (void)
 {
@@ -289,6 +296,10 @@ strrepl (char *src, const char *str, char *repl)
 }
 
 
+// looks for '$HOME', '$UID', or '~' in a string and replace it with its
+// corresponding literal value
+//
+// TODO: make it compatible with Windows systems.
 unsigned short
 canfigger_realize_str (char *str, const char *homedir)
 {
@@ -297,7 +308,6 @@ canfigger_realize_str (char *str, const char *homedir)
 
   if (pwd == NULL)
     return -1;
-
 
   /* What's a good length for this? */
   char UID[40];
@@ -325,7 +335,10 @@ canfigger_realize_str (char *str, const char *homedir)
         return -1;
 
       if (snprintf (str, PATH_MAX, "%s", dest) >= PATH_MAX)
+      {
+        free (dest);
         return -1;
+      }
 
       free (dest);
 

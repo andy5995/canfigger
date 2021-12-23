@@ -8,5 +8,9 @@ main (void)
   canfigger_realize_str (str, "/home/foo");
   assert (strcmp (str, "/home/foo/.local/share") == 0);
 
+  strcpy (str, "~/.config");
+  canfigger_realize_str (str, "/home/foo");
+  assert (strcmp (str, "/home/foo/.config") == 0);
+
   return 0;
 }

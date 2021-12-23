@@ -33,8 +33,11 @@ buildtarget = both_libraries(
   soversion : '0',
   install: true)
 
-canfigger_dep = declare_dependency(include_directories : inc,
-  link_with : buildtarget)
+dep_canfigger_static = declare_dependency(include_directories : inc,
+  link_with : buildtarget.get_static_lib())
+
+dep_canfigger_shared = declare_dependency(include_directories : inc,
+  link_with : buildtarget.get_shared_lib())
 
 pkg = import('pkgconfig')
 pkg.generate(

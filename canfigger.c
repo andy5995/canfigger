@@ -248,30 +248,6 @@ canfigger_get_directories (void)
   return &st_directory;
 }
 
-/*!
- * Trim a trailing character of a string
- * @param[in] c The character to erase
- * @param[out] str The string to alter
- * @return void
- */
-static void
-trim_char (const char c, char *str)
-{
-  trim_whitespace (str);
-  while (*str != '\0')
-    str++;
-
-  str--;
-
-  while (*str == c)
-  {
-    *str = '\0';
-    str--;
-  }
-
-  return;
-}
-
 
 /*
  * replace part of a string, adapted from code by Gazl
@@ -316,9 +292,6 @@ strrepl (char *src, const char *str, char *repl)
 unsigned short
 canfigger_realize_str (char *str, const char *homedir)
 {
-  trim_char ('/', str);
-  /* Any trailing whitespace should already be trimmed before this function is called */
-
   uid_t uid = geteuid ();
   struct passwd *pwd = getpwuid (uid);  /* don't free, see getpwnam() for details */
 

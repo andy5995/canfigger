@@ -1,6 +1,7 @@
 #include "test.h"
 
-int main (void)
+int
+main (void)
 {
   struct expected
   {
@@ -15,11 +16,12 @@ int main (void)
     {"FeatureFooEnabled", "", ""},
   };
 
-  int req_len = strlen ("test_canfigger_colons.conf") + strlen (SOURCE_DIR) + strlen ("tests") + 1 + 1 + 1;
+  int req_len =
+    strlen ("test_canfigger_colons.conf") + strlen (SOURCE_DIR) +
+    strlen ("tests") + 1 + 1 + 1;
   char test_config_file[req_len];
   sprintf (test_config_file, "%s/test_canfigger_colons.conf", SOURCE_DIR);
-  st_canfigger_list *list =
-    canfigger_parse_file (test_config_file, ':');
+  st_canfigger_list *list = canfigger_parse_file (test_config_file, ':');
 
   // create a pointer to the head of the list before examining the list.
   st_canfigger_list *head = list;

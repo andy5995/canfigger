@@ -12,7 +12,7 @@ add_test_setup('valgrind',
   )
 endif
 
-main_lib = declare_dependency(link_with : buildtarget.get_static_lib())
+main_lib = declare_dependency(link_with : buildtarget.get_shared_lib())
 
 test_cases = [
   'test_parse_file',

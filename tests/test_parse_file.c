@@ -12,6 +12,7 @@ main (void)
     {"foo", "bar", ""},
     {"blue", "color", "shiny"},
     {"statement", "hello world", "obvious"},
+    {"leadingSpace", "nullified", ""},
     {"fookey", "bar-value", ""},
     {"FeatureFooEnabled", "", ""},
   };
@@ -48,6 +49,8 @@ Attribute: %s\n", list->key, list->value, list->attribute);
 
     list = list->next;
   }
+
+  assert (i == sizeof data / sizeof data[0]);
 
   // free the list
   canfigger_free (root);

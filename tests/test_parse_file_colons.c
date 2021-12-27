@@ -45,6 +45,8 @@ Attribute: %s\n", list->key, list->value, list->attribute);
     list = list->next;
   }
 
+  assert (i == sizeof data / sizeof data[0]);
+
   canfigger_free (head);
 
   return 0;

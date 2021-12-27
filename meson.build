@@ -2,6 +2,7 @@ project(
   'canfigger',
   'c',
   version: '0.1.1999',
+  meson_version : '>= 0.48.0',
   default_options: [
     'warning_level=3',
     'default_library=both']
@@ -37,7 +38,6 @@ buildtarget = both_libraries(
 
 dep_canfigger_static = declare_dependency(include_directories : inc,
   link_with : buildtarget.get_static_lib())
-
 dep_canfigger_shared = declare_dependency(include_directories : inc,
   link_with : buildtarget.get_shared_lib())
 

@@ -12,6 +12,7 @@ main (void)
     {"foo", "bar", ""},
     {"blue", "color", "shiny"},
     {"statement", "hello world", "obvious"},
+    {"fookey", "bar-value", ""},
     {"FeatureFooEnabled", "", ""},
   };
 

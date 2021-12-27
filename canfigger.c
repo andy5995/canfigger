@@ -99,6 +99,7 @@ trim_whitespace (char *str)
 static char *
 grab_str_segment (char *a, char *dest, const int c)
 {
+  a = erase_lead_char (' ', a);
   char *b = strchr (a, c);
   if (b == NULL)
   {
@@ -114,10 +115,7 @@ grab_str_segment (char *a, char *dest, const int c)
 
   *dest_ptr = '\0';
 
-  // reset the pointer back to the beginning of tmp_dest and erase any
-  // leading spaces
-  dest_ptr = erase_lead_char (' ', tmp_dest);
-
+  dest_ptr = tmp_dest;
   trim_whitespace (dest_ptr);
   strcpy (dest, dest_ptr);
 
@@ -168,9 +166,7 @@ canfigger_parse_file (const char *file, const char delimiter)
         if (b != NULL)
         {
           a = b;
-          a = erase_lead_char (' ', a);
-          strcpy (tmp_node->attribute, a);
-          trim_whitespace (tmp_node->attribute);
+          b = grab_str_segment (a, tmp_node->attribute, '\n');
         }
       }
 

@@ -3,6 +3,8 @@
 2021-12-26
 
   * Code maintenance/refactor
+  * Minor adjustments to meson.build so that canfigger can be used as a
+  meson subproject
 
 2021-06-24
 

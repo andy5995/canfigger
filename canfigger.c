@@ -23,11 +23,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <errno.h>
 #include <string.h>
 
-// for canfigger_realize_str()
-#include <pwd.h>
-#include <unistd.h>
-#include <sys/types.h>
-
 #include "canfigger.h"
 
 
@@ -52,7 +47,7 @@ canfigger_free (st_canfigger_node * node)
  * Ex2: "_H_ello World": Again, the pointer will be set to the 'H'.
  */
 static char *
-erase_lead_char (const char lc, char *haystack)
+erase_lead_char (const int lc, char *haystack)
 {
   char *ptr = haystack;
   if (*ptr != lc)
@@ -75,14 +70,7 @@ static void
 trim_whitespace (char *str)
 {
   if (str == NULL)
-  {
-#ifndef TEST_LIB
-    exit (EXIT_FAILURE);
-#else
-    errno = 1;
     return;
-#endif
-  }
 
   char *pos_0 = str;
   /* Advance pointer until NULL terminator is found */
@@ -210,139 +198,4 @@ canfigger_parse_file (const char *file, const char delimiter)
 
   list = root;
   return list;
-}
-
-
-// Returns a struct containing the absolute path of the user's home,
-// dataroot, and configroot directories. If $XDG_DATA_HOME or $XDG_CONFIG_HOME
-// exist as environmental variables, those will be used. Otherwise dataroot
-// will be appended to $HOME as '/.local/share' and configroot will be
-// appended as '/.config'.
-//
-// TODO: make it compatible with Windows systems.
-const st_canfigger_directory *
-canfigger_get_directories (void)
-{
-  static st_canfigger_directory st_directory;
-  st_directory.home = getenv ("HOME");
-  if (st_directory.home == NULL)
-    return NULL;
-
-  const char *xdg_configroot = getenv ("XDG_CONFIG_HOME");
-  if (xdg_configroot == NULL)
-    snprintf (st_directory.configroot,
-              sizeof st_directory.configroot,
-              "%s/.config", st_directory.home);
-  else
-    snprintf (st_directory.configroot,
-              sizeof st_directory.configroot, "%s", xdg_configroot);
-
-  const char *xdg_dataroot = getenv ("XDG_DATA_HOME");
-  if (xdg_dataroot == NULL)
-    snprintf (st_directory.dataroot,
-              sizeof st_directory.dataroot,
-              "%s/.local/share", st_directory.home);
-  else
-    snprintf (st_directory.dataroot,
-              sizeof st_directory.dataroot, "%s", xdg_dataroot);
-
-  return &st_directory;
-}
-
-
-/*
- * replace part of a string, adapted from code by Gazl
- * https://www.linuxquestions.org/questions/showthread.php?&p=5794938#post5794938
-*/
-static char *
-strrepl (char *src, const char *str, char *repl)
-{
-  // The replacement text may make the returned string shorter or
-  // longer than src, so just add the length of all three for the
-  // mallocation.
-  size_t req_len = strlen (src) + strlen (str) + strlen (repl) + 1;
-  char *dest = malloc (req_len);
-  if (dest == NULL)
-    return NULL;
-
-  char *s, *d, *p;
-
-  s = strstr (src, str);
-  if (s && *str != '\0')
-  {
-    d = dest;
-    for (p = src; p < s; p++, d++)
-      *d = *p;
-    for (p = repl; *p != '\0'; p++, d++)
-      *d = *p;
-    for (p = s + strlen (str); *p != '\0'; p++, d++)
-      *d = *p;
-    *d = '\0';
-  }
-  else
-    strcpy (dest, src);
-
-  dest = realloc (dest, strlen (dest) + 1);
-  if (dest == NULL)
-    return NULL;
-
-  return dest;
-}
-
-
-// looks for '$HOME', '$UID', or '~' in a string and replace it with its
-// corresponding literal value
-//
-// TODO: make it compatible with Windows systems.
-unsigned short
-canfigger_realize_str (char *str, const char *homedir)
-{
-  uid_t uid = geteuid ();
-  struct passwd *pwd = getpwuid (uid);  /* don't free, see getpwnam() for details */
-
-  if (pwd == NULL)
-    return -1;
-
-  /* What's a good length for this? */
-  char UID[40];
-  if ((size_t) snprintf (UID, sizeof UID, "%u", pwd->pw_uid) >= sizeof UID)
-    return -1;
-
-  struct st_vars_to_check
-  {
-    const char *name;
-    const char *value;
-  } st_var[] = {
-    {"~", homedir},
-    {"$HOME", homedir},
-    {"$UID", UID},
-    {NULL, NULL}
-  };
-
-  int i = 0;
-  while (st_var[i].name != NULL)
-  {
-    if (strstr (str, st_var[i].name) != NULL)
-    {
-      char *dest = strrepl (str, st_var[i].name, (char *) st_var[i].value);
-      if (dest == NULL)
-        return -1;
-
-      if (snprintf (str, PATH_MAX, "%s", dest) >= PATH_MAX)
-      {
-        free (dest);
-        return -1;
-      }
-
-      free (dest);
-
-      /* check the string again, in case str contains something like
-       * $HOME/Trash-$UID (which would be rare, if ever, but... */
-      i--;
-    }
-
-    i++;
-  }
-
-  return 0;
 }

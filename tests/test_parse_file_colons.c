@@ -3,23 +3,19 @@
 int
 main (void)
 {
-  struct expected
+  const struct expected
   {
     const char *key;
     const char *value;
     const char *attribute;
-  };
-  const struct expected data[] = {
+  } data[] = {
     {"foo", "bar", ""},
     {"blue", "color", "shiny"},
     {"statement", "hello world", "obvious"},
     {"FeatureFooEnabled", "", ""},
   };
 
-  int req_len =
-    strlen ("test_canfigger_colons.conf") + strlen (SOURCE_DIR) +
-    strlen ("tests") + 1 + 1 + 1;
-  char test_config_file[req_len];
+  char test_config_file[PATH_MAX];
   sprintf (test_config_file, "%s/test_canfigger_colons.conf", SOURCE_DIR);
   st_canfigger_list *list = canfigger_parse_file (test_config_file, ':');
 

@@ -3,13 +3,12 @@
 int
 main (void)
 {
-  struct expected
+  const struct expected
   {
     const char *key;
     const char *value;
     const char *attribute;
-  };
-  const struct expected data[] = {
+  } data[] = {
     {"foo", "bar", ""},
     {"blue", "color", "shiny"},
     {"statement", "hello world", "obvious"},

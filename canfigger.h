@@ -55,19 +55,6 @@ typedef st_canfigger_node st_canfigger_list;
 st_canfigger_list *canfigger_parse_file (const char *file,
                                          const char delimiter);
 
-typedef struct st_canfigger_directory st_canfigger_directory;
-struct st_canfigger_directory
-{
-  const char *home;
-  char configroot[PATH_MAX];
-  char dataroot[PATH_MAX];
-};
-
-
 //
 // Frees the list returned by canfigger_parse_file()
 void canfigger_free (st_canfigger_node * node);
-
-const st_canfigger_directory *canfigger_get_directories (void);
-
-unsigned short canfigger_realize_str (char *str, const char *homedir);

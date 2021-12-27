@@ -13,38 +13,28 @@ Simple configuration file parser library
 website: https://github.com/andy5995/canfigger
 
 This library contains a function that parses simple configuration files
-that use a key/value pair with an optional attribute. Convenience
-function are also provided that can retrieve a user's home, config, and
-data directory, and convert '$HOME', '$UID', and '~' to their literal
-counterparts.
+that use a key/value pair with an optional attribute.
+
 
 ```
-foo=bar
-blue=color,shiny
-
-# Spaces adjacent to the '=' or the attribute delimiter ',' will be ignored.
-# Leading tabs will be ignored.
-		statement = hello world , obvious
+foo = bar
+blue = color, shiny
+statement = hello world, obvious
 
 # An option with no value or attributes
 FeatureFooEnabled
 ```
 
-`canfigger_parse_file()` returns a [linked
-list](https://www.learn-c.org/en/Linked_lists), each node in the list
-corresponds to a parsed line in your configuration file.
+## `canfigger_parse_file()`
 
-## Example usage
+returns a [linked list](https://www.learn-c.org/en/Linked_lists), each
+node in the list corresponds to a parsed line in your configuration
+file.
+
+### Example
 
 See [tests/test_parse_file.c](https://github.com/andy5995/canfigger/blob/trunk/tests/test_parse_file.c)
 
-`canfigger_get_directories` returns a struct containing the absolute
-path of the user's home, dataroot, and configroot directories. If
-$XDG_DATA_HOME or $XDG_CONFIG_HOME exist as environmental variables,
-those will be used. Otherwise dataroot will be appended to $HOME as
-'/.local/share' and configroot will be appended as '/.config'.
-
-See [tests/test_get_directories.c](https://github.com/andy5995/canfigger/blob/trunk/tests/test_get_directories.c)
 
 ## API
 
@@ -82,18 +72,6 @@ struct st_canfigger_node
 
 String containing the version of the library
 CANFIGGER_VERSION
-
-// Holds paths to frequently used directories
-struct st_canfigger_directory
-{
-  const char *home;
-  char configroot[PATH_MAX];
-  char dataroot[PATH_MAX];
-};
-
-Example: See tests/test_get_directories
-
-
 ```
 
 ## Building

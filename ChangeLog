@@ -1,9 +1,8 @@
 # Canfigger ChangeLog
 
-2021-12-21
+2021-12-26
 
-  * Implement function that can retrieve a user's home, config, and
-  data directories
+  * Code maintenance/refactor
 
 2021-06-24
 

@@ -1,12 +1,14 @@
 #include "test.h"
 
-int main (void)
+int
+main (void)
 {
-  int req_len = strlen ("no_exist_test_canfigger.conf") + strlen (SOURCE_DIR) + strlen ("tests") + 1 + 1 + 1;
-  char test_config_file[req_len];
-  sprintf (test_config_file, "%s/tests/no_exist_test_canfigger.conf", SOURCE_DIR);
-  st_canfigger_list *list =
-    canfigger_parse_file (test_config_file, ',');
+  char test_config_file[PATH_MAX];
+  assert ((size_t)
+          snprintf (test_config_file, sizeof test_config_file,
+                    "%s/no_exist_test_canfigger.conf",
+                    SOURCE_DIR) < sizeof test_config_file);
+  st_canfigger_list *list = canfigger_parse_file (test_config_file, ',');
 
   assert (list == NULL);
   assert (errno);

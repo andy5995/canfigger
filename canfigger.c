@@ -47,7 +47,7 @@ canfigger_free (st_canfigger_node * node)
  * Ex2: "_H_ello World": Again, the pointer will be set to the 'H'.
  */
 static char *
-erase_lead_char (const char lc, char *haystack)
+erase_lead_char (const int lc, char *haystack)
 {
   char *ptr = haystack;
   if (*ptr != lc)
@@ -70,14 +70,7 @@ static void
 trim_whitespace (char *str)
 {
   if (str == NULL)
-  {
-#ifndef TEST_LIB
-    exit (EXIT_FAILURE);
-#else
-    errno = 1;
     return;
-#endif
-  }
 
   char *pos_0 = str;
   /* Advance pointer until NULL terminator is found */
@@ -103,17 +96,30 @@ trim_whitespace (char *str)
 }
 
 
-static void
-grab_str_segment (const char *begin, const char *end, char *str)
+static char *
+grab_str_segment (char *a, char *dest, const int c)
 {
-  do
+  a = erase_lead_char (' ', a);
+  char *b = strchr (a, c);
+  if (b == NULL)
   {
-    *str++ = *begin++;
+    strcpy (dest, a);
+    trim_whitespace (dest);
+    return NULL;
   }
-  while (begin < end);
 
-  *str = '\0';
-  return;
+  char tmp_dest[__CFG_LEN_MAX_LINE];
+  char *dest_ptr = tmp_dest;
+  while (a != b)
+    *dest_ptr++ = *a++;
+
+  *dest_ptr = '\0';
+
+  dest_ptr = tmp_dest;
+  trim_whitespace (dest_ptr);
+  strcpy (dest, dest_ptr);
+
+  return b + 1;
 }
 
 
@@ -131,10 +137,10 @@ canfigger_parse_file (const char *file, const char delimiter)
   while (fgets (line, sizeof line, fp) != NULL)
   {
     trim_whitespace (line);
-    char *line_ptr = line;
-    line_ptr = erase_lead_char (' ', line_ptr);
-    line_ptr = erase_lead_char ('\t', line_ptr);
-    switch (*line_ptr)
+    char *a = line;
+    a = erase_lead_char (' ', a);
+    a = erase_lead_char ('\t', a);
+    switch (*a)
     {
     case '#':
       continue;
@@ -152,40 +158,18 @@ canfigger_parse_file (const char *file, const char delimiter)
       *tmp_node->value = '\0';
       *tmp_node->attribute = '\0';
 
-      char *tmp_key = strchr (line_ptr, '=');
-      if (tmp_key == NULL)
+      char *b = grab_str_segment (a, tmp_node->key, '=');
+      if (b != NULL)
       {
-        trim_whitespace (line_ptr);
-        snprintf (tmp_node->key, sizeof tmp_node->key, "%s", line_ptr);
-      }
-      else
-      {
-        char key[__CFG_LEN_MAX_LINE];
-        grab_str_segment (line_ptr, tmp_key, key);
-        trim_whitespace (key);
-        snprintf (tmp_node->key, sizeof tmp_node->key, "%s", key);
-
-        tmp_key++;
-        tmp_key = erase_lead_char (' ', tmp_key);
-        char *r_value = tmp_key;
-        char *tmp_value = strchr (r_value, delimiter);
-        if (tmp_value == NULL)
+        a = b;
+        b = grab_str_segment (a, tmp_node->value, delimiter);
+        if (b != NULL)
         {
-          trim_whitespace (r_value);
-          snprintf (tmp_node->value, sizeof tmp_node->value, "%s", r_value);
-        }
-        else
-        {
-          char value[__CFG_LEN_MAX_LINE];
-          grab_str_segment (r_value, tmp_value, value);
-          trim_whitespace (value);
-          snprintf (tmp_node->value, sizeof tmp_node->value, "%s", value);
-
-          tmp_value++;
-          char *tmp_attribute = erase_lead_char (' ', tmp_value);
-          snprintf (tmp_node->attribute, sizeof tmp_node->attribute, "%s", tmp_attribute);
+          a = b;
+          b = grab_str_segment (a, tmp_node->attribute, '\n');
         }
       }
+
       tmp_node->next = NULL;
       list = tmp_node;
 

@@ -1,2 +1,7 @@
-option('docdir', type : 'string', value : 'share/doc/canfigger',
-       description : 'directory where the documentation should be installed to')
+option(
+  'docdir',
+    type : 'string',
+    value : 'share/doc/canfigger',
+    description : 'directory where the documentation should be installed to',
+    yield : true
+  )

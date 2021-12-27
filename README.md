@@ -15,61 +15,26 @@ website: https://github.com/andy5995/canfigger
 This library contains a function that parses simple configuration files
 that use a key/value pair with an optional attribute.
 
-```
-foo=bar
-blue=color,shiny
 
-# Spaces adjacent to the '=' or the attribute delimiter ',' will be ignored.
-# Leading tabs will be ignored.
-		statement = hello world , obvious
+```
+foo = bar
+blue = color, shiny
+statement = hello world, obvious
 
 # An option with no value or attributes
 FeatureFooEnabled
 ```
 
-`canfigger_parse_file()` returns a [linked
-list](https://www.learn-c.org/en/Linked_lists), each node in the list
-corresponds to a parsed line in your configuration file.
+## `canfigger_parse_file()`
 
-## Example usage
+returns a [linked list](https://www.learn-c.org/en/Linked_lists), each
+node in the list corresponds to a parsed line in your configuration
+file.
 
-```c
-#include <stdio.h>
-#include "canfigger.h"
+### Example
 
-int
-main (void)
-{
-  // call the primary library function to read your config file
-  st_canfigger_list *list = canfigger_parse_file ("test_file.conf", ',');
+See [tests/test_parse_file.c](https://github.com/andy5995/canfigger/blob/trunk/tests/test_parse_file.c)
 
-  // create a pointer to the head of the list before examining the list.
-  st_canfigger_list *root = list;
-  if (list == NULL)
-  {
-    fprintf (stderr, "Error");
-    return -1;
-  }
-
-  int i = 0;
-  while (list != NULL)
-  {
-    printf ("\n\
-Key: %s\n\
-Value: %s\n\
-Attribute: %s\n", list->key, list->value, list->attribute);
-
-    i++;
-
-    list = list->next;
-  }
-
-  // free the list
-  canfigger_free (root);
-
-  return 0;
-}
-```
 
 ## API
 

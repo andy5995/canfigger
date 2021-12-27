@@ -3,24 +3,24 @@
 int
 main (void)
 {
-  struct expected
+  const struct expected
   {
     const char *key;
     const char *value;
     const char *attribute;
-  };
-  const struct expected data[] = {
+  } data[] = {
     {"foo", "bar", ""},
     {"blue", "color", "shiny"},
     {"statement", "hello world", "obvious"},
+    {"fookey", "bar-value", ""},
     {"FeatureFooEnabled", "", ""},
   };
 
-  int req_len =
-    strlen ("test_canfigger.conf") + strlen (SOURCE_DIR) + strlen ("tests") +
-    1 + 1 + 1;
-  char test_config_file[req_len];
-  sprintf (test_config_file, "%s/tests/test_canfigger.conf", SOURCE_DIR);
+  char test_config_file[PATH_MAX];
+  assert ((size_t)
+          snprintf (test_config_file, sizeof test_config_file,
+                    "%s/test_canfigger.conf",
+                    SOURCE_DIR) < sizeof test_config_file);
 
   // call the primary library function to read your config file
   st_canfigger_list *list = canfigger_parse_file (test_config_file, ',');

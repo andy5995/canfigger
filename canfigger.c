@@ -108,16 +108,12 @@ grab_str_segment (char *a, char *dest, const int c)
     return NULL;
   }
 
-  char tmp_dest[__CFG_LEN_MAX_LINE];
-  char *dest_ptr = tmp_dest;
+  char *dest_ptr = dest;
   while (a != b)
     *dest_ptr++ = *a++;
 
   *dest_ptr = '\0';
-
-  dest_ptr = tmp_dest;
-  trim_whitespace (dest_ptr);
-  strcpy (dest, dest_ptr);
+  trim_whitespace (dest);
 
   return b + 1;
 }

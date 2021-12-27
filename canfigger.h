@@ -23,6 +23,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define CANFIGGER_VERSION "0.1.1999"
 #endif
 
+// The max length of a line in a configuration file; a longer line will
+// get truncated when fgets() is called to read the file.
 #define __CFG_LEN_MAX_LINE (512 + 1)
 
 typedef struct st_canfigger_node st_canfigger_node;

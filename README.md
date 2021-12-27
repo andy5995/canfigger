@@ -25,34 +25,25 @@ statement = hello world, obvious
 FeatureFooEnabled
 ```
 
-## `canfigger_parse_file()`
+## API
+
+## canfigger_parse_file()
 
 returns a [linked list](https://www.learn-c.org/en/Linked_lists), each
 node in the list corresponds to a parsed line in your configuration
 file.
 
-### Example
+## canfigger_free()
+
+required to free the linked list
+
+### Examples
 
 See [tests/test_parse_file.c](https://github.com/andy5995/canfigger/blob/trunk/tests/test_parse_file.c)
 
-
-## API
+### Structs, typedefs, and macros
 
 ```c
-//
-// Opens a config file and returns a memory-allocated linked list
-// that must be freed later (see canfiggerfree())
-//
-// Each node is of type st_canfigger_node.
-st_canfigger_list *canfigger_parse_file (const char *file,
-                                         const char delimiter);
-
-
-//
-// Frees the list returned by canfigger_parse_file()
-void canfigger_free (st_canfigger_node * node);
-
-
 typedef struct st_canfigger_node st_canfigger_node;
 struct st_canfigger_node
 {
@@ -69,9 +60,14 @@ struct st_canfigger_node
   st_canfigger_node *next;
 };
 
+// Can be used interchangeably for code readability and developer preference
+typedef st_canfigger_node st_canfigger_list;
 
-String containing the version of the library
+// macro in string format containing the version of the library
 CANFIGGER_VERSION
+
+// macro; the max length of a line in a configuration file
+__CFG_LEN_MAX_LINE (512 + 1)
 ```
 
 ## Building

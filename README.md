@@ -44,17 +44,23 @@ See [tests/test_parse_file.c](https://github.com/andy5995/canfigger/blob/trunk/t
 ### Structs, typedefs, and macros
 
 ```c
+// macro in string format containing the version of the library
+CANFIGGER_VERSION
+
+// macro; the max length of a line in a configuration file
+__CFG_LEN_MAX_LINE (512 + 1)
+
 typedef struct st_canfigger_node st_canfigger_node;
 struct st_canfigger_node
 {
   // Contains the string that precedes the '=' sign
-  char *key;
+  char key[__CFG_LEN_MAX_LINE];
 
   // Contains the string between the '=' sign and the delimiter
-  char *value;
+  char value[__CFG_LEN_MAX_LINE];
 
   // Contains the string following the delimiter
-  char *attribute;
+  char attribute[__CFG_LEN_MAX_LINE];
 
   // A pointer to the next node in the list
   st_canfigger_node *next;
@@ -62,12 +68,6 @@ struct st_canfigger_node
 
 // Can be used interchangeably for code readability and developer preference
 typedef st_canfigger_node st_canfigger_list;
-
-// macro in string format containing the version of the library
-CANFIGGER_VERSION
-
-// macro; the max length of a line in a configuration file
-__CFG_LEN_MAX_LINE (512 + 1)
 ```
 
 ## Building

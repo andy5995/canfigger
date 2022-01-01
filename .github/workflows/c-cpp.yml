@@ -36,4 +36,18 @@ jobs:
        ninja
        ninja test
 
+  freebsd:
+    runs-on: macos-10.15
+    steps:
+    - uses: actions/checkout@v2
+    - name: Test in FreeBSD
+      id: test
+      uses: vmactions/freebsd-vm@v0.1.5
+      with:
+        usesh: true
+        prepare: pkg install -y meson ninja
+        run: |
+         meson _build
+         cd _build
+         ninja dist
 

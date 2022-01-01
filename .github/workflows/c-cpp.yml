@@ -49,5 +49,5 @@ jobs:
         run: |
          meson _build
          cd _build
-         ninja dist
+         ninja test
 

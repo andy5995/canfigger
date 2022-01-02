@@ -39,11 +39,12 @@ main (void)
     printf ("\n\
 Key: %s\n\
 Value: %s\n\
-Attribute: %s\n", list->key, list->value, list->attribute);
+Attribute: %s\n", list->key, list->value, list->attr_node_next->str);
 
     assert (strcmp (data[i].key, list->key) == 0);
     assert (strcmp (data[i].value, list->value) == 0);
-    assert (strcmp (data[i].attribute, list->attribute) == 0);
+    fprintf (stderr, "attr: %s\n", list->attr_node_next->str);
+    assert (strcmp (data[i].attribute, list->attr_node_next->str) == 0);
     i++;
 
     list = list->next;

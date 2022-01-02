@@ -13,7 +13,7 @@ Simple configuration file parser library
 website: https://github.com/andy5995/canfigger
 
 This library contains a function that parses simple configuration files
-that use a key/value pair with an optional attribute.
+that use a key/value pair with optional attributes.
 
 
 ```

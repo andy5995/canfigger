@@ -27,6 +27,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // get truncated when fgets() is called to read the file.
 #define __CFG_LEN_MAX_LINE (512 + 1)
 
+typedef struct st_canfigger_attr_node st_canfigger_attr_node;
+struct st_canfigger_attr_node
+{
+  char str[__CFG_LEN_MAX_LINE];
+  st_canfigger_attr_node* next;
+};
+
 typedef struct st_canfigger_node st_canfigger_node;
 struct st_canfigger_node
 {
@@ -37,7 +44,7 @@ struct st_canfigger_node
   char value[__CFG_LEN_MAX_LINE];
 
   // Contains the string following the delimiter
-  char attribute[__CFG_LEN_MAX_LINE];
+  st_canfigger_attr_node *attr_node_next;
 
   // A pointer to the next node in the list
   st_canfigger_node *next;

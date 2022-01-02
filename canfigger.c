@@ -26,12 +26,25 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "canfigger.h"
 
 
+static void
+canfigger_free_attr (st_canfigger_attr_node * node)
+{
+  if (node != NULL)
+  {
+    canfigger_free_attr (node->next);
+    free (node);
+  }
+  return;
+}
+
+
 void
 canfigger_free (st_canfigger_node * node)
 {
   if (node != NULL)
   {
     canfigger_free (node->next);
+    canfigger_free_attr (node->attr_node_next);
     free (node);
   }
   return;
@@ -149,28 +162,50 @@ canfigger_parse_file (const char *file, const char delimiter)
     {
       if (list != NULL)
         list->next = tmp_node;
+      else
+        root = tmp_node;
+
+      st_canfigger_attr_node *attr_root = NULL;
+      st_canfigger_attr_node *attr_list = NULL;
 
       *tmp_node->key = '\0';
       *tmp_node->value = '\0';
-      *tmp_node->attribute = '\0';
 
       char *b = grab_str_segment (a, tmp_node->key, '=');
       if (b != NULL)
       {
         a = b;
         b = grab_str_segment (a, tmp_node->value, delimiter);
+      }
+      do
+      {
+        st_canfigger_attr_node *cur_attr_node = malloc (sizeof (struct st_canfigger_attr_node));
+        if (cur_attr_node == NULL)
+        {
+          canfigger_free (root);
+          return NULL;
+        }
+
+        if (attr_list != NULL)
+          attr_list->next = cur_attr_node;
+        else
+          attr_root = cur_attr_node;
+
+        *cur_attr_node->str = '\0';
+
         if (b != NULL)
         {
           a = b;
-          b = grab_str_segment (a, tmp_node->attribute, '\n');
+          b = grab_str_segment (a, cur_attr_node->str, delimiter);
         }
-      }
+        attr_list = cur_attr_node;
+        cur_attr_node->next = NULL;
+      } while (b != NULL);
 
+      tmp_node->attr_node_next = attr_root;
       tmp_node->next = NULL;
-      list = tmp_node;
 
-      if (root == NULL)
-        root = list;
+      list = tmp_node;
     }
     else
     {

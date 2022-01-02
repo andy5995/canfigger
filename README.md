@@ -1,4 +1,4 @@
-# canfigger v0.1.2999
+# canfigger v0.2.0999
 
 Simple configuration file parser library
 
@@ -23,6 +23,9 @@ statement = hello world, obvious
 
 # An option with no value or attributes
 FeatureFooEnabled
+
+# key, value with 9 attributes
+solar_system = sun, Mercury, Venus, Earth, Mars, Jupiter, Saturn, Neptune, Uranus, Pluto
 ```
 
 ## API
@@ -50,6 +53,13 @@ CANFIGGER_VERSION
 // macro; the max length of a line in a configuration file
 __CFG_LEN_MAX_LINE (512 + 1)
 
+typedef struct st_canfigger_attr_node st_canfigger_attr_node;
+struct st_canfigger_attr_node
+{
+  char str[__CFG_LEN_MAX_LINE];
+  st_canfigger_attr_node* next;
+};
+
 typedef struct st_canfigger_node st_canfigger_node;
 struct st_canfigger_node
 {
@@ -59,8 +69,8 @@ struct st_canfigger_node
   // Contains the string between the '=' sign and the delimiter
   char value[__CFG_LEN_MAX_LINE];
 
-  // Contains the string following the delimiter
-  char attribute[__CFG_LEN_MAX_LINE];
+  // Linked list of attributes
+  st_canfigger_attr_node *attr_node;
 
   // A pointer to the next node in the list
   st_canfigger_node *next;
@@ -68,6 +78,13 @@ struct st_canfigger_node
 
 // Can be used interchangeably for code readability and developer preference
 typedef st_canfigger_node st_canfigger_list;
+
+// Frees the list returned by canfigger_parse_file()
+void canfigger_free (st_canfigger_node * node);
+
+// Frees the attribute node (which may be a linked list of attributes)
+void
+canfigger_free_attr (st_canfigger_attr_node * node);
 ```
 
 ## Building

@@ -26,12 +26,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "canfigger.h"
 
 
-static void
-canfigger_free_attr (st_canfigger_attr_node * node)
+void
+canfigger_free (st_canfigger_node * node)
 {
   if (node != NULL)
   {
-    canfigger_free_attr (node->next);
+    canfigger_free (node->next);
     free (node);
   }
   return;
@@ -39,12 +39,11 @@ canfigger_free_attr (st_canfigger_attr_node * node)
 
 
 void
-canfigger_free (st_canfigger_node * node)
+canfigger_free_attr (st_canfigger_attr_node * node)
 {
   if (node != NULL)
   {
-    canfigger_free (node->next);
-    canfigger_free_attr (node->attr_node_next);
+    canfigger_free_attr (node->next);
     free (node);
   }
   return;
@@ -202,7 +201,7 @@ canfigger_parse_file (const char *file, const char delimiter)
         cur_attr_node->next = NULL;
       } while (b != NULL);
 
-      tmp_node->attr_node_next = attr_root;
+      tmp_node->attr_node = attr_root;
       tmp_node->next = NULL;
 
       list = tmp_node;

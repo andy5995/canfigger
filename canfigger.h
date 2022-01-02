@@ -20,7 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #pragma once
 
 #ifndef CANFIGGER_VERSION
-#define CANFIGGER_VERSION "0.1.2999"
+#define CANFIGGER_VERSION "0.2.0999"
 #endif
 
 // The max length of a line in a configuration file; a longer line will
@@ -43,8 +43,8 @@ struct st_canfigger_node
   // Contains the string between the '=' sign and the delimiter
   char value[__CFG_LEN_MAX_LINE];
 
-  // Contains the string following the delimiter
-  st_canfigger_attr_node *attr_node_next;
+  // Linked list of attributes
+  st_canfigger_attr_node *attr_node;
 
   // A pointer to the next node in the list
   st_canfigger_node *next;
@@ -65,3 +65,8 @@ st_canfigger_list *canfigger_parse_file (const char *file,
 //
 // Frees the list returned by canfigger_parse_file()
 void canfigger_free (st_canfigger_node * node);
+
+
+// Frees the attribute node (which may be a linked list of attributes)
+void
+canfigger_free_attr (st_canfigger_attr_node * node);

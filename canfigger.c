@@ -1,7 +1,7 @@
 /*
 This file is part of canfigger<https://github.com/andy5995/canfigger>
 
-Copyright (C) 2021  Andy Alt (andy400-dev@yahoo.com)
+Copyright (C) 2021-2022 Andy Alt (andy400-dev@yahoo.com)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -32,6 +32,18 @@ canfigger_free (st_canfigger_node * node)
   if (node != NULL)
   {
     canfigger_free (node->next);
+    free (node);
+  }
+  return;
+}
+
+
+void
+canfigger_free_attr (st_canfigger_attr_node * node)
+{
+  if (node != NULL)
+  {
+    canfigger_free_attr (node->next);
     free (node);
   }
   return;
@@ -149,28 +161,53 @@ canfigger_parse_file (const char *file, const char delimiter)
     {
       if (list != NULL)
         list->next = tmp_node;
+      else
+        root = tmp_node;
+
+      st_canfigger_attr_node *attr_root = NULL;
+      st_canfigger_attr_node *attr_list = NULL;
 
       *tmp_node->key = '\0';
       *tmp_node->value = '\0';
-      *tmp_node->attribute = '\0';
 
       char *b = grab_str_segment (a, tmp_node->key, '=');
       if (b != NULL)
       {
         a = b;
         b = grab_str_segment (a, tmp_node->value, delimiter);
+      }
+      do
+      {
+        st_canfigger_attr_node *cur_attr_node = malloc (sizeof (struct st_canfigger_attr_node));
+        if (cur_attr_node == NULL)
+        {
+          if (attr_root != NULL)
+            canfigger_free_attr (attr_root);
+
+          canfigger_free (root);
+          return NULL;
+        }
+
+        if (attr_list != NULL)
+          attr_list->next = cur_attr_node;
+        else
+          attr_root = cur_attr_node;
+
+        *cur_attr_node->str = '\0';
+
         if (b != NULL)
         {
           a = b;
-          b = grab_str_segment (a, tmp_node->attribute, '\n');
+          b = grab_str_segment (a, cur_attr_node->str, delimiter);
         }
-      }
+        attr_list = cur_attr_node;
+        cur_attr_node->next = NULL;
+      } while (b != NULL);
 
+      tmp_node->attr_node = attr_root;
       tmp_node->next = NULL;
-      list = tmp_node;
 
-      if (root == NULL)
-        root = list;
+      list = tmp_node;
     }
     else
     {

@@ -1,7 +1,7 @@
 /*
 This file is part of canfigger<https://github.com/andy5995/canfigger>
 
-Copyright (C) 2021  Andy Alt (andy400-dev@yahoo.com)
+Copyright (C) 2021-2022 Andy Alt (andy400-dev@yahoo.com)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -181,6 +181,9 @@ canfigger_parse_file (const char *file, const char delimiter)
         st_canfigger_attr_node *cur_attr_node = malloc (sizeof (struct st_canfigger_attr_node));
         if (cur_attr_node == NULL)
         {
+          if (attr_root != NULL)
+            canfigger_free_attr (attr_root);
+
           canfigger_free (root);
           return NULL;
         }

@@ -1,7 +1,7 @@
 project(
   'canfigger',
   'c',
-  version: '0.2.0999',
+  version: '0.1.999',
   meson_version : '>= 0.48.0',
   default_options: [
     'warning_level=3',

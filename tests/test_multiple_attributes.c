@@ -3,7 +3,6 @@
 int
 main (void)
 {
-
   const char *data1[] =
     { "one", "two", "three", "forty-four", "fifty five", "six", "7",
 "eight" };

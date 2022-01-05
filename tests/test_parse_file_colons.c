@@ -31,7 +31,6 @@ main (void)
   int i = 0;
   while (list != NULL)
   {
-    st_canfigger_attr_node *attr_root = list->attr_node;
     printf ("\n\
 Key: %s\n\
 Value: %s\n\
@@ -43,7 +42,10 @@ Attribute: %s\n", list->key, list->value, list->attr_node->str);
     fprintf (stderr, "attr: %s\n", list->attr_node->str);
     assert (strcmp (data[i].attribute, list->attr_node->str) == 0);
     i++;
-    canfigger_free_attr (attr_root);
+
+    // free the attribute node
+    canfigger_free_attr (list->attr_node);
+
     list = list->next;
   }
 

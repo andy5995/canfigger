@@ -31,7 +31,7 @@ solar_system = sun, Mercury, Venus, Earth, Mars, Jupiter, Saturn, Neptune, Uranu
 ```
 ## API documentation
 
-See the annotated declarations in [/canfigger.h](https://github.com/andy5995/canfigger/blob/trunk/tests/test_parse_file.c)
+See the annotated declarations in [/canfigger.h](https://github.com/andy5995/canfigger/blob/340f559a594ceb5e0252e35a38665503d5fc438c/canfigger.h)
 
 ## Examples
 

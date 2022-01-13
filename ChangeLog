@@ -1,5 +1,9 @@
 # Canfigger ChangeLog
 
+2022-01-13
+
+  * add support for intra-line comments (e.g. 'key = value # comment')
+
 2022-01-06
 
   * implement support for multiple attributes (breaking change)

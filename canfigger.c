@@ -154,8 +154,8 @@ canfigger_parse_file (const char *file, const char delimiter)
       trim_whitespace (a);
     }
 
-    a = erase_lead_char (' ', a);
-    a = erase_lead_char ('\t', a);
+    while (isspace (*a))
+      a = erase_lead_char (*a, a);
 
     if (*a == '\0')
       continue;

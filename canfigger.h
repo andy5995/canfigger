@@ -20,7 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #pragma once
 
 #ifndef CANFIGGER_VERSION
-#define CANFIGGER_VERSION "0.2.0"
+#define CANFIGGER_VERSION "0.2.0999"
 #endif
 
 // The max length of a line in a configuration file; a longer line will

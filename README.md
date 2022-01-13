@@ -1,4 +1,4 @@
-# canfigger v0.2.0
+# canfigger v0.2.0999
 
 Simple configuration file parser library
 

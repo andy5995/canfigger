@@ -146,15 +146,19 @@ canfigger_parse_file (const char *file, const char delimiter)
   {
     trim_whitespace (line);
     char *a = line;
-    a = erase_lead_char (' ', a);
-    a = erase_lead_char ('\t', a);
-    switch (*a)
+
+    char *comment = strchr (a, '#');
+    if (comment != NULL)
     {
-    case '#':
-      continue;
-    case '\0':
-      continue;
+      *comment = '\0';
+      trim_whitespace (a);
     }
+
+    while (isspace (*a))
+      a = erase_lead_char (*a, a);
+
+    if (*a == '\0')
+      continue;
 
     st_canfigger_node *tmp_node = malloc (sizeof (struct st_canfigger_node));
     if (tmp_node != NULL)

@@ -19,7 +19,8 @@ test_cases = [
   'test_parse_file2',
   'test_parse_file_colons',
   'test_unicode',
-  'test_multiple_attributes'
+  'test_multiple_attributes',
+  'test_ignore_intra_line_comments'
   ]
 
 foreach case : test_cases

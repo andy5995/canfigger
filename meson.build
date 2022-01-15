@@ -28,7 +28,7 @@ endforeach
 inc = include_directories('.')
 
 src = ('canfigger.c')
-buildtarget = both_libraries(
+buildtarget = library(
   meson.project_name(),
   src,
   include_directories : inc,

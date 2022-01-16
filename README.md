@@ -46,6 +46,16 @@ cd _build
 ninja
 ```
 
+By default, only the shared library will get built. To build both:
+
+    meson configure -Ddefault_library=both
+
+or to only build the static library:
+
+    meson configure -Ddefault_libary=static
+
+And then run `ninja`.
+
 ## Run the tests
 
 ```

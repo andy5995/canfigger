@@ -4,8 +4,8 @@ project(
   version: '0.2.0999',
   meson_version : '>= 0.48.0',
   default_options: [
-    'warning_level=3',
-    'default_library=both']
+    'warning_level=3'
+    ]
   )
 
 cc = meson.get_compiler('c')
@@ -36,10 +36,10 @@ buildtarget = library(
   soversion : '0',
   install: true)
 
-dep_canfigger_static = declare_dependency(include_directories : inc,
-  link_with : buildtarget.get_static_lib())
-dep_canfigger_shared = declare_dependency(include_directories : inc,
-  link_with : buildtarget.get_shared_lib())
+# How to use in a superproject and other info
+# https://mesonbuild.com/Subprojects.html
+dep_canfigger = declare_dependency(include_directories : inc,
+  link_with : buildtarget)
 
 pkg = import('pkgconfig')
 pkg.generate(

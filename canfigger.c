@@ -132,7 +132,7 @@ grab_str_segment (char *a, char *dest, const int c)
 
 
 st_canfigger_list *
-canfigger_parse_file (const char *file, const char delimiter)
+canfigger_parse_file (const char *file, const int delimiter)
 {
   static st_canfigger_node *root = NULL;
   st_canfigger_list *list = NULL;

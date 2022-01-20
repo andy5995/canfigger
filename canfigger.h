@@ -64,7 +64,7 @@ typedef st_canfigger_node st_canfigger_list;
 //
 // Each node is of type st_canfigger_node.
 st_canfigger_list *canfigger_parse_file (const char *file,
-                                         const char delimiter);
+                                         const int delimiter);
 
 //
 // Frees the list returned by canfigger_parse_file();

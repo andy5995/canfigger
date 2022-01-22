@@ -34,20 +34,22 @@ buildtarget = library(
   include_directories : inc,
   version : meson.project_version(),
   soversion : '0',
-  install: true)
+  install: not meson.is_subproject())
 
 # How to use in a superproject and other info
 # https://mesonbuild.com/Subprojects.html
 dep_canfigger = declare_dependency(include_directories : inc,
   link_with : buildtarget)
 
-pkg = import('pkgconfig')
-pkg.generate(
-  buildtarget,
-  description : 'Simple configuration file parser library')
+if not meson.is_subproject()
+  pkg = import('pkgconfig')
+  pkg.generate(
+    buildtarget,
+    description : 'Simple configuration file parser library')
 
-install_headers('canfigger.h')
-install_data(files('README.md', 'LICENSE', 'ChangeLog'),
-        install_dir : get_option('docdir'))
+  install_headers('canfigger.h')
+  install_data(files('README.md', 'LICENSE', 'ChangeLog'),
+          install_dir : get_option('docdir'))
+endif
 
 subdir('tests')

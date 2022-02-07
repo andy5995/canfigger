@@ -189,6 +189,7 @@ canfigger_parse_file (const char *file, const int delimiter)
             canfigger_free_attr (attr_root);
 
           canfigger_free (root);
+          fclose (fp);
           return NULL;
         }
 

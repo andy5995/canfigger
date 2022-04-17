@@ -76,3 +76,9 @@ Or if you want to install without superuser privileges, first run
 ```
 ninja uninstall
 ```
+
+<!-- Add your project here if it has had at least one release -->
+## Projects using canfigger
+
+* [rmw](https://remove-to-waste.info/)
+

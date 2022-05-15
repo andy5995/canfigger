@@ -30,17 +30,17 @@ main (void)
   st_canfigger_list *root = list;
   if (list == NULL)
   {
-    fprintf (stderr, "Error");
+    fprintf (stderr, "list == NULL");
     return -1;
   }
 
   int i = 0;
   while (list != NULL)
   {
-    printf ("\n\
-Key: %s\n\
-Value: %s\n\
-Attribute: %s\n", list->key, list->value, list->attr_node->str);
+    fprintf (stderr, "\n\
+Key: %s | Expected: %s\n\
+Value: %s | Expected: %s\n\
+Attribute: %s | Expected: %s\n", list->key, data[i].key, list->value, data[i].value, list->attr_node->str, data[i].attribute);
 
     assert (strcmp (data[i].key, list->key) == 0);
     assert (strcmp (data[i].value, list->value) == 0);
@@ -55,7 +55,7 @@ Attribute: %s\n", list->key, list->value, list->attr_node->str);
     list = list->next;
   }
 
-  assert (i == sizeof data / sizeof data[0]);
+  assert (i == ARRAY_SIZE (data));
 
   // free the list
   canfigger_free (root);

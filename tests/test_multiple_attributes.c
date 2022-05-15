@@ -5,10 +5,12 @@ main (void)
 {
   const char *data1[] =
     { "one", "two", "three", "forty-four", "fifty five", "six", "7",
-"eight" };
+    "eight"
+  };
   const char *data2[] =
     { "Mercury", "Venus", "Earth", "Mars", "Jupiter", "Saturn", "Neptune",
-"Uranus", "Pluto" };
+    "Uranus", "Pluto"
+  };
   const char *data3[] = {
     "second",
     "after one",

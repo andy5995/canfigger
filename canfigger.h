@@ -1,7 +1,7 @@
 /*
 This file is part of canfigger<https://github.com/andy5995/canfigger>
 
-Copyright (C) 2021-2022 Andy Alt (andy400-dev@yahoo.com)
+Copyright (C) 2021-2022 Andy Alt (arch_stanton5995@proton.me)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@ typedef struct st_canfigger_attr_node st_canfigger_attr_node;
 struct st_canfigger_attr_node
 {
   char str[__CFG_LEN_MAX_LINE];
-  st_canfigger_attr_node* next;
+  st_canfigger_attr_node *next;
 };
 
 // Node in the linked list returned by canfigger_parse_file()
@@ -63,16 +63,15 @@ typedef st_canfigger_node st_canfigger_list;
 // @see canfigger_free()
 //
 // Each node is of type st_canfigger_node.
-st_canfigger_list *canfigger_parse_file (const char *file,
-                                         const int delimiter);
+st_canfigger_list *canfigger_parse_file(const char *file,
+                                        const int delimiter);
 
 //
 // Frees the list returned by canfigger_parse_file();
 // The root node must be used when this is called
-void canfigger_free (st_canfigger_node * node);
+void canfigger_free(st_canfigger_node * node);
 
 
 // Frees the attribute node (which may be a linked list of attributes);
 // The root node must be used when this is called.
-void
-canfigger_free_attr (st_canfigger_attr_node * node);
+void canfigger_free_attr(st_canfigger_attr_node * node);

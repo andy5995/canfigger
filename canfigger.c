@@ -1,7 +1,7 @@
 /*
 This file is part of canfigger<https://github.com/andy5995/canfigger>
 
-Copyright (C) 2021-2022 Andy Alt (andy400-dev@yahoo.com)
+Copyright (C) 2021-2022 Andy Alt (arch_stanton5995@proton.me)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -27,24 +27,24 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
 void
-canfigger_free (st_canfigger_node * node)
+canfigger_free(st_canfigger_node * node)
 {
   if (node != NULL)
   {
-    canfigger_free (node->next);
-    free (node);
+    canfigger_free(node->next);
+    free(node);
   }
   return;
 }
 
 
 void
-canfigger_free_attr (st_canfigger_attr_node * node)
+canfigger_free_attr(st_canfigger_attr_node * node)
 {
   if (node != NULL)
   {
-    canfigger_free_attr (node->next);
-    free (node);
+    canfigger_free_attr(node->next);
+    free(node);
   }
   return;
 }
@@ -59,7 +59,7 @@ canfigger_free_attr (st_canfigger_attr_node * node)
  * Ex2: "_H_ello World": Again, the pointer will be set to the 'H'.
  */
 static char *
-erase_lead_char (const int lc, char *haystack)
+erase_lead_char(const int lc, char *haystack)
 {
   char *ptr = haystack;
   if (*ptr != lc)
@@ -79,7 +79,7 @@ erase_lead_char (const int lc, char *haystack)
  * @return void
  */
 static void
-trim_whitespace (char *str)
+trim_whitespace(char *str)
 {
   if (str == NULL)
     return;
@@ -95,7 +95,7 @@ trim_whitespace (char *str)
   else
     return;
 
-  while (isspace (*str))
+  while (isspace(*str))
   {
     *str = '\0';
     if (str != pos_0)
@@ -109,14 +109,14 @@ trim_whitespace (char *str)
 
 
 static char *
-grab_str_segment (char *a, char *dest, const int c)
+grab_str_segment(char *a, char *dest, const int c)
 {
-  a = erase_lead_char (' ', a);
-  char *b = strchr (a, c);
+  a = erase_lead_char(' ', a);
+  char *b = strchr(a, c);
   if (b == NULL)
   {
-    strcpy (dest, a);
-    trim_whitespace (dest);
+    strcpy(dest, a);
+    trim_whitespace(dest);
     return NULL;
   }
 
@@ -125,42 +125,42 @@ grab_str_segment (char *a, char *dest, const int c)
     *dest_ptr++ = *a++;
 
   *dest_ptr = '\0';
-  trim_whitespace (dest);
+  trim_whitespace(dest);
 
   return b + 1;
 }
 
 
 st_canfigger_list *
-canfigger_parse_file (const char *file, const int delimiter)
+canfigger_parse_file(const char *file, const int delimiter)
 {
   static st_canfigger_node *root = NULL;
   st_canfigger_list *list = NULL;
 
-  FILE *fp = fopen (file, "r");
+  FILE *fp = fopen(file, "r");
   if (fp == NULL)
     return NULL;
 
   char line[__CFG_LEN_MAX_LINE];
-  while (fgets (line, sizeof line, fp) != NULL)
+  while (fgets(line, sizeof line, fp) != NULL)
   {
-    trim_whitespace (line);
+    trim_whitespace(line);
     char *a = line;
 
-    char *comment = strchr (a, '#');
+    char *comment = strchr(a, '#');
     if (comment != NULL)
     {
       *comment = '\0';
-      trim_whitespace (a);
+      trim_whitespace(a);
     }
 
-    while (isspace (*a))
-      a = erase_lead_char (*a, a);
+    while (isspace(*a))
+      a = erase_lead_char(*a, a);
 
     if (*a == '\0')
       continue;
 
-    st_canfigger_node *tmp_node = malloc (sizeof (struct st_canfigger_node));
+    st_canfigger_node *tmp_node = malloc(sizeof(struct st_canfigger_node));
     if (tmp_node != NULL)
     {
       if (list != NULL)
@@ -174,22 +174,23 @@ canfigger_parse_file (const char *file, const int delimiter)
       *tmp_node->key = '\0';
       *tmp_node->value = '\0';
 
-      char *b = grab_str_segment (a, tmp_node->key, '=');
+      char *b = grab_str_segment(a, tmp_node->key, '=');
       if (b != NULL)
       {
         a = b;
-        b = grab_str_segment (a, tmp_node->value, delimiter);
+        b = grab_str_segment(a, tmp_node->value, delimiter);
       }
       do
       {
-        st_canfigger_attr_node *cur_attr_node = malloc (sizeof (struct st_canfigger_attr_node));
+        st_canfigger_attr_node *cur_attr_node =
+          malloc(sizeof(struct st_canfigger_attr_node));
         if (cur_attr_node == NULL)
         {
           if (attr_root != NULL)
-            canfigger_free_attr (attr_root);
+            canfigger_free_attr(attr_root);
 
-          canfigger_free (root);
-          fclose (fp);
+          canfigger_free(root);
+          fclose(fp);
           return NULL;
         }
 
@@ -203,11 +204,12 @@ canfigger_parse_file (const char *file, const int delimiter)
         if (b != NULL)
         {
           a = b;
-          b = grab_str_segment (a, cur_attr_node->str, delimiter);
+          b = grab_str_segment(a, cur_attr_node->str, delimiter);
         }
         attr_list = cur_attr_node;
         cur_attr_node->next = NULL;
-      } while (b != NULL);
+      }
+      while (b != NULL);
 
       tmp_node->attr_node = attr_root;
       tmp_node->next = NULL;
@@ -217,14 +219,14 @@ canfigger_parse_file (const char *file, const int delimiter)
     else
     {
       if (root != NULL)
-        canfigger_free (root);
+        canfigger_free(root);
 
-      fclose (fp);
+      fclose(fp);
       return NULL;
     }
   }
 
-  int r = fclose (fp);
+  int r = fclose(fp);
   if (r != 0)
   {
     return NULL;

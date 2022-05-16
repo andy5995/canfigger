@@ -1,4 +1,7 @@
 name: C/C++ CI
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
 
 on:
   push:
@@ -15,22 +18,35 @@ on:
     - '.github/workflows/codeql-analysis.yml'
 
 jobs:
-  ubuntu:
-    runs-on: ubuntu-latest
+  ubuntu-focal:
+    runs-on: ubuntu-20.04
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - run: sudo apt-get install -y meson valgrind
     - run: |
        meson _build
        cd _build
        ninja
-       ninja test
+       meson test -v
        meson test --setup=valgrind
+
+  ubuntu-jammy:
+    runs-on: ubuntu-22.04
+    env:
+      CC: 'gcc-12'
+    steps:
+    - uses: actions/checkout@v3
+    - run: sudo apt-get install -y meson $CC
+    - run: |
+       meson _build
+       cd _build
+       ninja
+       meson test -v
 
   macos:
     runs-on: macos-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - run: brew install meson
     - run: |
        meson _build
@@ -41,7 +57,7 @@ jobs:
   freebsd:
     runs-on: macos-10.15
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Test in FreeBSD
       id: test
       uses: vmactions/freebsd-vm@v0.1.5

@@ -21,11 +21,7 @@ extra_flags = [
   '-DCANFIGGER_VERSION="@0@"'.format(meson.project_version())
 ]
 
-foreach cflag : extra_flags
-  if cc.has_argument(cflag)
-    add_project_arguments(cflag, language: 'c')
-  endif
-endforeach
+add_project_arguments(cc.get_supported_arguments(extra_flags), language: 'c')
 
 inc = include_directories('.')
 

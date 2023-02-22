@@ -19,7 +19,7 @@ on:
     - '!**/*.md'
     - '!docs/**'
     - '!**/*.yml'
-    - '**/c-cpp.yml
+    - '**/c-cpp.yml'
 
 jobs:
   ubuntu-focal:

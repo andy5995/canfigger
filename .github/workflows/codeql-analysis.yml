@@ -21,7 +21,7 @@ on:
     - '!**/*.md'
     - '!docs/**'
     - '!**/*.yml'
-    - '**/codeql-analysis.yml
+    - '**/codeql-analysis.yml'
 #  schedule:
 #    - cron: '0 6 * * 6'
 

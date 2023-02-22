@@ -1,16 +1,4 @@
 incdir = include_directories('..')
-vg = find_program('valgrind', required : false)
-
-# This is only set when running under Valgrind test setup.
-# env = environment()
-# env.set('TEST_ENV', '1')
-
-if vg.found()
-add_test_setup('valgrind',
-  exe_wrapper : [vg, '--error-exitcode=1', '--leak-check=full'],
-# env : env
-  )
-endif
 
 main_lib = declare_dependency(link_with : buildtarget)
 

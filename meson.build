@@ -4,7 +4,9 @@ project(
   version: '0.2.0999',
   meson_version : '>= 0.48.0',
   default_options: [
-    'warning_level=3'
+    'warning_level=3',
+    'b_sanitize=address,undefined',
+    'b_lundef=false'
     ]
   )
 

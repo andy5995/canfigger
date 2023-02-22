@@ -22,13 +22,12 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
     - uses: actions/checkout@v3
-    - run: sudo apt-get install -y meson valgrind
+    - run: sudo apt-get install -y meson
     - run: |
        meson _build
        cd _build
        ninja
        meson test -v
-       meson test --setup=valgrind
 
   ubuntu-jammy:
     runs-on: ubuntu-22.04

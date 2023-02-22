@@ -10,17 +10,17 @@ on:
     branches: trunk
     paths:
     - '**'
-    - '!**/*.md'
+    - '!**.md'
     - '!docs/**'
-    - '!**/*.yml'
-    - '**/codeq-analysis.yml
+    - '!**.yml'
+    - '**/codeq-analysis.yml'
   pull_request:
     branches: trunk
     paths:
     - '**'
-    - '!**/*.md'
+    - '!**.md'
     - '!docs/**'
-    - '!**/*.yml'
+    - '!**.yml'
     - '**/codeql-analysis.yml'
 #  schedule:
 #    - cron: '0 6 * * 6'

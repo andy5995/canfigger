@@ -8,17 +8,17 @@ on:
     branches: trunk
     paths:
     - '**'
-    - '!**/*.md'
+    - '!**.md'
     - '!docs/**'
-    - '!**/*.yml'
-    - '**/c-cpp.yml
+    - '!**.yml'
+    - '**/c-cpp.yml'
   pull_request:
     branches: trunk
     paths:
     - '**'
-    - '!**/*.md'
+    - '!**.md'
     - '!docs/**'
-    - '!**/*.yml'
+    - '!**.yml'
     - '**/c-cpp.yml'
 
 jobs:

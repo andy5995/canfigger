@@ -1,0 +1,15 @@
+freebsd_task:
+  name: FreeBSD
+  freebsd_instance:
+    image_family: freebsd-13-1
+
+  pkginstall_script:
+    - pkg update -f
+    - pkg install -y meson ninja
+
+  setup_script:
+    - meson setup builddir
+  build_script:
+    - cd builddir && ninja -v
+  test_script:
+    - cd builddir && meson test -v

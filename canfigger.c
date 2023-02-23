@@ -29,7 +29,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 void
 canfigger_free(st_canfigger_node * node)
 {
-  if (node != NULL)
+  if (node)
   {
     canfigger_free(node->next);
     free(node);
@@ -41,7 +41,7 @@ canfigger_free(st_canfigger_node * node)
 void
 canfigger_free_attr(st_canfigger_attr_node * node)
 {
-  if (node != NULL)
+  if (node)
   {
     canfigger_free_attr(node->next);
     free(node);
@@ -81,12 +81,12 @@ erase_lead_char(const int lc, char *haystack)
 static void
 trim_whitespace(char *str)
 {
-  if (str == NULL)
+  if (!str)
     return;
 
   char *pos_0 = str;
   /* Advance pointer until NULL terminator is found */
-  while (*str != '\0')
+  while (*str)
     str++;
 
   /* set pointer to segment preceding NULL terminator */
@@ -113,7 +113,7 @@ grab_str_segment(char *a, char *dest, const int c)
 {
   a = erase_lead_char(' ', a);
   char *b = strchr(a, c);
-  if (b == NULL)
+  if (!b)
   {
     strcpy(dest, a);
     trim_whitespace(dest);
@@ -138,7 +138,7 @@ canfigger_parse_file(const char *file, const int delimiter)
   st_canfigger_list *list = NULL;
 
   FILE *fp = fopen(file, "r");
-  if (fp == NULL)
+  if (!fp)
     return NULL;
 
   char line[__CFG_LEN_MAX_LINE];
@@ -154,9 +154,9 @@ canfigger_parse_file(const char *file, const int delimiter)
       continue;
 
     st_canfigger_node *tmp_node = malloc(sizeof(struct st_canfigger_node));
-    if (tmp_node != NULL)
+    if (tmp_node)
     {
-      if (list != NULL)
+      if (list)
         list->next = tmp_node;
       else
         root = tmp_node;
@@ -168,7 +168,7 @@ canfigger_parse_file(const char *file, const int delimiter)
       *tmp_node->value = '\0';
 
       char *b = grab_str_segment(a, tmp_node->key, '=');
-      if (b != NULL)
+      if (b)
       {
         a = b;
         b = grab_str_segment(a, tmp_node->value, delimiter);
@@ -179,7 +179,7 @@ canfigger_parse_file(const char *file, const int delimiter)
           malloc(sizeof(struct st_canfigger_attr_node));
         if (cur_attr_node == NULL)
         {
-          if (attr_root != NULL)
+          if (attr_root)
             canfigger_free_attr(attr_root);
 
           if (root)
@@ -188,14 +188,14 @@ canfigger_parse_file(const char *file, const int delimiter)
           return NULL;
         }
 
-        if (attr_list != NULL)
+        if (attr_list)
           attr_list->next = cur_attr_node;
         else
           attr_root = cur_attr_node;
 
         *cur_attr_node->str = '\0';
 
-        if (b != NULL)
+        if (b)
         {
           a = b;
           b = grab_str_segment(a, cur_attr_node->str, delimiter);
@@ -203,7 +203,7 @@ canfigger_parse_file(const char *file, const int delimiter)
         attr_list = cur_attr_node;
         cur_attr_node->next = NULL;
       }
-      while (b != NULL);
+      while (b);
 
       tmp_node->attr_node = attr_root;
       tmp_node->next = NULL;
@@ -212,7 +212,7 @@ canfigger_parse_file(const char *file, const int delimiter)
     }
     else
     {
-      if (root != NULL)
+      if (root)
         canfigger_free(root);
 
       fclose(fp);

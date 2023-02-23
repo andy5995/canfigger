@@ -182,7 +182,8 @@ canfigger_parse_file(const char *file, const int delimiter)
           if (attr_root != NULL)
             canfigger_free_attr(attr_root);
 
-          canfigger_free(root);
+          if (root)
+            canfigger_free(root);
           fclose(fp);
           return NULL;
         }

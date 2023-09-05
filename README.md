@@ -80,5 +80,5 @@ ninja uninstall
 <!-- Add your project here if it has had at least one release -->
 ## Projects using canfigger
 
-* [rmw](https://remove-to-waste.info/)
+* [rmw](https://theimpossibleastronaut.github.io/rmw-website/)
 

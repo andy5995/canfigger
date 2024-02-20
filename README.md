@@ -58,10 +58,7 @@ And then run `ninja`.
 
 ## Run the tests
 
-```
-ninja test
-meson test --setup=valgrind (requires valgrind to be installed)
-```
+    ninja test
 
 ## Install/Uninstall
 

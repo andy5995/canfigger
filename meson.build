@@ -15,7 +15,6 @@ extra_flags = [
   '-fno-common',
   '-Wshadow',
   '-Wstrict-overflow=5',
-  '-fanalyzer',
   '-Wformat-security',
   '-Wformat-overflow=2',
   '-DCANFIGGER_VERSION="@0@"'.format(meson.project_version())

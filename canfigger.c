@@ -115,20 +115,19 @@ trim_whitespace(char *str)
 static char *
 grab_str_segment(char *a, char **dest, const int c)
 {
+  free(*dest);
   a = erase_lead_char(' ', a);
-  trim_whitespace(a);
+
   char *b = strchr(a, c);
   if (!b)
   {
     *dest = strdup(a);
-    fprintf(stderr, "dest: '%s'\n", *dest);
     return NULL;
   }
 
   size_t len = b - a;
   *dest = strndup(a, len);
-  fprintf(stderr, "b-a = %d\n", len);
-  // fprintf(stderr, "delimiter: %c\n", c);
+
   if (!*dest)
   {
     fprintf(stderr, "not_dest: '%s'\n", *dest);
@@ -156,6 +155,8 @@ canfigger_parse_file(const char *file, const int delimiter)
   // getline() malloc's the memory needed for line
   while ((read = getline(&line, &len, fp)) != -1)
   {
+    static const char *empty_str = "";
+
     if (!line)
     {
       fclose(fp);
@@ -183,9 +184,11 @@ canfigger_parse_file(const char *file, const int delimiter)
       st_canfigger_attr_node *attr_root = NULL;
       st_canfigger_attr_node *attr_list = NULL;
 
+      tmp_node->key = strdup(empty_str);
       char *b = grab_str_segment(a, &tmp_node->key, '=');
+      // fprintf(stderr, "key: '%s'\n", tmp_node->key);
 
-      fprintf(stderr, "key: '%s'\n", tmp_node->key);
+      tmp_node->value = strdup(empty_str);
       if (b)
       {
         a = b;
@@ -212,7 +215,7 @@ canfigger_parse_file(const char *file, const int delimiter)
         else
           attr_root = cur_attr_node;
 
-        cur_attr_node->str = "";
+        cur_attr_node->str = strdup(empty_str);
         if (b)
         {
           a = b;

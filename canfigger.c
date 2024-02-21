@@ -28,16 +28,17 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 static int err_strdup = 0;
 
 
-static void cleanup_1(char **line, FILE **fp)
+static void
+cleanup_1(char **line, FILE **fp)
 {
-  free (*line);
+  free(*line);
   fclose(*fp);
   return;
 }
 
 
 void
-canfigger_free(st_canfigger_node * node)
+canfigger_free(st_canfigger_node *node)
 {
   if (node)
   {
@@ -51,7 +52,7 @@ canfigger_free(st_canfigger_node * node)
 
 
 void
-canfigger_free_attr(st_canfigger_attr_node * node)
+canfigger_free_attr(st_canfigger_attr_node *node)
 {
   if (node)
   {
@@ -134,7 +135,7 @@ grab_str_segment(char *a, char **dest, const int c)
     *dest = strdup(a);
     if (!*dest)
       err_strdup = -1;
-    return b; // NULL
+    return b;                   // NULL
   }
 
   *dest = strndup(a, b - a);
@@ -233,7 +234,7 @@ canfigger_parse_file(const char *file, const int delimiter)
           if (root)
             canfigger_free(root);
 
-          cleanup_1 (&line, &fp);
+          cleanup_1(&line, &fp);
           return NULL;
         }
 

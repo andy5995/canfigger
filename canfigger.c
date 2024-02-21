@@ -25,6 +25,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "canfigger.h"
 
+static int err_strdup = 0;
+
+
+static void cleanup_1(char **line, FILE **fp)
+{
+  free (*line);
+  fclose(*fp);
+  return;
+}
+
 
 void
 canfigger_free(st_canfigger_node * node)
@@ -122,15 +132,16 @@ grab_str_segment(char *a, char **dest, const int c)
   if (!b)
   {
     *dest = strdup(a);
-    return NULL;
+    if (!*dest)
+      err_strdup = -1;
+    return b; // NULL
   }
 
-  size_t len = b - a;
-  *dest = strndup(a, len);
-
+  *dest = strndup(a, b - a);
   if (!*dest)
   {
-    fprintf(stderr, "not_dest: '%s'\n", *dest);
+    if (!*dest)
+      err_strdup = -1;
     return NULL;
   }
   trim_whitespace(*dest);
@@ -146,7 +157,10 @@ canfigger_parse_file(const char *file, const int delimiter)
 
   FILE *fp = fopen(file, "r");
   if (!fp)
+  {
+    perror("canfigger:");
     return NULL;
+  }
 
   char *line = NULL;
   size_t len = 0;
@@ -163,7 +177,7 @@ canfigger_parse_file(const char *file, const int delimiter)
       return NULL;
     }
 
-    fprintf(stderr, "Retrieved line of length %zu:\n", read);
+    // fprintf(stderr, "Retrieved line of length %zu:\n", read);
     trim_whitespace(line);
     char *a = line;
 
@@ -185,10 +199,22 @@ canfigger_parse_file(const char *file, const int delimiter)
       st_canfigger_attr_node *attr_list = NULL;
 
       tmp_node->key = strdup(empty_str);
+      if (!empty_str)
+      {
+        cleanup_1(&line, &fp);
+        return NULL;
+      }
+
       char *b = grab_str_segment(a, &tmp_node->key, '=');
       // fprintf(stderr, "key: '%s'\n", tmp_node->key);
 
       tmp_node->value = strdup(empty_str);
+      if (!empty_str)
+      {
+        cleanup_1(&line, &fp);
+        return NULL;
+      }
+
       if (b)
       {
         a = b;
@@ -205,8 +231,8 @@ canfigger_parse_file(const char *file, const int delimiter)
 
           if (root)
             canfigger_free(root);
-          fclose(fp);
-          free(line);
+
+          cleanup_1 (&line, &fp);
           return NULL;
         }
 
@@ -216,6 +242,11 @@ canfigger_parse_file(const char *file, const int delimiter)
           attr_root = cur_attr_node;
 
         cur_attr_node->str = strdup(empty_str);
+        if (!empty_str)
+        {
+          cleanup_1(&line, &fp);
+          return NULL;
+        }
         if (b)
         {
           a = b;
@@ -236,21 +267,17 @@ canfigger_parse_file(const char *file, const int delimiter)
       if (root)
         canfigger_free(root);
 
-      fclose(fp);
-      free(line);
+      cleanup_1(&line, &fp);
       return NULL;
     }
   }
 
-  int r = fclose(fp);
-  if (r != 0)
-  {
-    if (line)
-      free(line);
-    return NULL;
-  }
+  if (line)
+    free(line);
 
-  free(line);
+  if (fclose(fp) != 0)
+    perror("canfigger:");
+
   list = root;
   return list;
 }

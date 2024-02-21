@@ -1,7 +1,7 @@
 /*
 This file is part of canfigger<https://github.com/andy5995/canfigger>
 
-Copyright (C) 2021-2022 Andy Alt (arch_stanton5995@proton.me)
+Copyright (C) 2021-2024 Andy Alt (arch_stanton5995@proton.me)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -32,6 +32,8 @@ canfigger_free(st_canfigger_node * node)
   if (node)
   {
     canfigger_free(node->next);
+    free(node->key);
+    free(node->value);
     free(node);
   }
   return;
@@ -44,6 +46,8 @@ canfigger_free_attr(st_canfigger_attr_node * node)
   if (node)
   {
     canfigger_free_attr(node->next);
+    if (node->str)
+      free(node->str);
     free(node);
   }
   return;
@@ -109,24 +113,28 @@ trim_whitespace(char *str)
 
 
 static char *
-grab_str_segment(char *a, char *dest, const int c)
+grab_str_segment(char *a, char **dest, const int c)
 {
   a = erase_lead_char(' ', a);
+  trim_whitespace(a);
   char *b = strchr(a, c);
   if (!b)
   {
-    strcpy(dest, a);
-    trim_whitespace(dest);
+    *dest = strdup(a);
+    fprintf(stderr, "dest: '%s'\n", *dest);
     return NULL;
   }
 
-  char *dest_ptr = dest;
-  while (a != b)
-    *dest_ptr++ = *a++;
-
-  *dest_ptr = '\0';
-  trim_whitespace(dest);
-
+  size_t len = b - a;
+  *dest = strndup(a, len);
+  fprintf(stderr, "b-a = %d\n", len);
+  // fprintf(stderr, "delimiter: %c\n", c);
+  if (!*dest)
+  {
+    fprintf(stderr, "not_dest: '%s'\n", *dest);
+    return NULL;
+  }
+  trim_whitespace(*dest);
   return b + 1;
 }
 
@@ -141,9 +149,20 @@ canfigger_parse_file(const char *file, const int delimiter)
   if (!fp)
     return NULL;
 
-  char line[__CFG_LEN_MAX_LINE];
-  while (fgets(line, sizeof line, fp) != NULL)
+  char *line = NULL;
+  size_t len = 0;
+  ssize_t read;
+
+  // getline() malloc's the memory needed for line
+  while ((read = getline(&line, &len, fp)) != -1)
   {
+    if (!line)
+    {
+      fclose(fp);
+      return NULL;
+    }
+
+    fprintf(stderr, "Retrieved line of length %zu:\n", read);
     trim_whitespace(line);
     char *a = line;
 
@@ -164,14 +183,13 @@ canfigger_parse_file(const char *file, const int delimiter)
       st_canfigger_attr_node *attr_root = NULL;
       st_canfigger_attr_node *attr_list = NULL;
 
-      *tmp_node->key = '\0';
-      *tmp_node->value = '\0';
+      char *b = grab_str_segment(a, &tmp_node->key, '=');
 
-      char *b = grab_str_segment(a, tmp_node->key, '=');
+      fprintf(stderr, "key: '%s'\n", tmp_node->key);
       if (b)
       {
         a = b;
-        b = grab_str_segment(a, tmp_node->value, delimiter);
+        b = grab_str_segment(a, &tmp_node->value, delimiter);
       }
       do
       {
@@ -185,6 +203,7 @@ canfigger_parse_file(const char *file, const int delimiter)
           if (root)
             canfigger_free(root);
           fclose(fp);
+          free(line);
           return NULL;
         }
 
@@ -193,12 +212,11 @@ canfigger_parse_file(const char *file, const int delimiter)
         else
           attr_root = cur_attr_node;
 
-        *cur_attr_node->str = '\0';
-
+        cur_attr_node->str = "";
         if (b)
         {
           a = b;
-          b = grab_str_segment(a, cur_attr_node->str, delimiter);
+          b = grab_str_segment(a, &cur_attr_node->str, delimiter);
         }
         attr_list = cur_attr_node;
         cur_attr_node->next = NULL;
@@ -216,6 +234,7 @@ canfigger_parse_file(const char *file, const int delimiter)
         canfigger_free(root);
 
       fclose(fp);
+      free(line);
       return NULL;
     }
   }
@@ -223,9 +242,12 @@ canfigger_parse_file(const char *file, const int delimiter)
   int r = fclose(fp);
   if (r != 0)
   {
+    if (line)
+      free(line);
     return NULL;
   }
 
+  free(line);
   list = root;
   return list;
 }

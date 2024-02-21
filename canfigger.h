@@ -1,7 +1,7 @@
 /*
 This file is part of canfigger<https://github.com/andy5995/canfigger>
 
-Copyright (C) 2021-2022 Andy Alt (arch_stanton5995@proton.me)
+Copyright (C) 2021-2024 Andy Alt (arch_stanton5995@proton.me)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -23,16 +23,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define CANFIGGER_VERSION "0.2.0999"
 #endif
 
-// The max length of a line in a configuration file; a longer line will
-// get truncated when fgets() is called to read the file.
-#define __CFG_LEN_MAX_LINE (512 + 1)
-
 // Member of st_canfigger_node
 // @see canfigger_free_attr()
 typedef struct st_canfigger_attr_node st_canfigger_attr_node;
 struct st_canfigger_attr_node
 {
-  char str[__CFG_LEN_MAX_LINE];
+  char *str;
   st_canfigger_attr_node *next;
 };
 
@@ -41,10 +37,10 @@ typedef struct st_canfigger_node st_canfigger_node;
 struct st_canfigger_node
 {
   // Contains the string that precedes the '=' sign
-  char key[__CFG_LEN_MAX_LINE];
+  char *key;
 
   // Contains the string between the '=' sign and the delimiter
-  char value[__CFG_LEN_MAX_LINE];
+  char *value;
 
   // Linked list of attributes
   st_canfigger_attr_node *attr_node;

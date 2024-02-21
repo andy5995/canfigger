@@ -1,5 +1,9 @@
 # Canfigger ChangeLog
 
+2024-02-21
+
+  * Use dynamic memory allocation for keys, values, and attributes.
+
 2022-01-06
 
   * implement support for multiple attributes (breaking change)

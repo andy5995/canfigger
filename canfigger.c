@@ -154,7 +154,7 @@ st_canfigger_list *
 canfigger_parse_file(const char *file, const int delimiter)
 {
   err_strdup = 0;
-  static st_canfigger_node *root = NULL;
+  st_canfigger_node *root = NULL;
   st_canfigger_list *list = NULL;
 
   FILE *fp = fopen(file, "r");

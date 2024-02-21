@@ -24,9 +24,6 @@ main(void)
 
   // call the primary library function to read your config file
   st_canfigger_list *list = canfigger_parse_file(test_config_file, ',');
-
-  // create a pointer to the head of the list before examining the list.
-  st_canfigger_list *root = list;
   if (list == NULL)
   {
     fprintf(stderr, "Error");
@@ -34,7 +31,7 @@ main(void)
   }
 
   int i = 0;
-  while (list != NULL)
+  do
   {
     printf("\n\
 Key: %s\n\
@@ -45,9 +42,7 @@ Attribute: %s\n", list->key, list->value, list->attr_node->str);
     // assert (strcmp (data[i].value, list->value) == 0);
     int j = 0;
 
-    // get the root (head) of the attr node list (to free it later)
-    st_canfigger_attr_node *attr_root = list->attr_node;
-    while (list->attr_node != NULL)
+    do
     {
       fprintf(stderr, "attr: %s\n", list->attr_node->str);
       switch (i)
@@ -63,10 +58,9 @@ Attribute: %s\n", list->key, list->value, list->attr_node->str);
         break;
       }
       j++;
-      list->attr_node = list->attr_node->next;
-    }
-    // free the attribute node
-    canfigger_free_attr(attr_root);
+
+      list->attr_node = canfigger_get_next_attr_list_node(list->attr_node);
+    } while (list->attr_node != NULL);
 
     fprintf(stderr, "j: %d\n", j);
     if (j > 0)
@@ -86,13 +80,11 @@ Attribute: %s\n", list->key, list->value, list->attr_node->str);
     }
 
     i++;
-    list = list->next;
-  }
+
+    list = canfigger_get_next_node(list);
+  } while (list != NULL);
 
   assert(i == 3);
-
-  // free the list
-  canfigger_free(root);
 
   return 0;
 }

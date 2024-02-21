@@ -26,8 +26,6 @@ main(void)
   // call the primary library function to read your config file
   st_canfigger_list *list = canfigger_parse_file(test_config_file, ',');
 
-  // create a pointer to the head of the list before examining the list.
-  st_canfigger_list *root = list;
   if (list == NULL)
   {
     fprintf(stderr, "list == NULL");
@@ -35,7 +33,7 @@ main(void)
   }
 
   int i = 0;
-  while (list != NULL)
+  do
   {
     fprintf(stderr, "\n\
 Key: %s | Expected: %s\n\
@@ -48,17 +46,10 @@ Attribute: %s | Expected: %s\n", list->key, data[i].key, list->value, data[i].va
     assert(strcmp(data[i].attribute, list->attr_node->str) == 0);
     i++;
 
-    // Free the attribute node (the root isn't needed when you know
-    // there is only one node).
-    canfigger_free_attr(list->attr_node);
-
-    list = list->next;
-  }
+    list = canfigger_get_next_node(list);
+   } while (list != NULL);
 
   assert(i == ARRAY_SIZE(data));
-
-  // free the list
-  canfigger_free(root);
 
   return 0;
 }

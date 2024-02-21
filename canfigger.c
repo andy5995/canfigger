@@ -36,6 +36,43 @@ cleanup_1(char **line, FILE **fp)
   return;
 }
 
+st_canfigger_attr_node *
+canfigger_get_next_attr_list_node(st_canfigger_attr_node *attr_node)
+{
+  if (attr_node)
+  {
+    if (attr_node->str)
+    {
+      free(attr_node->str);
+      attr_node->str = NULL; // Maybe not necessary
+    }
+
+    st_canfigger_attr_node *new_attr_node = attr_node->next;
+    free(attr_node);
+    attr_node = NULL; // Maybe not necessary
+    return new_attr_node;
+  }
+  return NULL;
+}
+
+st_canfigger_list *
+canfigger_get_next_node(st_canfigger_list *list)
+{
+  st_canfigger_node *node = list;
+  if (node)
+  {
+    if (node->attr_node)
+      canfigger_free_attr(node->attr_node);
+    if (node->value)
+      free(node->value);
+    free(node->key);
+    st_canfigger_node *new_node = node->next;
+    free(node);
+    return new_node;
+  }
+  return NULL;
+}
+
 
 void
 canfigger_free(st_canfigger_node *node)

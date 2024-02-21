@@ -23,14 +23,23 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define CANFIGGER_VERSION "0.2.0999"
 #endif
 
+#ifdef _MSC_VER
+#define DEPRECATED __declspec(deprecated)
+#elif defined(__GNUC__) || defined(__clang__)
+#define DEPRECATED __attribute__((deprecated))
+#else
+#define DEPRECATED
+#endif
+
 // Member of st_canfigger_node
-// @see canfigger_free_attr()
+// @see canfigger_get_next_attr_list_node()
 typedef struct st_canfigger_attr_node st_canfigger_attr_node;
 struct st_canfigger_attr_node
 {
   char *str;
   st_canfigger_attr_node *next;
 };
+
 
 // Node in the linked list returned by canfigger_parse_file()
 typedef struct st_canfigger_node st_canfigger_node;
@@ -56,11 +65,28 @@ typedef st_canfigger_node st_canfigger_list;
 //
 // Opens a config file and returns a memory-allocated linked list
 // that must be freed later
-// @see canfigger_free()
+// @see canfigger_get_next_node()
 //
 // Each node is of type st_canfigger_node.
 st_canfigger_list *canfigger_parse_file(const char *file,
                                         const int delimiter);
+
+
+// Frees each member of the current attributes node, then frees the
+// current attribute node and returns a pointer to the next one.
+// Call this after retrieving each attribute
+// set. NULL will be returned when the end is reached.
+st_canfigger_attr_node *
+canfigger_get_next_attr_list_node(st_canfigger_attr_node *attr_node);
+
+
+// Frees each member of the current node, then frees the current node
+// and returns a pointer to the next
+// one. Call this after retrieving each key/value/attribute
+// set. NULL will be returned when the end is reached.
+st_canfigger_list *
+canfigger_get_next_node(st_canfigger_list *list);
+
 
 //
 // Frees the list returned by canfigger_parse_file();

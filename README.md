@@ -44,11 +44,11 @@ while (config != NULL) {
     st_canfigger_attr_node *attr = config->attr_node;
     while (attr) {
         printf("Attribute: %s\n", attr->str);
-        attr = canfigger_get_next_attr_list_node(attr);
+        attr = canfigger_get_next_attr(attr);
     }
 
     // Move to the next node and automatically free the current node
-    config = canfigger_get_next_node(config);
+    config = canfigger_get_next_key(config);
 }
 ```
 

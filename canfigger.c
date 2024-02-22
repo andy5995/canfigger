@@ -31,32 +31,46 @@ static int err_strdup = 0;
 static void
 cleanup_1(char **line, FILE **fp)
 {
-  free(*line);
-  fclose(*fp);
+  if (*line)
+    free(*line);
+
+  if (fclose(*fp) != 0)
+    perror("canfigger:");
+
   return;
 }
 
+
+void
+canfigger_free_attr(st_canfigger_attr_node *node)
+{
+  if (node)
+  {
+    while (node)
+      node = canfigger_get_next_attr(node);
+  }
+  return;
+}
+
+
 st_canfigger_attr_node *
-canfigger_get_next_attr_list_node(st_canfigger_attr_node *attr_node)
+canfigger_get_next_attr(st_canfigger_attr_node *attr_node)
 {
   if (attr_node)
   {
     if (attr_node->str)
-    {
       free(attr_node->str);
-      attr_node->str = NULL; // Maybe not necessary
-    }
 
     st_canfigger_attr_node *new_attr_node = attr_node->next;
     free(attr_node);
-    attr_node = NULL; // Maybe not necessary
+
     return new_attr_node;
   }
   return NULL;
 }
 
 st_canfigger_list *
-canfigger_get_next_node(st_canfigger_list *list)
+canfigger_get_next_key(st_canfigger_list *list)
 {
   st_canfigger_node *node = list;
   if (node)
@@ -79,24 +93,8 @@ canfigger_free(st_canfigger_node *node)
 {
   if (node)
   {
-    canfigger_free(node->next);
-    free(node->key);
-    free(node->value);
-    free(node);
-  }
-  return;
-}
-
-
-void
-canfigger_free_attr(st_canfigger_attr_node *node)
-{
-  if (node)
-  {
-    canfigger_free_attr(node->next);
-    if (node->str)
-      free(node->str);
-    free(node);
+    while (node)
+      node = canfigger_get_next_key(node);
   }
   return;
 }
@@ -245,11 +243,13 @@ canfigger_parse_file(const char *file, const int delimiter)
       }
 
       char *b = grab_str_segment(a, &tmp_node->key, '=');
+
       if (err_strdup)
       {
         cleanup_1(&line, &fp);
         return NULL;
       }
+
       // fprintf(stderr, "key: '%s'\n", tmp_node->key);
 
       tmp_node->value = strdup(empty_str);
@@ -263,6 +263,7 @@ canfigger_parse_file(const char *file, const int delimiter)
       {
         a = b;
         b = grab_str_segment(a, &tmp_node->value, delimiter);
+
         if (err_strdup)
         {
           cleanup_1(&line, &fp);
@@ -300,6 +301,7 @@ canfigger_parse_file(const char *file, const int delimiter)
         {
           a = b;
           b = grab_str_segment(a, &cur_attr_node->str, delimiter);
+
           if (err_strdup)
           {
             cleanup_1(&line, &fp);

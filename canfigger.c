@@ -238,7 +238,7 @@ canfigger_parse_file(const char *file, const int delimiter)
       st_canfigger_attr_node *attr_list = NULL;
 
       tmp_node->key = strdup(empty_str);
-      if (!empty_str)
+      if (!tmp_node->key)
       {
         cleanup_1(&line, &fp);
         return NULL;
@@ -248,7 +248,7 @@ canfigger_parse_file(const char *file, const int delimiter)
       // fprintf(stderr, "key: '%s'\n", tmp_node->key);
 
       tmp_node->value = strdup(empty_str);
-      if (!empty_str)
+      if (!tmp_node->value)
       {
         cleanup_1(&line, &fp);
         return NULL;
@@ -281,7 +281,7 @@ canfigger_parse_file(const char *file, const int delimiter)
           attr_root = cur_attr_node;
 
         cur_attr_node->str = strdup(empty_str);
-        if (!empty_str)
+        if (!cur_attr_node->str)
         {
           cleanup_1(&line, &fp);
           return NULL;

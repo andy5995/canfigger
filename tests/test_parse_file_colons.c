@@ -25,7 +25,7 @@ main(void)
   }
 
   int i = 0;
-  do
+  while (list != NULL)
   {
     printf("\n\
 Key: %s\n\
@@ -40,7 +40,7 @@ Attribute: %s\n", list->key, list->value, list->attr_node->str);
     i++;
 
     list = canfigger_get_next_node(list);
-  } while (list != NULL);
+  }
 
   assert(i == sizeof data / sizeof data[0]);
 

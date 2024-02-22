@@ -31,7 +31,7 @@ main(void)
   }
 
   int i = 0;
-  do
+  while (list)
   {
     printf("\n\
 Key: %s\n\
@@ -42,7 +42,7 @@ Attribute: %s\n", list->key, list->value, list->attr_node->str);
     // assert (strcmp (data[i].value, list->value) == 0);
     int j = 0;
 
-    do
+    while (list->attr_node != NULL)
     {
       fprintf(stderr, "attr: %s\n", list->attr_node->str);
       switch (i)
@@ -60,7 +60,7 @@ Attribute: %s\n", list->key, list->value, list->attr_node->str);
       j++;
 
       list->attr_node = canfigger_get_next_attr_list_node(list->attr_node);
-    } while (list->attr_node != NULL);
+    }
 
     fprintf(stderr, "j: %d\n", j);
     if (j > 0)
@@ -82,7 +82,7 @@ Attribute: %s\n", list->key, list->value, list->attr_node->str);
     i++;
 
     list = canfigger_get_next_node(list);
-  } while (list != NULL);
+  }
 
   assert(i == 3);
 

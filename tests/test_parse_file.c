@@ -33,7 +33,7 @@ main(void)
   }
 
   int i = 0;
-  do
+  while (list)
   {
     fprintf(stderr, "\n\
 Key: %s | Expected: %s\n\
@@ -47,7 +47,7 @@ Attribute: %s | Expected: %s\n", list->key, data[i].key, list->value, data[i].va
     i++;
 
     list = canfigger_get_next_node(list);
-   } while (list != NULL);
+   }
 
   assert(i == ARRAY_SIZE(data));
 

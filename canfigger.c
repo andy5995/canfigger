@@ -326,11 +326,7 @@ canfigger_parse_file(const char *file, const int delimiter)
     }
   }
 
-  if (line)
-    free(line);
-
-  if (fclose(fp) != 0)
-    perror("canfigger:");
+  cleanup_1(&line, &fp);
 
   list = root;
   return list;

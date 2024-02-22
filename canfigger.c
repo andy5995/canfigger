@@ -171,7 +171,7 @@ grab_str_segment(char *a, char **dest, const int c)
   {
     *dest = strdup(a);
     if (!*dest)
-      err_strdup = -1;
+      err_strdup = 1;
     return b;                   // NULL
   }
 
@@ -179,7 +179,7 @@ grab_str_segment(char *a, char **dest, const int c)
   if (!*dest)
   {
     if (!*dest)
-      err_strdup = -1;
+      err_strdup = 1;
     return NULL;
   }
   trim_whitespace(*dest);
@@ -245,6 +245,11 @@ canfigger_parse_file(const char *file, const int delimiter)
       }
 
       char *b = grab_str_segment(a, &tmp_node->key, '=');
+      if (err_strdup)
+      {
+        cleanup_1(&line, &fp);
+        return NULL;
+      }
       // fprintf(stderr, "key: '%s'\n", tmp_node->key);
 
       tmp_node->value = strdup(empty_str);
@@ -258,6 +263,11 @@ canfigger_parse_file(const char *file, const int delimiter)
       {
         a = b;
         b = grab_str_segment(a, &tmp_node->value, delimiter);
+        if (err_strdup)
+        {
+          cleanup_1(&line, &fp);
+          return NULL;
+        }
       }
       do
       {
@@ -290,6 +300,11 @@ canfigger_parse_file(const char *file, const int delimiter)
         {
           a = b;
           b = grab_str_segment(a, &cur_attr_node->str, delimiter);
+          if (err_strdup)
+          {
+            cleanup_1(&line, &fp);
+            return NULL;
+          }
         }
         attr_list = cur_attr_node;
         cur_attr_node->next = NULL;

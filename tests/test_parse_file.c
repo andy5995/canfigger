@@ -9,12 +9,12 @@ main(void)
     const char *value;
     const char *attribute;
   } data[] = {
-    {"foo", "bar", ""},
+    {"foo", "bar", NULL},
     {"blue", "color", "shiny"},
     {"statement", "hello world", "obvious"},
-    {"leadingSpace", "nullified", ""},
-    {"fookey", "bar-value", ""},
-    {"FeatureFooEnabled", "", ""},
+    {"leadingSpace", "nullified", NULL},
+    {"fookey", "bar-value", NULL},
+    {"FeatureFooEnabled", NULL, NULL},
   };
 
   char test_config_file[PATH_MAX];
@@ -38,16 +38,21 @@ main(void)
     fprintf(stderr, "\n\
 Key: %s | Expected: %s\n\
 Value: %s | Expected: %s\n\
-Attribute: %s | Expected: %s\n", list->key, data[i].key, list->value, data[i].value, list->attr_node->str, data[i].attribute);
+Attribute: %s | Expected: %s\n", list->key, data[i].key, list->value != NULL ? list->value : "NULL", data[i].value, list->attr_node != NULL ? list->attr_node->str : "NULL", data[i].attribute);
 
     assert(strcmp(data[i].key, list->key) == 0);
-    assert(strcmp(data[i].value, list->value) == 0);
-    fprintf(stderr, "attr: %s\n", list->attr_node->str);
-    assert(strcmp(data[i].attribute, list->attr_node->str) == 0);
+    assert(strcmp
+           (data[i].value != NULL ? data[i].value : "NULL",
+            list->value != NULL ? list->value : "NULL") == 0);
+    fprintf(stderr, "attr: %s\n",
+            list->attr_node != NULL ? list->attr_node->str : "NULL");
+    assert(strcmp
+           (data[i].attribute != NULL ? data[i].attribute : "NULL",
+            list->attr_node != NULL ? list->attr_node->str : "NULL") == 0);
     i++;
 
     canfigger_get_next_key(&list);
-   }
+  }
 
   // 'list' should be NULL, not a dangling pointer
   assert(list == NULL);

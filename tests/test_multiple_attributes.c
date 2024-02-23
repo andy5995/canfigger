@@ -59,7 +59,7 @@ Attribute: %s\n", list->key, list->value, list->attr_node->str);
       }
       j++;
 
-      canfigger_get_next_attr(&list->attr_node);
+      canfigger_get_next_attr(&list->attr_node, &list);
     }
 
     fprintf(stderr, "j: %d\n", j);

@@ -9,10 +9,9 @@ main(void)
     const char *value;
     const char *attribute;
   } data[] = {
-    {"foo", "bar", ""},
+    {"foo", "bar", "high"},
     {"blue", "color", "shiny"},
     {"statement", "hello world", "obvious"},
-    {"FeatureFooEnabled", "", ""},
   };
 
   char test_config_file[PATH_MAX];

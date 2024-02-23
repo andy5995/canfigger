@@ -92,7 +92,8 @@ st_canfigger_list *canfigger_parse_file(const char *file,
  *
  * @param attr_node A pointer to the current attribute node pointer.
  */
-void canfigger_get_next_attr(st_canfigger_attr_node ** attr_node);
+void canfigger_get_next_attr(st_canfigger_attr_node ** attr_node,
+                             st_canfigger_node ** key);
 
 /**
  * @brief Advances to the next configuration node, freeing the current one.
@@ -125,4 +126,5 @@ void canfigger_free(st_canfigger_node ** node);
  *
  * @param node A pointer to the pointer of the root attribute node of the list.
  */
-void canfigger_free_attr(st_canfigger_attr_node ** node);
+void canfigger_free_attr(st_canfigger_attr_node ** node,
+                         st_canfigger_node ** key);

@@ -78,7 +78,7 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 
-<p>Node in linked list from canfigger_parse_file().  
+<p>Represents a node in the configuration linked list.  
  <a href="#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="canfigger_8h_source.html">canfigger.h</a>&gt;</code></p>
@@ -95,17 +95,17 @@ char *&#160;</td><td class="memItemRight" valign="bottom"><b>value</b></td></tr>
 <tr class="separator:a008475329d03e11e24abe51da8dad60a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af89717cbc8d91bee0ac3836216785507" id="r_af89717cbc8d91bee0ac3836216785507"><td class="memItemLeft" align="right" valign="top"><a id="af89717cbc8d91bee0ac3836216785507" name="af89717cbc8d91bee0ac3836216785507"></a>
 <a class="el" href="structst__canfigger__attr__node.html">st_canfigger_attr_node</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>attr_node</b></td></tr>
-<tr class="memdesc:af89717cbc8d91bee0ac3836216785507"><td class="mdescLeft">&#160;</td><td class="mdescRight">Attributes list. <br /></td></tr>
+<tr class="memdesc:af89717cbc8d91bee0ac3836216785507"><td class="mdescLeft">&#160;</td><td class="mdescRight">Linked list of attributes. <br /></td></tr>
 <tr class="separator:af89717cbc8d91bee0ac3836216785507"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a79f52fe690c15e82a465b9432ec1e0c8" id="r_a79f52fe690c15e82a465b9432ec1e0c8"><td class="memItemLeft" align="right" valign="top"><a id="a79f52fe690c15e82a465b9432ec1e0c8" name="a79f52fe690c15e82a465b9432ec1e0c8"></a>
 struct <a class="el" href="structst__canfigger__node.html">st_canfigger_node</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>next</b></td></tr>
-<tr class="memdesc:a79f52fe690c15e82a465b9432ec1e0c8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Next node in list. <br /></td></tr>
+<tr class="memdesc:a79f52fe690c15e82a465b9432ec1e0c8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pointer to the next configuration node. <br /></td></tr>
 <tr class="separator:a79f52fe690c15e82a465b9432ec1e0c8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>Node in linked list from canfigger_parse_file(). </p>
-<p>Represents a key-value pair with optional attributes. </p>
-<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="tests_2test_parse_file_8c-example.html#_a0">tests/test_parse_file.c</a>.</dd>
+<div class="textblock"><p>Represents a node in the configuration linked list. </p>
+<p>Each node contains a key-value pair (<code>key</code> and <code>value</code>), a linked list of attributes associated with the key (<code>attr_node</code>), and a pointer (<code>next</code>) to the next configuration node in the list. </p>
+<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="example-01_8c-example.html#_a0">example-01.c</a>.</dd>
 </dl>
 </div><hr/>The documentation for this struct was generated from the following file:<ul>
 <li><a class="el" href="canfigger_8h_source.html">canfigger.h</a></li>

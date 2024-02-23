@@ -35,22 +35,7 @@ See the annotated declarations in [/canfigger.h](https://github.com/andy5995/can
 
 ## Examples
 
-```c
-st_canfigger_list *config = canfigger_parse_file("path/to/config.conf", ',');
-while (config != NULL) {
-    printf("Key: %s, Value: %s\n", config->key, config->value);
-
-    // Process attributes if necessary
-    st_canfigger_attr_node *attr = config->attr_node;
-    while (attr) {
-        printf("Attribute: %s\n", attr->str);
-        attr = canfigger_get_next_attr(attr);
-    }
-
-    // Move to the next node and automatically free the current node
-    config = canfigger_get_next_key(config);
-}
-```
+https://andy5995.github.io/canfigger/
 
 * [tests/test_parse_file.c](https://github.com/andy5995/canfigger/blob/trunk/tests/test_parse_file.c)
 * [tests/test_multiple_attributes.c](https://github.com/andy5995/canfigger/blob/trunk/tests/test_multiple_attributes.c)

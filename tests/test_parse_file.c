@@ -46,8 +46,16 @@ Attribute: %s | Expected: %s\n", list->key, data[i].key, list->value, data[i].va
     assert(strcmp(data[i].attribute, list->attr_node->str) == 0);
     i++;
 
-    list = canfigger_get_next_key(list);
+    canfigger_get_next_key(&list);
    }
+
+  // 'list' should be NULL, not a dangling pointer
+  assert(list == NULL);
+
+  // This should not cause a crash. All formerly freed pointers
+  // should be set to NULL, and the free function will return early
+  // if value is NULL.
+  canfigger_free(&list);
 
   assert(i == ARRAY_SIZE(data));
 

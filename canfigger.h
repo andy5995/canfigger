@@ -1,8 +1,13 @@
 /**
- * @file
- * Part of canfigger (https://github.com/andy5995/canfigger).
+ * @file canfigger.h
+ * @brief Header file for the Canfigger configuration parser.
  *
- * @brief Header for the canfigger configuration parser.
+ * This library provides functionality to parse configuration files, creating
+ * and managing a linked list representation of keys, values, and attributes
+ * found within the file. It supports operations for parsing, traversing,
+ * and freeing the created lists.
+ *
+ * Part of canfigger (https://github.com/andy5995/canfigger).
  *
  * Copyright (C) 2021-2024 Andy Alt
  * (arch_stanton5995@proton.me)
@@ -29,84 +34,95 @@
 
 /**
  * @struct st_canfigger_attr_node
- * @brief Node in the list of attributes for a config item.
+ * @brief Represents an attribute node in a linked list.
  *
- * @see canfigger_get_next_attr()
+ * Each node contains a string (`str`) that represents the attribute itself,
+ * and a pointer (`next`) to the next attribute node in the list, if any.
  */
-typedef struct st_canfigger_attr_node {
-    char *str; ///< The attribute string.
-    struct st_canfigger_attr_node *next; ///< Next attribute node.
+typedef struct st_canfigger_attr_node
+{
+  char *str;                    ///< The attribute string.
+  struct st_canfigger_attr_node *next;  ///< Pointer to the next attribute node.
 } st_canfigger_attr_node;
 
 /**
  * @struct st_canfigger_node
- * @brief Node in linked list from canfigger_parse_file().
+ * @brief Represents a node in the configuration linked list.
  *
- * Represents a key-value pair with optional attributes.
+ * Each node contains a key-value pair (`key` and `value`), a linked list of
+ * attributes associated with the key (`attr_node`), and a pointer (`next`) to
+ * the next configuration node in the list.
  */
-typedef struct st_canfigger_node {
-    char *key; ///< Key string (left of '=').
-    char *value; ///< Value string (between '=' and delimiter).
-    st_canfigger_attr_node *attr_node; ///< Attributes list.
-    struct st_canfigger_node *next; ///< Next node in list.
+typedef struct st_canfigger_node
+{
+  char *key;                    ///< Key string (left of '=').
+  char *value;                  ///< Value string (between '=' and delimiter).
+  st_canfigger_attr_node *attr_node;    ///< Linked list of attributes.
+  struct st_canfigger_node *next;       ///< Pointer to the next configuration node.
 } st_canfigger_node;
 
 /**
- * @brief Alias for st_canfigger_node for readability.
+ * @brief Alias for st_canfigger_node for readability and convenience.
  */
 typedef st_canfigger_node st_canfigger_list;
 
 /**
- * @brief Parses a config file into a linked list.
+ * @brief Parses a configuration file into a linked list of key-value pairs.
  *
- * Each node represents a key-value pair with optional attributes.
- * List must be freed with canfigger_free().
+ * Parses the specified file, creating a linked list where each node represents
+ * a key-value pair with optional attributes. The list and all associated
+ * resources must be freed by the caller using canfigger_free().
  *
- * @param file Path to the config file.
- * @param delimiter Delimiter character in the file.
- * @return Pointer to the first node in the list, or NULL on error.
- *
- * @see canfigger_free()
+ * @param file The path to the configuration file.
+ * @param delimiter The character used to separate attributes in the file.
+ * @return A pointer to the first node in the created list, or NULL on failure.
  */
-st_canfigger_list *canfigger_parse_file(const char *file, const int delimiter);
+st_canfigger_list *canfigger_parse_file(const char *file,
+                                        const int delimiter);
 /**
- *  \example tests/test_parse_file.c
+ * \example example-01.c
  */
 
 /**
- * @brief Frees memory for an attribute node and subsequent nodes.
+ * @brief Advances to the next attribute node, freeing the current one.
  *
- * Call after retrieving each attribute set. Returns NULL at end.
+ * This function is used to traverse and free a list of attribute nodes. It
+ * frees the current attribute node and advances the pointer to the next node
+ * in the list.
  *
- * @param attr_node Current attribute node to free.
- * @return Pointer to next attribute node, or NULL.
+ * @param attr_node A pointer to the current attribute node pointer.
  */
-st_canfigger_attr_node *canfigger_get_next_attr(st_canfigger_attr_node *attr_node);
+void canfigger_get_next_attr(st_canfigger_attr_node ** attr_node);
 
 /**
- * @brief Frees memory for a config node and subsequent nodes.
+ * @brief Advances to the next configuration node, freeing the current one.
  *
- * Call after processing each key-value-attributes set. Returns NULL at end.
+ * This function is used to traverse and free a list of configuration nodes. It
+ * frees the current node, including its key, value, and attributes, and
+ * advances the pointer to the next node in the list.
  *
- * @param list Current node to free.
- * @return Pointer to next node, or NULL.
+ * @param list A pointer to the current configuration node pointer.
  */
-st_canfigger_list *canfigger_get_next_key(st_canfigger_list *list);
+void canfigger_get_next_key(st_canfigger_list ** list);
 
 /**
- * @brief Frees the entire list of configuration nodes.
+ * @brief Frees the entire configuration linked list.
  *
- * Used to free memory allocated by canfigger_parse_file().
+ * Frees all nodes in the list, including their keys, values, and attributes.
+ * This function should be used to release all resources allocated by
+ * canfigger_parse_file().
  *
- * @param node Root node of the list to be freed.
+ * @param node A pointer to the pointer of the root node of the list.
  */
-void canfigger_free(st_canfigger_node *node);
+void canfigger_free(st_canfigger_node ** node);
 
 /**
- * @brief Frees the entire list of attribute nodes.
+ * @brief Frees an entire list of attribute nodes.
  *
- * Used to free memory for attribute nodes of a config node.
+ * Frees all attribute nodes in the list, including their strings. This
+ * function is typically used internally by canfigger_free() and
+ * canfigger_get_next_key().
  *
- * @param node Root attribute node of the list to be freed.
+ * @param node A pointer to the pointer of the root attribute node of the list.
  */
-void canfigger_free_attr(st_canfigger_attr_node *node);
+void canfigger_free_attr(st_canfigger_attr_node ** node);

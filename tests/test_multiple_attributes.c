@@ -59,7 +59,7 @@ Attribute: %s\n", list->key, list->value, list->attr_node->str);
       }
       j++;
 
-      list->attr_node = canfigger_get_next_attr(list->attr_node);
+      canfigger_get_next_attr(&list->attr_node);
     }
 
     fprintf(stderr, "j: %d\n", j);
@@ -81,7 +81,7 @@ Attribute: %s\n", list->key, list->value, list->attr_node->str);
 
     i++;
 
-    list = canfigger_get_next_key(list);
+    canfigger_get_next_key(&list);
   }
 
   assert(i == 3);

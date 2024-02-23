@@ -48,4 +48,10 @@ if not meson.is_subproject()
           install_dir : get_option('docdir'))
 endif
 
+exe = executable(
+  'example-01',
+  'example-01.c',
+  dependencies: dep_canfigger
+  )
+
 subdir('tests')

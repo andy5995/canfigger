@@ -44,7 +44,7 @@ Attribute: %s\n", list->key, list->value, list->attr_node->str);
     assert(strcmp(data[i].attribute, list->attr_node->str) == 0);
     i++;
 
-    list = canfigger_get_next_key(list);
+    canfigger_get_next_key(&list);
   }
 
   return 0;

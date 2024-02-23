@@ -42,60 +42,76 @@ cleanup_1(char **line, FILE **fp)
 
 
 void
-canfigger_free_attr(st_canfigger_attr_node *node)
+canfigger_free_attr(st_canfigger_attr_node **node)
 {
-  if (node)
+  if (*node)
   {
-    while (node)
-      node = canfigger_get_next_attr(node);
+    while (*node)
+      canfigger_get_next_attr(node);
   }
   return;
 }
 
 
-st_canfigger_attr_node *
-canfigger_get_next_attr(st_canfigger_attr_node *attr_node)
+void
+canfigger_get_next_attr(st_canfigger_attr_node **attr_node)
 {
-  if (attr_node)
+  if (*attr_node)
   {
-    if (attr_node->str)
-      free(attr_node->str);
+    if ((*attr_node)->str)
+    {
+      free((*attr_node)->str);
+      (*attr_node)->str = NULL;
+    }
 
-    st_canfigger_attr_node *new_attr_node = attr_node->next;
-    free(attr_node);
+    st_canfigger_attr_node *temp_node = *attr_node;
+    *attr_node = (*attr_node)->next;
+    free(temp_node);
+    temp_node = NULL;
 
-    return new_attr_node;
+    return;
   }
-  return NULL;
+  return;
 }
 
-st_canfigger_list *
-canfigger_get_next_key(st_canfigger_list *list)
+void
+canfigger_get_next_key(st_canfigger_list **list)
 {
-  st_canfigger_node *node = list;
-  if (node)
+  st_canfigger_node **node = list;
+  if (*node)
   {
-    if (node->attr_node)
-      canfigger_free_attr(node->attr_node);
-    if (node->value)
-      free(node->value);
-    free(node->key);
-    st_canfigger_node *new_node = node->next;
-    free(node);
-    return new_node;
+    if ((*node)->attr_node)
+      canfigger_free_attr(&(*node)->attr_node);
+
+    if ((*node)->value)
+    {
+      free((*node)->value);
+      (*node)->value = NULL;
+    }
+
+    free((*node)->key);
+    (*node)->key = NULL;
+
+    st_canfigger_node *temp_node = *node;
+    *node = (*node)->next;
+    free(temp_node);
+    temp_node = NULL;
+
+    return;
   }
-  return NULL;
+  return;
 }
 
 
 void
-canfigger_free(st_canfigger_node *node)
+canfigger_free(st_canfigger_node **node)
 {
-  if (node)
+  if (*node)
   {
-    while (node)
-      node = canfigger_get_next_key(node);
+    while (*node)
+      canfigger_get_next_key(node);
   }
+
   return;
 }
 
@@ -277,10 +293,10 @@ canfigger_parse_file(const char *file, const int delimiter)
         if (cur_attr_node == NULL)
         {
           if (attr_root)
-            canfigger_free_attr(attr_root);
+            canfigger_free_attr(&attr_root);
 
           if (root)
-            canfigger_free(root);
+            canfigger_free(&root);
 
           cleanup_1(&line, &fp);
           return NULL;
@@ -321,7 +337,7 @@ canfigger_parse_file(const char *file, const int delimiter)
     else
     {
       if (root)
-        canfigger_free(root);
+        canfigger_free(&root);
 
       cleanup_1(&line, &fp);
       return NULL;

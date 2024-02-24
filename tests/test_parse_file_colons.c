@@ -26,16 +26,17 @@ main(void)
   int i = 0;
   while (list != NULL)
   {
+    canfigger_init_attrs(list->attributes);
     printf("\n\
 Key: %s\n\
 Value: %s\n\
-Attribute: %s\n", list->key, list->value, list->attr_node->str);
+Attribute: %s\n", list->key, list->value, list->attributes->current);
 
     assert(strcmp(data[i].key, list->key) == 0);
     // printf ("value = '%s' '%s'\n", data[i].value, list->value);
     assert(strcmp(data[i].value, list->value) == 0);
-    fprintf(stderr, "attr: %s\n", list->attr_node->str);
-    assert(strcmp(data[i].attribute, list->attr_node->str) == 0);
+    fprintf(stderr, "attr: %s\n", list->attributes->current);
+    assert(strcmp(data[i].attribute, list->attributes->current) == 0);
     i++;
 
     canfigger_get_next_key(&list);

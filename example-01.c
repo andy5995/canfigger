@@ -12,12 +12,11 @@ main(void)
            config->value != NULL ? config->value : "NULL");
 
     // Process attributes if necessary
-    st_canfigger_attr_node *attr = config->attr_node;
-
-    while (attr)
+    canfigger_init_attrs(config->attributes);
+    while (canfigger_attr)
     {
-      printf("Attribute: %s\n", attr->str);
-      canfigger_get_next_attr(&attr, &config);
+      printf("Attribute: %s\n", canfigger_attr);
+      canfigger_get_next_attr(config->attributes);
     }
 
     // Move to the next node and automatically free the current node

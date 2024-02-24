@@ -33,20 +33,21 @@ main(void)
   int i = 0;
   while (list)
   {
+    canfigger_init_attrs(list->attributes);
     printf("\n\
 Key: %s\n\
 Value: %s\n\
-Attribute: %s\n", list->key, list->value != NULL ? list->value : "NULL", list->attr_node != NULL ? list->attr_node->str : "NULL");
+Attribute: %s\n", list->key, list->value != NULL ? list->value : "NULL", list->attributes != NULL ? list->attributes->current : "NULL");
 
     assert(strcmp(data[i].key, list->key) == 0);
     assert(strcmp
            (data[i].value != NULL ? data[i].value : "NULL",
             list->value != NULL ? list->value : "NULL") == 0);
     fprintf(stderr, "attr: %s\n",
-            list->attr_node != NULL ? list->attr_node->str : NULL);
+            list->attributes != NULL ? list->attributes->current : NULL);
     assert(strcmp
            (data[i].attribute != NULL ? data[i].attribute : "NULL",
-            list->attr_node != NULL ? list->attr_node->str : "NULL") == 0);
+            list->attributes != NULL ? list->attributes->current : "NULL") == 0);
     i++;
 
     canfigger_get_next_key(&list);

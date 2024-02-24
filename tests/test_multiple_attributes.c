@@ -36,30 +36,31 @@ main(void)
     printf("\n\
 Key: %s\n\
 Value: %s\n\
-Attribute: %s\n", list->key, list->value, list->attr_node->str);
+Attribute: %s\n", list->key, list->value, list->attributes->current);
 
     // assert (strcmp (data[i].key, list->key) == 0);
     // assert (strcmp (data[i].value, list->value) == 0);
     int j = 0;
 
-    while (list->attr_node != NULL)
+    canfigger_init_attrs(list->attributes);
+    while (canfigger_attr)
     {
-      fprintf(stderr, "attr: %s\n", list->attr_node->str);
+      fprintf(stderr, "attr: %s\n", list->attributes->current);
       switch (i)
       {
       case 0:
-        assert(strcmp(data1[j], list->attr_node->str) == 0);
+        assert(strcmp(data1[j], list->attributes->current) == 0);
         break;
       case 1:
-        assert(strcmp(data2[j], list->attr_node->str) == 0);
+        assert(strcmp(data2[j], list->attributes->current) == 0);
         break;
       case 2:
-        assert(strcmp(data3[j], list->attr_node->str) == 0);
+        assert(strcmp(data3[j], list->attributes->current) == 0);
         break;
       }
       j++;
 
-      canfigger_get_next_attr(&list->attr_node, &list);
+      canfigger_get_next_attr(list->attributes);
     }
 
     fprintf(stderr, "j: %d\n", j);

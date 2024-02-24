@@ -54,4 +54,6 @@ exe = executable(
   dependencies: dep_canfigger
   )
 
-subdir('tests')
+if get_option('build_tests')
+  subdir('tests')
+endif

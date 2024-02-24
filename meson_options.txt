@@ -5,3 +5,10 @@ option(
     description : 'directory where the documentation should be installed to',
     yield : true
   )
+option(
+  'build_tests',
+    type : 'boolean',
+    value : 'true',
+    description : 'Build tests'
+  )
+

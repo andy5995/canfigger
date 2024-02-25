@@ -41,27 +41,21 @@ struct attributes
   char *ptr;
 };
 
-typedef struct st_canfigger_node
+struct Canfigger
 {
   char *key;                    ///< Key string (left of '=').
   char *value;
   struct attributes *attributes;
-  struct st_canfigger_node *next;       ///< Pointer to the next configuration node.
-} st_canfigger_node;
-
-typedef st_canfigger_node st_canfigger_list;
+  struct Canfigger *next;       ///< Pointer to the next configuration node.
+};
 
 
-st_canfigger_list *canfigger_parse_file(const char *file,
+struct Canfigger *canfigger_parse_file(const char *file,
                                         const int delimiter);
 /**
  * \example example-01.c
  */
 
-void canfigger_get_next_key(st_canfigger_list ** list);
+void canfigger_free_current_key_node_advance(struct Canfigger ** list);
 
-void canfigger_get_next_attr(struct attributes *attributes);
-
-void canfigger_init_attrs(struct attributes *attributes);
-
-void canfigger_free(st_canfigger_node ** node);
+void canfigger_free_current_attr_str_advance(struct attributes *attributes);

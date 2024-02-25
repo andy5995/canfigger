@@ -23,7 +23,7 @@ main(void)
                   SOURCE_DIR) < sizeof test_config_file);
 
   // call the primary library function to read your config file
-  st_canfigger_list *list = canfigger_parse_file(test_config_file, ';');
+  struct Canfigger *list = canfigger_parse_file(test_config_file, ';');
   if (list == NULL)
   {
     fprintf(stderr, "Error");
@@ -33,7 +33,6 @@ main(void)
   int i = 0;
   while (list)
   {
-    canfigger_init_attrs(list->attributes);
     printf("\n\
 Key: %s\n\
 Value: %s\n\
@@ -50,7 +49,7 @@ Attribute: %s\n", list->key, list->value != NULL ? list->value : "NULL", list->a
             list->attributes != NULL ? list->attributes->current : "NULL") == 0);
     i++;
 
-    canfigger_get_next_key(&list);
+    canfigger_free_current_key_node_advance(&list);
   }
 
   return 0;

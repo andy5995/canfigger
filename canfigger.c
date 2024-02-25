@@ -30,6 +30,7 @@ static int canfigger_delimiter = 0;
 char *canfigger_attr = NULL;
 
 static char *grab_str_segment(char *a, char **dest, const int c);
+static void canfigger_free(struct Canfigger **node);
 
 struct line
 {
@@ -49,7 +50,7 @@ cleanup_1(char **buf)
 
 
 void
-canfigger_get_next_attr(struct attributes *attributes)
+canfigger_free_current_attr_str_advance(struct attributes *attributes)
 {
   if (!attributes)
   {
@@ -77,15 +78,21 @@ canfigger_get_next_attr(struct attributes *attributes)
   return;
 }
 
-void
-canfigger_init_attrs(struct attributes *attributes)
+
+// Clearly a wrapper function...
+static void
+init_first_attr(struct attributes *attributes)
 {
-  canfigger_get_next_attr(attributes);
+  canfigger_free_current_attr_str_advance(attributes);
   return;
 }
+// that probably exists to help with code clarity. It will copy the first
+// attribute in a 'attr1, attr2, attr3,...' string to attributes->current and
+// point 'canfigger_attr' to that address.
+
 
 void
-canfigger_get_next_key(st_canfigger_list **node)
+canfigger_free_current_key_node_advance(struct Canfigger **node)
 {
   if (*node)
   {
@@ -116,22 +123,24 @@ canfigger_get_next_key(st_canfigger_list **node)
     free((*node)->key);
     (*node)->key = NULL;
 
-    st_canfigger_node *temp_node = (*node)->next;
+    struct Canfigger *temp_node = (*node)->next;
     free(*node);
     *node = temp_node;
+    if (*node)
+      init_first_attr((*node)->attributes);
   }
 
   return;
 }
 
 
-void
-canfigger_free(st_canfigger_node **node)
+static void
+canfigger_free(struct Canfigger **node)
 {
   if (*node)
   {
     while (*node)
-      canfigger_get_next_key(node);
+      canfigger_free_current_key_node_advance(node);
   }
 
   return;
@@ -223,9 +232,9 @@ grab_str_segment(char *a, char **dest, const int c)
 
 
 static int
-add_key_node(st_canfigger_node **root, st_canfigger_node **cur_node)
+add_key_node(struct Canfigger **root, struct Canfigger **cur_node)
 {
-  st_canfigger_node *tmp_node = malloc(sizeof(struct st_canfigger_node));
+  struct Canfigger *tmp_node = malloc(sizeof(struct Canfigger));
   if (!tmp_node)
   {
     perror("canfigger->malloc:");
@@ -285,12 +294,12 @@ read_entire_file(const char *filename)
 }
 
 
-st_canfigger_list *
+struct Canfigger *
 canfigger_parse_file(const char *file, const int delimiter)
 {
   err_strdup = 0;
-  canfigger_delimiter = delimiter;
-  st_canfigger_node *root = NULL, *cur_node = NULL;
+
+  struct Canfigger *root = NULL, *cur_node = NULL;
   struct line line;
 
   char *file_contents = read_entire_file(file);
@@ -383,5 +392,8 @@ canfigger_parse_file(const char *file, const int delimiter)
 
   cleanup_1(&file_contents);
   free(line.line);
+
+  canfigger_delimiter = delimiter;
+  init_first_attr(root->attributes);
   return root;
 }

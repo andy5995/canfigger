@@ -5,22 +5,21 @@
 int
 main(void)
 {
-  st_canfigger_list *config = canfigger_parse_file("../example-01.conf", ',');
+  struct Canfigger *config = canfigger_parse_file("../example-01.conf", ',');
   while (config != NULL)
   {
     printf("Key: %s, Value: %s\n", config->key,
            config->value != NULL ? config->value : "NULL");
 
     // Process attributes if necessary
-    canfigger_init_attrs(config->attributes);
     while (canfigger_attr)
     {
       printf("Attribute: %s\n", canfigger_attr);
-      canfigger_get_next_attr(config->attributes);
+      canfigger_free_current_attr_str_advance(config->attributes);
     }
 
     // Move to the next node and automatically free the current node
-    canfigger_get_next_key(&config);
+    canfigger_free_current_key_node_advance(&config);
     putchar('\n');
   }
 

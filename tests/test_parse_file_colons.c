@@ -16,7 +16,7 @@ main(void)
 
   char test_config_file[PATH_MAX];
   sprintf(test_config_file, "%s/test_canfigger_colons.conf", SOURCE_DIR);
-  st_canfigger_list *list = canfigger_parse_file(test_config_file, ':');
+  struct Canfigger *list = canfigger_parse_file(test_config_file, ':');
   if (list == NULL)
   {
     fprintf(stderr, "Error");
@@ -26,7 +26,6 @@ main(void)
   int i = 0;
   while (list != NULL)
   {
-    canfigger_init_attrs(list->attributes);
     printf("\n\
 Key: %s\n\
 Value: %s\n\
@@ -39,7 +38,7 @@ Attribute: %s\n", list->key, list->value, list->attributes->current);
     assert(strcmp(data[i].attribute, list->attributes->current) == 0);
     i++;
 
-    canfigger_get_next_key(&list);
+    canfigger_free_current_key_node_advance(&list);
   }
 
   assert(i == sizeof data / sizeof data[0]);

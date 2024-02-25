@@ -23,6 +23,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <errno.h>
 #include <string.h>
 
+#include "canfigger_config.h"
 #include "canfigger.h"
 
 // Function pointer type for string duplication functions

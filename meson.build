@@ -1,7 +1,7 @@
 project(
   'canfigger',
   'c',
-  version: '0.2.0999',
+  version: '0.3.0999',
   meson_version : '>= 0.48.0',
   default_options: [
     'warning_level=3',
@@ -16,11 +16,23 @@ extra_flags = [
   '-Wshadow',
   '-Wstrict-overflow=5',
   '-Wformat-security',
-  '-Wformat-overflow=2',
-  '-DCANFIGGER_VERSION="@0@"'.format(meson.project_version())
+  '-Wformat-overflow=2'
 ]
 
 add_project_arguments(cc.get_supported_arguments(extra_flags), language: 'c')
+
+# Parse version components
+version_components = meson.project_version().split('.')
+major_version = version_components[0]
+minor_version = version_components[1]
+patch_version = version_components[2]
+
+conf = configuration_data()
+conf.set_quoted('CANFIGGER_VERSION', meson.project_version())
+conf.set('CANFIGGER_VERSION_MAJOR', major_version)
+conf.set('CANFIGGER_VERSION_MINOR', minor_version)
+conf.set('CANFIGGER_VERSION_PATCH', patch_version)
+config_h = configure_file(output : 'canfigger_config.h', configuration : conf)
 
 inc = include_directories('.')
 
@@ -48,11 +60,13 @@ if not meson.is_subproject()
           install_dir : get_option('docdir'))
 endif
 
-exe = executable(
-  'example-01',
-  'example-01.c',
-  dependencies: dep_canfigger
-  )
+if get_option('build_examples')
+  exe = executable(
+    'example-01',
+    'example-01.c',
+    dependencies: dep_canfigger
+    )
+endif
 
 if get_option('build_tests')
   subdir('tests')

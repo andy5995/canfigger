@@ -28,10 +28,6 @@
 
 #pragma once
 
-#ifndef CANFIGGER_VERSION
-#define CANFIGGER_VERSION "0.2.0999"
-#endif
-
 extern char *canfigger_attr;
 
 struct attributes

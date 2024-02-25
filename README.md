@@ -1,4 +1,4 @@
-# canfigger v0.2.0999
+# canfigger v0.3.0999
 
 Simple configuration file parser library
 
@@ -35,7 +35,7 @@ See the annotated declarations in [/canfigger.h](https://github.com/andy5995/can
 
 ## Examples
 
-https://andy5995.github.io/canfigger/
+https://andy5995.github.io/canfigger/examples.html
 
 * [tests/test_parse_file.c](https://github.com/andy5995/canfigger/blob/trunk/tests/test_parse_file.c)
 * [tests/test_multiple_attributes.c](https://github.com/andy5995/canfigger/blob/trunk/tests/test_multiple_attributes.c)

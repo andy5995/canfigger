@@ -11,4 +11,10 @@ option(
     value : 'true',
     description : 'Build tests'
   )
+option(
+  'build_examples',
+    type : 'boolean',
+    value : 'true',
+    description : 'Build examples'
+  )
 

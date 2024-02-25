@@ -40,6 +40,7 @@ static char *strdup_generic(const char *s, size_t n,
 struct line
 {
   char *line;
+  char *ptr;
   char *start;
   char *end;
 };
@@ -335,24 +336,25 @@ struct Canfigger *
 canfigger_parse_file(const char *file, const int delimiter)
 {
   struct Canfigger *root = NULL, *cur_node = NULL;
-  struct line line;
 
   char *file_contents = read_entire_file(file);
   if (file_contents == NULL)
     return NULL;
 
+  static struct line line;
   line.start = file_contents;
   line.line = NULL;
+  line.ptr = NULL;
   line.end = grab_str_segment(line.start, &line.line, '\n');
 
   while (line.end)
   {
-    char *a = line.line;
+    line.ptr = line.line;
 
-    while (isspace(*a))
-      a = erase_lead_char(*a, a);
+    while (isspace(*line.ptr))
+      line.ptr = erase_lead_char(*line.ptr, line.ptr);
 
-    if (*a == '\0' || *a == '#')
+    if (*line.ptr == '\0' || *line.ptr == '#')
     {
       free_cur_line_and_advance(&line);
       continue;
@@ -364,23 +366,22 @@ canfigger_parse_file(const char *file, const int delimiter)
 
     // Get key
     cur_node->key = NULL;
-    char *b = grab_str_segment(a, &cur_node->key, '=');
+    line.ptr = grab_str_segment(line.ptr, &cur_node->key, '=');
     if (errno)
       break;
 
     // Get value
     cur_node->value = NULL;
 
-    if (b)
+    if (line.ptr)
     {
-      a = b;                    // TODO fix this
-      b = grab_str_segment(a, &cur_node->value, delimiter);
+      line.ptr = grab_str_segment(line.ptr, &cur_node->value, delimiter);
       if (errno)
         break;
     }
 
     // Handle attributes
-    if (b)
+    if (line.ptr)
     {
       cur_node->attributes = malloc(sizeof(struct attributes));
       if (!cur_node->attributes)
@@ -393,7 +394,7 @@ canfigger_parse_file(const char *file, const int delimiter)
       struct attributes *attr_ptr = cur_node->attributes;
       attr_ptr->current = NULL;
 
-      attr_ptr->str = strdup_wrap(b);
+      attr_ptr->str = strdup_wrap(line.ptr);
       if (errno)
         break;
 

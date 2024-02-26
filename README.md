@@ -10,6 +10,7 @@ pair.
 
 * [website/API documentation and examples](https://andy5995.github.io/canfigger/)
 * [source on GitHub](https://github.com/andy5995/canfigger/)
+* [releases](https://github.com/andy5995/canfigger/releases)
 
 ## Format
 

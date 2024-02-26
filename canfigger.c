@@ -21,6 +21,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <stdio.h>
 #include <ctype.h>
 #include <errno.h>
+#include <stdbool.h>
 #include <string.h>
 
 #include "canfigger_config.h"
@@ -337,6 +338,9 @@ free_incomplete_node(struct Canfigger **node)
       if ((*node)->attributes->str)
         free((*node)->attributes->str);
   }
+  free(*node);
+
+  return;
 }
 
 
@@ -355,11 +359,13 @@ canfigger_parse_file(const char *file, const int delimiter)
   line.ptr = NULL;
 
   line.start = grab_str_segment(line.start, &line.line, '\n');
-  if (errno)
+  if (!line.start)
   {
     free(file_contents);
     return NULL;
   }
+
+  bool node_complete;
 
   while (line.start)
   {
@@ -374,18 +380,20 @@ canfigger_parse_file(const char *file, const int delimiter)
       continue;
     }
 
+    node_complete = false;
     add_key_node(&root, &cur_node);
-    if (errno)
+    if (!cur_node)
       break;
 
     // Get key
     cur_node->key = NULL;
     line.ptr = grab_str_segment(line.ptr, &cur_node->key, '=');
-    if (errno & !root)
+    if (!cur_node->key)
     {
       free_incomplete_node(&cur_node);
       break;
     }
+
 
     // Get value
     cur_node->value = NULL;
@@ -393,7 +401,7 @@ canfigger_parse_file(const char *file, const int delimiter)
     if (line.ptr)
     {
       line.ptr = grab_str_segment(line.ptr, &cur_node->value, delimiter);
-      if (errno & !root)
+      if (!cur_node->value)
       {
         free_incomplete_node(&cur_node);
         break;
@@ -404,7 +412,7 @@ canfigger_parse_file(const char *file, const int delimiter)
     if (line.ptr)
     {
       cur_node->attributes = malloc_wrap(sizeof(struct attributes));
-      if (errno & !root)
+      if (!cur_node->attributes)
       {
         free_incomplete_node(&cur_node);
         break;
@@ -414,7 +422,7 @@ canfigger_parse_file(const char *file, const int delimiter)
       attr_ptr->current = NULL;
 
       attr_ptr->str = strdup_wrap(line.ptr);
-      if (errno & !root)
+      if (!attr_ptr->str)
       {
         free_incomplete_node(&cur_node);
         break;
@@ -427,6 +435,7 @@ canfigger_parse_file(const char *file, const int delimiter)
 
     cur_node->next = NULL;
     free_cur_line_and_advance(&line);
+    node_complete = true;
   }
 
   free(file_contents);
@@ -437,7 +446,7 @@ canfigger_parse_file(const char *file, const int delimiter)
   if (!root)
     return NULL;
 
-  if (errno)
+  if (!node_complete)
   {
     free_list(&root);
     return NULL;

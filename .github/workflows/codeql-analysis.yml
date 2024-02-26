@@ -9,19 +9,15 @@ on:
   push:
     branches: trunk
     paths:
-    - '**'
-    - '!**.md'
-    - '!docs/**'
-    - '!**.yml'
+    - '**.c'
+    - '**.h'
     - '**/codeq-analysis.yml'
   pull_request:
     branches: trunk
     paths:
-    - '**'
-    - '!**.md'
-    - '!docs/**'
-    - '!**.yml'
-    - '**/codeql-analysis.yml'
+    - '**.c'
+    - '**.h'
+    - '**/codeq-analysis.yml'
 #  schedule:
 #    - cron: '0 6 * * 6'
 

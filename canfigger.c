@@ -295,7 +295,7 @@ free_cur_line_and_advance(struct line *line)
 static char *
 read_entire_file(const char *filename)
 {
-  FILE *file = fopen(filename, "rb");
+  FILE *file = fopen(filename, "r");
   if (!file)
   {
     perror("canfigger->fopen");

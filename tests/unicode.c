@@ -45,7 +45,7 @@ Attribute: %s\n", list->key, list->value != NULL ? list->value : "NULL", attr !=
            (data[i].value != NULL ? data[i].value : "NULL",
             list->value != NULL ? list->value : "NULL") == 0);
     fprintf(stderr, "attr: %s\n",
-            attr != NULL ? attr : NULL);
+            attr != NULL ? attr : "NULL");
     assert(strcmp
            (data[i].attribute != NULL ? data[i].attribute : "NULL",
             attr != NULL ? attr : "NULL") == 0);

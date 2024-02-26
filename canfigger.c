@@ -28,7 +28,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "canfigger.h"
 
 static int canfigger_delimiter = 0;
-char *canfigger_attr = NULL;
 
 static char *grab_str_segment(char *a, char **dest, const int c);
 static void free_list(struct Canfigger **node);
@@ -81,11 +80,11 @@ strdup_generic(const char *s, size_t n,
 
 
 void
-canfigger_free_current_attr_str_advance(struct attributes *attributes)
+canfigger_free_current_attr_str_advance(struct attributes *attributes, char **attr)
 {
   if (!attributes)
   {
-    canfigger_attr = NULL;
+    *attr = NULL;
     return;
   }
 
@@ -96,7 +95,7 @@ canfigger_free_current_attr_str_advance(struct attributes *attributes)
   {
     free(attributes->current);
     attributes->current = NULL;
-    canfigger_attr = NULL;
+    *attr = NULL;
     return;
   }
 
@@ -104,20 +103,7 @@ canfigger_free_current_attr_str_advance(struct attributes *attributes)
                                      &attributes->current,
                                      canfigger_delimiter);
 
-  canfigger_attr = attributes->current;
-
-  return;
-}
-
-
-// Clearly a wrapper function...
-// It probably exists to help with code clarity. It will copy the first
-// attribute in a 'attr1, attr2, attr3,...' string to attributes->current and
-// point 'canfigger_attr' to that address.
-static void
-init_first_attr(struct attributes *attributes)
-{
-  canfigger_free_current_attr_str_advance(attributes);
+  *attr = attributes->current;
   return;
 }
 
@@ -157,8 +143,6 @@ canfigger_free_current_key_node_advance(struct Canfigger **node)
     struct Canfigger *temp_node = (*node)->next;
     free(*node);
     *node = temp_node;
-    if (*node)
-      init_first_attr((*node)->attributes);
   }
 
   return;
@@ -394,7 +378,6 @@ canfigger_parse_file(const char *file, const int delimiter)
       break;
     }
 
-
     // Get value
     cur_node->value = NULL;
 
@@ -448,6 +431,5 @@ canfigger_parse_file(const char *file, const int delimiter)
   }
 
   canfigger_delimiter = delimiter;
-  init_first_attr(root->attributes);
   return root;
 }

@@ -33,12 +33,17 @@ int main(void) {
         }
 
         size_t j = 0;
-        while (canfigger_attr) {
-            fprintf(stderr, "Attribute: %s\n", canfigger_attr);
+        char *attr = NULL;
+        //
+        // Pass '&addr' to this function and it will get assigned an
+        // attribute, or NULL if there are none.
+        canfigger_free_current_attr_str_advance(list->attributes, &attr);
+        while (attr) {
+            fprintf(stderr, "Attribute: %s\n", attr);
             fprintf(stderr, "current_data_set[j]: %s\n", current_data_set[j]);
             assert(j < data_set_size);
-            assert(strcmp(canfigger_attr, current_data_set[j]) == 0);
-            canfigger_free_current_attr_str_advance(list->attributes);
+            assert(strcmp(attr, current_data_set[j]) == 0);
+            canfigger_free_current_attr_str_advance(list->attributes, &attr);
             j++;
         }
 

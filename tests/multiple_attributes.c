@@ -42,7 +42,12 @@ Attribute: %s\n", list->key, list->value, list->attributes->current);
     // assert (strcmp (data[i].value, list->value) == 0);
     int j = 0;
 
-    while (canfigger_attr)
+    char *attr = NULL;
+    //
+    // Pass '&addr' to this function and it will get assigned an
+    // attribute, or NULL if there are none.
+    canfigger_free_current_attr_str_advance(list->attributes, &attr);
+    while (attr)
     {
       fprintf(stderr, "attr: %s\n", list->attributes->current);
       switch (i)
@@ -59,7 +64,7 @@ Attribute: %s\n", list->key, list->value, list->attributes->current);
       }
       j++;
 
-      canfigger_free_current_attr_str_advance(list->attributes);
+      canfigger_free_current_attr_str_advance(list->attributes, &attr);
     }
 
     fprintf(stderr, "j: %d\n", j);

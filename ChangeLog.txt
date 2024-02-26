@@ -1,5 +1,9 @@
 # Canfigger ChangeLog
 
+2024-02-26
+
+  - remove canfigger_attr
+
 2024-02-25
 
   * canfigger_free() replaced with canfigger_free_current_key_node_advance()

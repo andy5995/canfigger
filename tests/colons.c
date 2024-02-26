@@ -26,16 +26,18 @@ main(void)
   int i = 0;
   while (list != NULL)
   {
+    char *attr = NULL;
+    canfigger_free_current_attr_str_advance(list->attributes, &attr);
     printf("\n\
 Key: %s\n\
 Value: %s\n\
-Attribute: %s\n", list->key, list->value, list->attributes->current);
+Attribute: %s\n", list->key, list->value, attr);
 
     assert(strcmp(data[i].key, list->key) == 0);
     // printf ("value = '%s' '%s'\n", data[i].value, list->value);
     assert(strcmp(data[i].value, list->value) == 0);
-    fprintf(stderr, "attr: %s\n", list->attributes->current);
-    assert(strcmp(data[i].attribute, list->attributes->current) == 0);
+    fprintf(stderr, "attr: %s\n", attr);
+    assert(strcmp(data[i].attribute, attr) == 0);
     i++;
 
     canfigger_free_current_key_node_advance(&list);

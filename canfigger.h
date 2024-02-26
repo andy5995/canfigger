@@ -33,12 +33,6 @@
  */
 
 /**
- * @var canfigger_attr
- * @brief Global variable used to access the current attribute being processed.
- */
-extern char *canfigger_attr;
-
-/**
  * @struct attributes
  * @brief Structure to hold attribute details of a configuration key.
  *
@@ -90,5 +84,6 @@ void canfigger_free_current_key_node_advance(struct Canfigger **list);
  * @brief Frees the current attribute string and advances to the next attribute.
  *
  * @param attributes Pointer to the attributes structure of the current node.
+ * @param Current attribute that will get reassigned after the function call.
  */
-void canfigger_free_current_attr_str_advance(struct attributes *attributes);
+void canfigger_free_current_attr_str_advance(struct attributes *attributes, char **attr);

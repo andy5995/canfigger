@@ -21,7 +21,7 @@ jobs:
         uses: actions/jekyll-build-pages@v1
         with:
           source: ./docs
-          destination: ./_site
+          destination: ./docs
       - name: Fix permissions
         run: |
           chmod -c -R +rX "docs/" | while read line; do

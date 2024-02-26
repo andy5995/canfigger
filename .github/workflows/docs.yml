@@ -11,6 +11,10 @@ on:
 jobs:
   # Single deploy job no building
   deploy:
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
     environment:
       name: github-pages
       url: ${{steps.deployment.outputs.page_url}}
@@ -21,7 +25,7 @@ jobs:
       - name: Setup Pages
         uses: actions/configure-pages@v3
       - name: Upload Artifact
-        uses: actions/upload-pages-artifact@v2
+        uses: actions/upload-pages-artifact@v3
         with:
           # upload entire directory
           path: './docs'

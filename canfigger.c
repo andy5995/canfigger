@@ -206,8 +206,11 @@ truncate_whitespace(char *str)
     return;
 
   char *pos_0 = str;
-  /* Advance pointer until NULL terminator is found */
-  str = strchr(str, '\0');
+  /* Advance pointer until NULL terminator is found
+  * Don't try to use strchr() because you'll get a different
+  * result if the pointer is already at '\0'. */
+  while (*str != '\0')
+    str++;
 
   /* set pointer to segment preceding NULL terminator */
   if (str != pos_0)

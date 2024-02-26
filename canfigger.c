@@ -17,17 +17,14 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <ctype.h>
-#include <errno.h>
+#include <ctype.h> // isspace()
 #include <stdbool.h>
+#include <stdio.h>
+#include <stdlib.h> // free(), malloc()
 #include <string.h>
 
 #include "canfigger_config.h"
 #include "canfigger.h"
-
-static int canfigger_delimiter = 0;
 
 static char *grab_str_segment(char *a, char **dest, const int c);
 static void free_list(struct Canfigger **node);
@@ -101,7 +98,7 @@ canfigger_free_current_attr_str_advance(struct attributes *attributes, char **at
 
   attributes->ptr = grab_str_segment(attributes->ptr,
                                      &attributes->current,
-                                     canfigger_delimiter);
+                                     '\n');
 
   *attr = attributes->current;
   return;
@@ -407,6 +404,15 @@ canfigger_parse_file(const char *file, const int delimiter)
       }
 
       attr_ptr->ptr = attr_ptr->str;
+
+      // Change the delimiter, which will be used later
+      // in canfigger_free_current_attr_str_advance()
+      char *delimiter_ptr = strchr(attr_ptr->ptr, delimiter);
+      while(delimiter_ptr)
+      {
+        *delimiter_ptr = '\n';
+        delimiter_ptr = strchr(delimiter_ptr, delimiter);
+      }
     }
     else
       cur_node->attributes = NULL;
@@ -424,6 +430,5 @@ canfigger_parse_file(const char *file, const int delimiter)
     return NULL;
   }
 
-  canfigger_delimiter = delimiter;
   return root;
 }

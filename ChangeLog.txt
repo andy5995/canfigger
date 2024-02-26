@@ -7,6 +7,7 @@
   * use 'canfigger_free_current_attr_str_advance()' instead of
     'list->attr_node = list->attr_node->next'
   * canfigger_attr points to the current attribute, or NULL if there is none
+  * In meson.build, rename dep_canfigger->canfigger_dep
 
 2024-02-21
 

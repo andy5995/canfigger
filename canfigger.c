@@ -23,44 +23,157 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <errno.h>
 #include <string.h>
 
+#include "canfigger_config.h"
 #include "canfigger.h"
 
-static int err_strdup = 0;
+static int canfigger_delimiter = 0;
+char *canfigger_attr = NULL;
+
+static char *grab_str_segment(char *a, char **dest, const int c);
+static void free_list(struct Canfigger **node);
+static char *strdup_generic(const char *s, size_t n,
+                            char *(*dup_func)(const char *, size_t));
+/** \cond */
+struct line
+{
+  char *line;
+  char *ptr;
+  char *start;
+  char *end;
+};
+/** \endcond */
+
+
+static char *
+strdup_wrapper(const char *s, size_t n)
+{
+  (void) n;                     // Unused parameter, to match function signature of strndup
+  return strdup(s);
+}
+
+
+static char *
+strdup_wrap(const char *s)
+{
+  return strdup_generic(s, 0, strdup_wrapper);  // Use the wrapper function for strdup
+}
+
+
+static char *
+strndup_wrap(const char *s, size_t n)
+{
+  return strdup_generic(s, n, strndup); // Directly use strndup
+}
+
+
+static char *
+strdup_generic(const char *s, size_t n,
+               char *(*dup_func)(const char *, size_t))
+{
+  char *retval = dup_func(s, n);
+
+  if (retval)
+    return retval;
+
+  perror("Failed to duplicate string:");
+  return NULL;
+}
+
+
+void
+canfigger_free_current_attr_str_advance(struct attributes *attributes)
+{
+  if (!attributes)
+  {
+    canfigger_attr = NULL;
+    return;
+  }
+
+  if (attributes->current && attributes->ptr)
+    free(attributes->current);
+
+  if (!attributes->ptr)
+  {
+    free(attributes->current);
+    attributes->current = NULL;
+    canfigger_attr = NULL;
+    return;
+  }
+
+  attributes->ptr = grab_str_segment(attributes->ptr,
+                                     &attributes->current,
+                                     canfigger_delimiter);
+
+  canfigger_attr = attributes->current;
+
+  return;
+}
+
+
+// Clearly a wrapper function...
+// It probably exists to help with code clarity. It will copy the first
+// attribute in a 'attr1, attr2, attr3,...' string to attributes->current and
+// point 'canfigger_attr' to that address.
+static void
+init_first_attr(struct attributes *attributes)
+{
+  canfigger_free_current_attr_str_advance(attributes);
+  return;
+}
+
+
+void
+canfigger_free_current_key_node_advance(struct Canfigger **node)
+{
+  if (*node)
+  {
+    if ((*node)->attributes)
+    {
+      if ((*node)->attributes->current)
+      {
+        free((*node)->attributes->current);
+        (*node)->attributes->current = NULL;
+      }
+
+      if ((*node)->attributes->str)
+      {
+        free((*node)->attributes->str);
+        (*node)->attributes->str = NULL;
+      }
+
+      free((*node)->attributes);
+      (*node)->attributes = NULL;
+    }
+
+    if ((*node)->value)
+    {
+      free((*node)->value);
+      (*node)->value = NULL;
+    }
+
+    free((*node)->key);
+    (*node)->key = NULL;
+
+    struct Canfigger *temp_node = (*node)->next;
+    free(*node);
+    *node = temp_node;
+    if (*node)
+      init_first_attr((*node)->attributes);
+  }
+
+  return;
+}
 
 
 static void
-cleanup_1(char **line, FILE **fp)
+free_list(struct Canfigger **node)
 {
-  free(*line);
-  fclose(*fp);
-  return;
-}
-
-
-void
-canfigger_free(st_canfigger_node *node)
-{
-  if (node)
+  if (*node)
   {
-    canfigger_free(node->next);
-    free(node->key);
-    free(node->value);
-    free(node);
+    while (*node)
+      canfigger_free_current_key_node_advance(node);
   }
-  return;
-}
 
-
-void
-canfigger_free_attr(st_canfigger_attr_node *node)
-{
-  if (node)
-  {
-    canfigger_free_attr(node->next);
-    if (node->str)
-      free(node->str);
-    free(node);
-  }
   return;
 }
 
@@ -87,22 +200,15 @@ erase_lead_char(const int lc, char *haystack)
 }
 
 
-/*!
- * Removes trailing white space from a string (including newlines, formfeeds,
- * tabs, etc
- * @param[out] str The string to be altered
- * @return void
- */
 static void
-trim_whitespace(char *str)
+truncate_whitespace(char *str)
 {
   if (!str)
     return;
 
   char *pos_0 = str;
   /* Advance pointer until NULL terminator is found */
-  while (*str)
-    str++;
+  str = strchr(str, '\0');
 
   /* set pointer to segment preceding NULL terminator */
   if (str != pos_0)
@@ -126,160 +232,217 @@ trim_whitespace(char *str)
 static char *
 grab_str_segment(char *a, char **dest, const int c)
 {
-  free(*dest);
   a = erase_lead_char(' ', a);
 
   char *b = strchr(a, c);
   if (!b)
   {
-    *dest = strdup(a);
-    if (!*dest)
-      err_strdup = -1;
+    *dest = strdup_wrap(a);
     return b;                   // NULL
   }
 
-  *dest = strndup(a, b - a);
+  *dest = strndup_wrap(a, b - a);
   if (!*dest)
-  {
-    if (!*dest)
-      err_strdup = -1;
     return NULL;
-  }
-  trim_whitespace(*dest);
+
+  truncate_whitespace(*dest);
   return b + 1;
 }
 
-
-st_canfigger_list *
-canfigger_parse_file(const char *file, const int delimiter)
+static void *
+malloc_wrap(size_t size)
 {
-  err_strdup = 0;
-  st_canfigger_node *root = NULL;
-  st_canfigger_list *list = NULL;
+  void *retval = malloc(size);
+  if (retval)
+    return retval;
 
-  FILE *fp = fopen(file, "r");
-  if (!fp)
+  perror("Failed to allocate memory: ");
+
+  return NULL;
+}
+
+static void
+add_key_node(struct Canfigger **root, struct Canfigger **cur_node)
+{
+  struct Canfigger *tmp_node = malloc_wrap(sizeof(struct Canfigger));
+  if (!tmp_node)
+    return;
+
+  if (*root)
+    (*cur_node)->next = tmp_node;
+  else
+    *root = tmp_node;
+
+  *cur_node = tmp_node;
+
+  return;
+}
+
+
+static void
+free_cur_line_and_advance(struct line *line)
+{
+  free(line->line);
+  line->line = NULL;
+  line->start = line->end;
+  line->end = grab_str_segment(line->start, &line->line, '\n');
+
+  return;
+}
+
+
+static char *
+read_entire_file(const char *filename)
+{
+  FILE *file = fopen(filename, "rb");
+  if (!file)
   {
-    perror("canfigger:");
+    perror("canfigger->fopen");
     return NULL;
   }
 
-  char *line = NULL;
-  size_t len = 0;
-  ssize_t read;
+  fseek(file, 0, SEEK_END);
+  long file_size = ftell(file);
+  fseek(file, 0, SEEK_SET);
 
-  // getline() malloc's the memory needed for line
-  while ((read = getline(&line, &len, fp)) != -1)
+  char *buffer = malloc(file_size + 1);
+  if (!buffer)
   {
-    static const char *empty_str = "";
-
-    if (!line)
-    {
-      fclose(fp);
-      return NULL;
-    }
-
-    // fprintf(stderr, "Retrieved line of length %zu:\n", read);
-    trim_whitespace(line);
-    char *a = line;
-
-    while (isspace(*a))
-      a = erase_lead_char(*a, a);
-
-    if (*a == '\0' || *a == '#')
-      continue;
-
-    st_canfigger_node *tmp_node = malloc(sizeof(struct st_canfigger_node));
-    if (tmp_node)
-    {
-      if (list)
-        list->next = tmp_node;
-      else
-        root = tmp_node;
-
-      st_canfigger_attr_node *attr_root = NULL;
-      st_canfigger_attr_node *attr_list = NULL;
-
-      tmp_node->key = strdup(empty_str);
-      if (!empty_str)
-      {
-        cleanup_1(&line, &fp);
-        return NULL;
-      }
-
-      char *b = grab_str_segment(a, &tmp_node->key, '=');
-      // fprintf(stderr, "key: '%s'\n", tmp_node->key);
-
-      tmp_node->value = strdup(empty_str);
-      if (!empty_str)
-      {
-        cleanup_1(&line, &fp);
-        return NULL;
-      }
-
-      if (b)
-      {
-        a = b;
-        b = grab_str_segment(a, &tmp_node->value, delimiter);
-      }
-      do
-      {
-        st_canfigger_attr_node *cur_attr_node =
-          malloc(sizeof(struct st_canfigger_attr_node));
-        if (cur_attr_node == NULL)
-        {
-          if (attr_root)
-            canfigger_free_attr(attr_root);
-
-          if (root)
-            canfigger_free(root);
-
-          cleanup_1(&line, &fp);
-          return NULL;
-        }
-
-        if (attr_list)
-          attr_list->next = cur_attr_node;
-        else
-          attr_root = cur_attr_node;
-
-        cur_attr_node->str = strdup(empty_str);
-        if (!empty_str)
-        {
-          cleanup_1(&line, &fp);
-          return NULL;
-        }
-        if (b)
-        {
-          a = b;
-          b = grab_str_segment(a, &cur_attr_node->str, delimiter);
-        }
-        attr_list = cur_attr_node;
-        cur_attr_node->next = NULL;
-      }
-      while (b);
-
-      tmp_node->attr_node = attr_root;
-      tmp_node->next = NULL;
-
-      list = tmp_node;
-    }
-    else
-    {
-      if (root)
-        canfigger_free(root);
-
-      cleanup_1(&line, &fp);
-      return NULL;
-    }
+    perror("canfigger->malloc");
+    fclose(file);
+    return NULL;
   }
 
-  if (line)
-    free(line);
+  fread(buffer, 1, file_size, file);
+  buffer[file_size] = '\0';
 
-  if (fclose(fp) != 0)
-    perror("canfigger:");
+  fclose(file);
+  return buffer;
+}
 
-  list = root;
-  return list;
+
+static void
+free_incomplete_node(struct Canfigger **node)
+{
+  if (*node)
+  {
+    if ((*node)->key)
+      free((*node)->key);
+
+    if ((*node)->value)
+      free((*node)->value);
+
+    if ((*node)->attributes)
+      if ((*node)->attributes->str)
+        free((*node)->attributes->str);
+  }
+}
+
+
+struct Canfigger *
+canfigger_parse_file(const char *file, const int delimiter)
+{
+  struct Canfigger *root = NULL, *cur_node = NULL;
+
+  char *file_contents = read_entire_file(file);
+  if (file_contents == NULL)
+    return NULL;
+
+  static struct line line;
+  line.start = file_contents;
+  line.line = NULL;
+  line.ptr = NULL;
+
+  line.end = grab_str_segment(line.start, &line.line, '\n');
+  if (errno)
+  {
+    free(file_contents);
+    return NULL;
+  }
+
+  while (line.end)
+  {
+    line.ptr = line.line;
+
+    while (isspace(*line.ptr))
+      line.ptr = erase_lead_char(*line.ptr, line.ptr);
+
+    if (*line.ptr == '\0' || *line.ptr == '#')
+    {
+      free_cur_line_and_advance(&line);
+      continue;
+    }
+
+    add_key_node(&root, &cur_node);
+    if (errno)
+      break;
+
+    // Get key
+    cur_node->key = NULL;
+    line.ptr = grab_str_segment(line.ptr, &cur_node->key, '=');
+    if (errno & !root)
+    {
+      free_incomplete_node(&cur_node);
+      break;
+    }
+
+    // Get value
+    cur_node->value = NULL;
+
+    if (line.ptr)
+    {
+      line.ptr = grab_str_segment(line.ptr, &cur_node->value, delimiter);
+      if (errno & !root)
+      {
+        free_incomplete_node(&cur_node);
+        break;
+      }
+    }
+
+    // Handle attributes
+    if (line.ptr)
+    {
+      cur_node->attributes = malloc_wrap(sizeof(struct attributes));
+      if (errno & !root)
+      {
+        free_incomplete_node(&cur_node);
+        break;
+      }
+
+      struct attributes *attr_ptr = cur_node->attributes;
+      attr_ptr->current = NULL;
+
+      attr_ptr->str = strdup_wrap(line.ptr);
+      if (errno & !root)
+      {
+        free_incomplete_node(&cur_node);
+        break;
+      }
+
+      attr_ptr->ptr = attr_ptr->str;
+    }
+    else
+      cur_node->attributes = NULL;
+
+    cur_node->next = NULL;
+    free_cur_line_and_advance(&line);
+  }
+
+  free(file_contents);
+
+  if (line.line)
+    free(line.line);
+
+  if (!root)
+    return NULL;
+
+  if (errno)
+  {
+    free_list(&root);
+    return NULL;
+  }
+
+  canfigger_delimiter = delimiter;
+  init_first_attr(root->attributes);
+  return root;
 }

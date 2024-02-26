@@ -3,16 +3,17 @@ incdir = include_directories('..')
 main_lib = declare_dependency(link_with : buildtarget)
 
 test_cases = [
-  'test_parse_file',
-  'test_parse_file2',
-  'test_parse_file_colons',
-  'test_unicode',
-  'test_multiple_attributes',
+  'parse_file',
+  'file_open_err',
+  'german',
+  'colons',
+  'unicode',
+  'multiple_attributes',
   ]
 
 foreach case : test_cases
   exe = executable(
-    case,
+    'test_' + case,
     case + '.c',
     include_directories : incdir,
     dependencies : [main_lib],

@@ -1,73 +1,94 @@
-/*
-This file is part of canfigger<https://github.com/andy5995/canfigger>
-
-Copyright (C) 2021-2024 Andy Alt (arch_stanton5995@proton.me)
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+/**
+ * @file canfigger.h
+ * @brief Header file for the Canfigger configuration parser.
+ *
+ * Canfigger is a lightweight C language library designed to parse configuration
+ * files. It provides functionality to read them and represent their contents as
+ * a linked list of key-value pairs, along with associated attributes for each
+ * pair.
+ *
+ * Part of canfigger (https://github.com/andy5995/canfigger).
+ *
+ * Copyright (C) 2021-2024 Andy Alt
+ * (arch_stanton5995@proton.me)
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 #pragma once
 
-#ifndef CANFIGGER_VERSION
-#define CANFIGGER_VERSION "0.2.0999"
-#endif
+/**
+ * \example example.c
+ */
 
-// Member of st_canfigger_node
-// @see canfigger_free_attr()
-typedef struct st_canfigger_attr_node st_canfigger_attr_node;
-struct st_canfigger_attr_node
+/**
+ * @var canfigger_attr
+ * @brief Global variable used to access the current attribute being processed.
+ */
+extern char *canfigger_attr;
+
+/**
+ * @struct attributes
+ * @brief Structure to hold attribute details of a configuration key.
+ *
+ * @var attributes::str Original string containing all attributes.
+ * @var attributes::current Pointer to the current attribute being processed.
+ * @var attributes::ptr Pointer used for iterating through attributes.
+ */
+struct attributes
 {
   char *str;
-  st_canfigger_attr_node *next;
+  char *current;
+  char *ptr;
 };
 
-// Node in the linked list returned by canfigger_parse_file()
-typedef struct st_canfigger_node st_canfigger_node;
-struct st_canfigger_node
+/**
+ * @struct Canfigger
+ * @brief Structure to represent a key-value pair with attributes in the configuration.
+ *
+ * @var Canfigger::key The key in a key-value pair.
+ * @var Canfigger::value The value associated with the key.
+ * @var Canfigger::attributes Attributes associated with the key.
+ * @var Canfigger::next Pointer to the next key-value pair in the list.
+ */
+struct Canfigger
 {
-  // Contains the string that precedes the '=' sign
   char *key;
-
-  // Contains the string between the '=' sign and the delimiter
   char *value;
-
-  // Linked list of attributes
-  st_canfigger_attr_node *attr_node;
-
-  // A pointer to the next node in the list
-  st_canfigger_node *next;
+  struct attributes *attributes;
+  struct Canfigger *next;
 };
 
-// Can be used interchangeably for code readability and developer preference
-typedef st_canfigger_node st_canfigger_list;
+/**
+ * @brief Parses a configuration file and creates a linked list of key-value pairs.
+ *
+ * @param file Path to the configuration file to parse.
+ * @param delimiter The character used to delimit key-value pairs in the file.
+ * @return Pointer to the head of the linked list of configuration entries.
+ */
+struct Canfigger *canfigger_parse_file(const char *file, const int delimiter);
 
+/**
+ * @brief Frees the current key node and advances to the next node in the list.
+ *
+ * @param list Double pointer to the current node in the linked list.
+ */
+void canfigger_free_current_key_node_advance(struct Canfigger **list);
 
-//
-// Opens a config file and returns a memory-allocated linked list
-// that must be freed later
-// @see canfigger_free()
-//
-// Each node is of type st_canfigger_node.
-st_canfigger_list *canfigger_parse_file(const char *file,
-                                        const int delimiter);
-
-//
-// Frees the list returned by canfigger_parse_file();
-// The root node must be used when this is called
-void canfigger_free(st_canfigger_node * node);
-
-
-// Frees the attribute node (which may be a linked list of attributes);
-// The root node must be used when this is called.
-void canfigger_free_attr(st_canfigger_attr_node * node);
+/**
+ * @brief Frees the current attribute string and advances to the next attribute.
+ *
+ * @param attributes Pointer to the attributes structure of the current node.
+ */
+void canfigger_free_current_attr_str_advance(struct attributes *attributes);

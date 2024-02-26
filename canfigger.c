@@ -37,9 +37,9 @@ static char *strdup_generic(const char *s, size_t n,
 /** \cond */
 struct line
 {
-  char *line;
-  char *ptr;
+  size_t len;
   char *start;
+  char *end;
 };
 /** \endcond */
 
@@ -208,8 +208,8 @@ truncate_whitespace(char *str)
 
   char *pos_0 = str;
   /* Advance pointer until NULL terminator is found
-  * Don't try to use strchr() because you'll get a different
-  * result if the pointer is already at '\0'. */
+   * Don't try to use strchr() because you'll get a different
+   * result if the pointer is already at '\0'. */
   while (*str != '\0')
     str++;
 
@@ -282,17 +282,6 @@ add_key_node(struct Canfigger **root, struct Canfigger **cur_node)
 }
 
 
-static void
-free_cur_line_and_advance(struct line *line)
-{
-  free(line->line);
-  line->line = NULL;
-  line->start = grab_str_segment(line->start, &line->line, '\n');
-
-  return;
-}
-
-
 static char *
 read_entire_file(const char *filename)
 {
@@ -344,39 +333,50 @@ free_incomplete_node(struct Canfigger **node)
 }
 
 
+static void
+get_next_line(struct line *line)
+{
+  line->start = line->end + 1;
+  line->end = strchr(line->start, '\n');
+  return;
+}
+
+
 struct Canfigger *
 canfigger_parse_file(const char *file, const int delimiter)
 {
   struct Canfigger *root = NULL, *cur_node = NULL;
 
-  char *file_contents = read_entire_file(file);
-  if (file_contents == NULL)
+  char *buffer = read_entire_file(file);
+  if (buffer == NULL)
     return NULL;
+
+  char file_contents[strlen(buffer) + 1];
+  memcpy(file_contents, buffer, sizeof file_contents);
+  free(buffer);
 
   struct line line;
   line.start = file_contents;
-  line.line = NULL;
-  line.ptr = NULL;
-
-  line.start = grab_str_segment(line.start, &line.line, '\n');
-  if (!line.start)
-  {
-    free(file_contents);
-    return NULL;
-  }
+  line.end = strchr(line.start, '\n');
 
   bool node_complete;
 
-  while (line.start)
+  while (line.end)
   {
-    line.ptr = line.line;
+    line.len = line.end - line.start;
+    char tmp_line[line.len + 1];
+    memcpy(tmp_line, line.start, line.len);
+    tmp_line[line.len] = '\0';
 
-    while (isspace(*line.ptr))
-      line.ptr = erase_lead_char(*line.ptr, line.ptr);
+    char *line_ptr = tmp_line;
+    truncate_whitespace(line_ptr);
 
-    if (*line.ptr == '\0' || *line.ptr == '#')
+    while (isspace(*line_ptr))
+      line_ptr = erase_lead_char(*line_ptr, line_ptr);
+
+    if (*line_ptr == '\0' || *line_ptr == '#')
     {
-      free_cur_line_and_advance(&line);
+      get_next_line(&line);
       continue;
     }
 
@@ -387,7 +387,7 @@ canfigger_parse_file(const char *file, const int delimiter)
 
     // Get key
     cur_node->key = NULL;
-    line.ptr = grab_str_segment(line.ptr, &cur_node->key, '=');
+    line_ptr = grab_str_segment(line_ptr, &cur_node->key, '=');
     if (!cur_node->key)
     {
       free_incomplete_node(&cur_node);
@@ -398,9 +398,9 @@ canfigger_parse_file(const char *file, const int delimiter)
     // Get value
     cur_node->value = NULL;
 
-    if (line.ptr)
+    if (line_ptr)
     {
-      line.ptr = grab_str_segment(line.ptr, &cur_node->value, delimiter);
+      line_ptr = grab_str_segment(line_ptr, &cur_node->value, delimiter);
       if (!cur_node->value)
       {
         free_incomplete_node(&cur_node);
@@ -409,7 +409,7 @@ canfigger_parse_file(const char *file, const int delimiter)
     }
 
     // Handle attributes
-    if (line.ptr)
+    if (line_ptr)
     {
       cur_node->attributes = malloc_wrap(sizeof(struct attributes));
       if (!cur_node->attributes)
@@ -421,7 +421,7 @@ canfigger_parse_file(const char *file, const int delimiter)
       struct attributes *attr_ptr = cur_node->attributes;
       attr_ptr->current = NULL;
 
-      attr_ptr->str = strdup_wrap(line.ptr);
+      attr_ptr->str = strdup_wrap(line_ptr);
       if (!attr_ptr->str)
       {
         free_incomplete_node(&cur_node);
@@ -434,14 +434,9 @@ canfigger_parse_file(const char *file, const int delimiter)
       cur_node->attributes = NULL;
 
     cur_node->next = NULL;
-    free_cur_line_and_advance(&line);
+    get_next_line(&line);
     node_complete = true;
   }
-
-  free(file_contents);
-
-  if (line.line)
-    free(line.line);
 
   if (!root)
     return NULL;

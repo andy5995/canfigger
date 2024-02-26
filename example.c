@@ -39,19 +39,19 @@ main(int argc, char *argv[])
 
     //
     // Process attributes if necessary
+    char *attr = NULL;
     //
-    // You must check canfigger_attr for NULL before doing an operation on it,
-    // such as strcmp or printf. If it is not NULL, it points to the the first
-    // attribute (or the *only* attribute if only one was used
-    //
-    while (canfigger_attr)
+    // Pass '&addr' to this function and it will get assigned an
+    // attribute, or NULL if there are none.
+    canfigger_free_current_attr_str_advance(config->attributes, &attr);
+    while (attr)
     {
-      printf("Attribute: %s\n", canfigger_attr);
+      printf("Attribute: %s\n", attr);
 
       //
       // Get the next attribute in the list (if there is one).
       //
-      canfigger_free_current_attr_str_advance(config->attributes);
+      canfigger_free_current_attr_str_advance(config->attributes, &attr);
     }
 
     // Move to the next node and automatically free the current node

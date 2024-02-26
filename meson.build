@@ -67,7 +67,7 @@ if not meson.is_subproject()
 endif
 
 if get_option('build_examples')
-  exe = executable(
+  example = executable(
     'example',
     'example.c',
     dependencies: canfigger_dep

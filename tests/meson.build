@@ -21,3 +21,7 @@ foreach case : test_cases
   )
   test(case, exe)
 endforeach
+
+if get_option('build_examples')
+  test('example', example)
+endif

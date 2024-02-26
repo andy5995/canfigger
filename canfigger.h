@@ -49,7 +49,7 @@ struct Canfigger
 struct Canfigger *canfigger_parse_file(const char *file,
                                         const int delimiter);
 /**
- * \example example-01.c
+ * \example example.c
  */
 
 void canfigger_free_current_key_node_advance(struct Canfigger ** list);

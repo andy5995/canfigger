@@ -62,8 +62,8 @@ endif
 
 if get_option('build_examples')
   exe = executable(
-    'example-01',
-    'example-01.c',
+    'example',
+    'example.c',
     dependencies: dep_canfigger
     )
 endif

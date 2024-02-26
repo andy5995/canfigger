@@ -3,14 +3,31 @@
 #include "canfigger.h"
 
 int
-main(void)
+main(int argc, char *argv[])
 {
+  char *default_filename = "../examplerc";
+  char *filename_ptr = default_filename;
+
+  if (argc == 2)
+    filename_ptr = argv[1];
+
+  if (argc > 2)
+  {
+    fputs("This example program only accepts a single argument:\n\n", stderr);
+    fprintf(stderr, "%s <config-file>\n\n", argv[0]);
+    return -1;
+  }
+
   //
   // Get a linked list containing the parsed config file. Each node contains
   // a key (or a "setting", or an "option"), a value and attributes (if they
   // are provided in your program's configuration file.
   //
-  struct Canfigger *config = canfigger_parse_file("../example-01.conf", ',');
+  struct Canfigger *config = canfigger_parse_file(filename_ptr, ',');
+
+  if (!config)
+    return -1;
+
   while (config != NULL)
   {
     //

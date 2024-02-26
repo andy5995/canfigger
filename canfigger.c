@@ -349,7 +349,7 @@ canfigger_parse_file(const char *file, const int delimiter)
   if (file_contents == NULL)
     return NULL;
 
-  static struct line line;
+  struct line line;
   line.start = file_contents;
   line.line = NULL;
   line.ptr = NULL;

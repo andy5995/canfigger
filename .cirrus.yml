@@ -1,4 +1,14 @@
-freebsd_task:
+# Define a template for tasks
+filter_template: &filter_template
+  only_if: "changesInclude(
+    '**.c',
+    '**.h',
+    '**meson.build',
+    '.cirrus.yml'
+    )"
+
+freebsd13_task:
+  <<: *filter_template
   name: FreeBSD 13.2
   freebsd_instance:
     image_family: freebsd-13-2
@@ -8,8 +18,40 @@ freebsd_task:
     - pkg install -y meson ninja
 
   setup_script:
-    - meson setup builddir
+    - meson setup _build
   build_script:
-    - cd builddir && ninja -v
+    - cd _build && ninja -v
   test_script:
-    - cd builddir && meson test -v
+    - cd _build && meson test -v
+
+freebsd14_task:
+  <<: *filter_template
+  name: FreeBSD 14.0
+  freebsd_instance:
+    image_family: freebsd-14-0
+
+  pkginstall_script:
+    - pkg update -f
+    - pkg install -y meson ninja
+
+  setup_script:
+    - meson setup _build
+  build_script:
+    - cd _build && ninja -v
+  test_script:
+    - cd _build && meson test -v
+
+macos_task:
+  <<: *filter_template
+  name: macOS arm64
+  macos_instance:
+    image: ghcr.io/cirruslabs/macos-ventura-xcode:latest
+  pkginstall_script:
+    - brew update
+    - brew install meson ninja
+  setup_script:
+  - meson setup _build
+  build_script:
+  - cd _build && ninja
+  test_script:
+  - cd _build && meson test -v

@@ -1,7 +1,7 @@
 ## Source code and Releases
 
-[GitHub repo](https://github.com/andy5995/canfigger/)
-[Releases](https://github.com/andy5995/canfigger/releases)
+* [GitHub repo](https://github.com/andy5995/canfigger/)
+* [Releases](https://github.com/andy5995/canfigger/releases)
 
 ## Last release
 

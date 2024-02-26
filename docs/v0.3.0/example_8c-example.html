@@ -23,7 +23,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">canfigger<span id="projectnumber">&#160;v0.3.0999</span>
+   <div id="projectname">canfigger<span id="projectnumber">&#160;v0.3.0</span>
    </div>
    <div id="projectbrief">Lightweight config file parser library</div>
   </td>
@@ -116,34 +116,33 @@ $(function() {
 <div class="line"> </div>
 <div class="line">    <span class="comment">//</span></div>
 <div class="line">    <span class="comment">// Process attributes if necessary</span></div>
+<div class="line">    <span class="keywordtype">char</span> *attr = NULL;</div>
 <div class="line">    <span class="comment">//</span></div>
-<div class="line">    <span class="comment">// You must check canfigger_attr for NULL before doing an operation on it,</span></div>
-<div class="line">    <span class="comment">// such as strcmp or printf. If it is not NULL, it points to the the first</span></div>
-<div class="line">    <span class="comment">// attribute (or the *only* attribute if only one was used</span></div>
-<div class="line">    <span class="comment">//</span></div>
-<div class="line">    <span class="keywordflow">while</span> (<a id="a4" name="a4"></a><a class="code hl_variable" href="canfigger_8h.html#a230db230f3153980a6f6631934271894">canfigger_attr</a>)</div>
+<div class="line">    <span class="comment">// Pass &#39;&amp;addr&#39; to this function and it will get assigned an</span></div>
+<div class="line">    <span class="comment">// attribute, or NULL if there are none.</span></div>
+<div class="line">    <a id="a4" name="a4"></a><a class="code hl_function" href="canfigger_8h.html#ae6d70f9e366beaa126a989bb2b4457b8">canfigger_free_current_attr_str_advance</a>(config-&gt;<a id="a5" name="a5"></a>attributes, &amp;attr);</div>
+<div class="line">    <span class="keywordflow">while</span> (attr)</div>
 <div class="line">    {</div>
-<div class="line">      printf(<span class="stringliteral">&quot;Attribute: %s\n&quot;</span>, <a class="code hl_variable" href="canfigger_8h.html#a230db230f3153980a6f6631934271894">canfigger_attr</a>);</div>
+<div class="line">      printf(<span class="stringliteral">&quot;Attribute: %s\n&quot;</span>, attr);</div>
 <div class="line"> </div>
 <div class="line">      <span class="comment">//</span></div>
 <div class="line">      <span class="comment">// Get the next attribute in the list (if there is one).</span></div>
 <div class="line">      <span class="comment">//</span></div>
-<div class="line">      <a id="a5" name="a5"></a><a class="code hl_function" href="canfigger_8h.html#ac5c8fd1db76b9c2872ecaa3483b94245">canfigger_free_current_attr_str_advance</a>(config-&gt;<a id="a6" name="a6"></a>attributes);</div>
+<div class="line">      <a class="code hl_function" href="canfigger_8h.html#ae6d70f9e366beaa126a989bb2b4457b8">canfigger_free_current_attr_str_advance</a>(config-&gt;attributes, &amp;attr);</div>
 <div class="line">    }</div>
 <div class="line"> </div>
 <div class="line">    <span class="comment">// Move to the next node and automatically free the current node</span></div>
-<div class="line">    <a id="a7" name="a7"></a><a class="code hl_function" href="canfigger_8h.html#a095f7a89a1f2e3422870165280205a0b">canfigger_free_current_key_node_advance</a>(&amp;config);</div>
+<div class="line">    <a id="a6" name="a6"></a><a class="code hl_function" href="canfigger_8h.html#a095f7a89a1f2e3422870165280205a0b">canfigger_free_current_key_node_advance</a>(&amp;config);</div>
 <div class="line">    putchar(<span class="charliteral">&#39;\n&#39;</span>);</div>
 <div class="line">  }</div>
 <div class="line"> </div>
 <div class="line">  <span class="keywordflow">return</span> 0;</div>
 <div class="line">}</div>
 <div class="ttc" id="acanfigger_8h_html"><div class="ttname"><a href="canfigger_8h.html">canfigger.h</a></div><div class="ttdoc">Header file for the Canfigger configuration parser.</div></div>
-<div class="ttc" id="acanfigger_8h_html_a095f7a89a1f2e3422870165280205a0b"><div class="ttname"><a href="canfigger_8h.html#a095f7a89a1f2e3422870165280205a0b">canfigger_free_current_key_node_advance</a></div><div class="ttdeci">void canfigger_free_current_key_node_advance(struct Canfigger **list)</div><div class="ttdoc">Frees the current key node and advances to the next node in the list.</div><div class="ttdef"><b>Definition</b> canfigger.c:126</div></div>
-<div class="ttc" id="acanfigger_8h_html_a230db230f3153980a6f6631934271894"><div class="ttname"><a href="canfigger_8h.html#a230db230f3153980a6f6631934271894">canfigger_attr</a></div><div class="ttdeci">char * canfigger_attr</div><div class="ttdoc">Global variable used to access the current attribute being processed.</div><div class="ttdef"><b>Definition</b> canfigger.c:30</div></div>
-<div class="ttc" id="acanfigger_8h_html_a37053197894e04e253629a9bdae52da0"><div class="ttname"><a href="canfigger_8h.html#a37053197894e04e253629a9bdae52da0">canfigger_parse_file</a></div><div class="ttdeci">struct Canfigger * canfigger_parse_file(const char *file, const int delimiter)</div><div class="ttdoc">Parses a configuration file and creates a linked list of key-value pairs.</div><div class="ttdef"><b>Definition</b> canfigger.c:343</div></div>
-<div class="ttc" id="acanfigger_8h_html_ac5c8fd1db76b9c2872ecaa3483b94245"><div class="ttname"><a href="canfigger_8h.html#ac5c8fd1db76b9c2872ecaa3483b94245">canfigger_free_current_attr_str_advance</a></div><div class="ttdeci">void canfigger_free_current_attr_str_advance(struct attributes *attributes)</div><div class="ttdoc">Frees the current attribute string and advances to the next attribute.</div><div class="ttdef"><b>Definition</b> canfigger.c:84</div></div>
-<div class="ttc" id="astructCanfigger_html"><div class="ttname"><a href="structCanfigger.html">Canfigger</a></div><div class="ttdoc">Structure to represent a key-value pair with attributes in the configuration.</div><div class="ttdef"><b>Definition</b> canfigger.h:66</div></div>
+<div class="ttc" id="acanfigger_8h_html_a095f7a89a1f2e3422870165280205a0b"><div class="ttname"><a href="canfigger_8h.html#a095f7a89a1f2e3422870165280205a0b">canfigger_free_current_key_node_advance</a></div><div class="ttdeci">void canfigger_free_current_key_node_advance(struct Canfigger **list)</div><div class="ttdoc">Frees the current key node and advances to the next node in the list.</div><div class="ttdef"><b>Definition</b> canfigger.c:112</div></div>
+<div class="ttc" id="acanfigger_8h_html_a37053197894e04e253629a9bdae52da0"><div class="ttname"><a href="canfigger_8h.html#a37053197894e04e253629a9bdae52da0">canfigger_parse_file</a></div><div class="ttdeci">struct Canfigger * canfigger_parse_file(const char *file, const int delimiter)</div><div class="ttdoc">Parses a configuration file and creates a linked list of key-value pairs.</div><div class="ttdef"><b>Definition</b> canfigger.c:330</div></div>
+<div class="ttc" id="acanfigger_8h_html_ae6d70f9e366beaa126a989bb2b4457b8"><div class="ttname"><a href="canfigger_8h.html#ae6d70f9e366beaa126a989bb2b4457b8">canfigger_free_current_attr_str_advance</a></div><div class="ttdeci">void canfigger_free_current_attr_str_advance(struct attributes *attributes, char **attr)</div><div class="ttdoc">Frees the current attribute string and advances to the next attribute.</div><div class="ttdef"><b>Definition</b> canfigger.c:83</div></div>
+<div class="ttc" id="astructCanfigger_html"><div class="ttname"><a href="structCanfigger.html">Canfigger</a></div><div class="ttdoc">Structure to represent a key-value pair with attributes in the configuration.</div><div class="ttdef"><b>Definition</b> canfigger.h:60</div></div>
 </div><!-- fragment --> </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

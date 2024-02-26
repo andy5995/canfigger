@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.10.0"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>canfigger: attributes Struct Reference</title>
+<title>canfigger: Canfigger Struct Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -23,7 +23,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">canfigger<span id="projectnumber">&#160;v0.3.0999</span>
+   <div id="projectname">canfigger<span id="projectnumber">&#160;v0.3.0</span>
    </div>
    <div id="projectbrief">Lightweight config file parser library</div>
   </td>
@@ -74,30 +74,35 @@ $(function() {
 <div class="header">
   <div class="summary">
 <a href="#pub-attribs">Public Attributes</a> &#124;
-<a href="structattributes-members.html">List of all members</a>  </div>
-  <div class="headertitle"><div class="title">attributes Struct Reference</div></div>
+<a href="structCanfigger-members.html">List of all members</a>  </div>
+  <div class="headertitle"><div class="title">Canfigger Struct Reference</div></div>
 </div><!--header-->
 <div class="contents">
 
-<p>Structure to hold attribute details of a configuration key.  
+<p>Structure to represent a key-value pair with attributes in the configuration.  
  <a href="#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="canfigger_8h_source.html">canfigger.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:a5efa00864fcd65e8899bb81e3f0ff7b6" id="r_a5efa00864fcd65e8899bb81e3f0ff7b6"><td class="memItemLeft" align="right" valign="top"><a id="a5efa00864fcd65e8899bb81e3f0ff7b6" name="a5efa00864fcd65e8899bb81e3f0ff7b6"></a>
-char *&#160;</td><td class="memItemRight" valign="bottom"><b>str</b></td></tr>
-<tr class="separator:a5efa00864fcd65e8899bb81e3f0ff7b6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8c8440d2ed04e1e6344f64ff0a845c66" id="r_a8c8440d2ed04e1e6344f64ff0a845c66"><td class="memItemLeft" align="right" valign="top"><a id="a8c8440d2ed04e1e6344f64ff0a845c66" name="a8c8440d2ed04e1e6344f64ff0a845c66"></a>
-char *&#160;</td><td class="memItemRight" valign="bottom"><b>current</b></td></tr>
-<tr class="separator:a8c8440d2ed04e1e6344f64ff0a845c66"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad356bc76bb50dc73d3ef5ee5453d64d8" id="r_ad356bc76bb50dc73d3ef5ee5453d64d8"><td class="memItemLeft" align="right" valign="top"><a id="ad356bc76bb50dc73d3ef5ee5453d64d8" name="ad356bc76bb50dc73d3ef5ee5453d64d8"></a>
-char *&#160;</td><td class="memItemRight" valign="bottom"><b>ptr</b></td></tr>
-<tr class="separator:ad356bc76bb50dc73d3ef5ee5453d64d8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adb9c5ac2d6f77c4301afbe989b086e6a" id="r_adb9c5ac2d6f77c4301afbe989b086e6a"><td class="memItemLeft" align="right" valign="top"><a id="adb9c5ac2d6f77c4301afbe989b086e6a" name="adb9c5ac2d6f77c4301afbe989b086e6a"></a>
+char *&#160;</td><td class="memItemRight" valign="bottom"><b>key</b></td></tr>
+<tr class="separator:adb9c5ac2d6f77c4301afbe989b086e6a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae6e13a1a75dd75e9d06117add5dbe9db" id="r_ae6e13a1a75dd75e9d06117add5dbe9db"><td class="memItemLeft" align="right" valign="top"><a id="ae6e13a1a75dd75e9d06117add5dbe9db" name="ae6e13a1a75dd75e9d06117add5dbe9db"></a>
+char *&#160;</td><td class="memItemRight" valign="bottom"><b>value</b></td></tr>
+<tr class="separator:ae6e13a1a75dd75e9d06117add5dbe9db"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af8465fa358a8049eacf0513d2fca4e6e" id="r_af8465fa358a8049eacf0513d2fca4e6e"><td class="memItemLeft" align="right" valign="top"><a id="af8465fa358a8049eacf0513d2fca4e6e" name="af8465fa358a8049eacf0513d2fca4e6e"></a>
+struct <a class="el" href="structattributes.html">attributes</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>attributes</b></td></tr>
+<tr class="separator:af8465fa358a8049eacf0513d2fca4e6e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a186bf4a5499a1ada7cec93dd21a60696" id="r_a186bf4a5499a1ada7cec93dd21a60696"><td class="memItemLeft" align="right" valign="top"><a id="a186bf4a5499a1ada7cec93dd21a60696" name="a186bf4a5499a1ada7cec93dd21a60696"></a>
+struct <a class="el" href="structCanfigger.html">Canfigger</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>next</b></td></tr>
+<tr class="separator:a186bf4a5499a1ada7cec93dd21a60696"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>Structure to hold attribute details of a configuration key. </p>
+<div class="textblock"><p>Structure to represent a key-value pair with attributes in the configuration. </p>
+<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="example_8c-example.html#_a0">example.c</a>.</dd>
+</dl>
 </div><hr/>The documentation for this struct was generated from the following file:<ul>
 <li><a class="el" href="canfigger_8h_source.html">canfigger.h</a></li>
 </ul>

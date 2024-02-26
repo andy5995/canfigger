@@ -21,7 +21,7 @@ jobs:
         uses: actions/jekyll-build-pages@v1
         with:
           source: ./docs
-          destination: ./docs
+          destination: ./_site
       - name: Fix permissions
         run: |
           chmod -c -R +rX "docs/" | while read line; do
@@ -31,7 +31,7 @@ jobs:
         uses: actions/upload-pages-artifact@v3
         with:
           # upload entire directory
-          path: './docs'
+          path: './_site'
 
   deploy:
     permissions:

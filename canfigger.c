@@ -317,15 +317,6 @@ free_incomplete_node(struct Canfigger **node)
 }
 
 
-static void
-get_next_line(struct line *line)
-{
-  line->start = line->end + 1;
-  line->end = strchr(line->start, '\n');
-  return;
-}
-
-
 struct Canfigger *
 canfigger_parse_file(const char *file, const int delimiter)
 {
@@ -352,6 +343,13 @@ canfigger_parse_file(const char *file, const int delimiter)
     memcpy(tmp_line, line.start, line.len);
     tmp_line[line.len] = '\0';
 
+    // Used in the next loop
+    if (line.end)
+    {
+      line.start = line.end + 1;
+      line.end = strchr(line.start, '\n');
+    }
+
     char *line_ptr = tmp_line;
     truncate_whitespace(line_ptr);
 
@@ -359,10 +357,7 @@ canfigger_parse_file(const char *file, const int delimiter)
       line_ptr = erase_lead_char(*line_ptr, line_ptr);
 
     if (*line_ptr == '\0' || *line_ptr == '#')
-    {
-      get_next_line(&line);
       continue;
-    }
 
     node_complete = false;
     add_key_node(&root, &cur_node);
@@ -417,7 +412,6 @@ canfigger_parse_file(const char *file, const int delimiter)
       cur_node->attributes = NULL;
 
     cur_node->next = NULL;
-    get_next_line(&line);
     node_complete = true;
   }
 

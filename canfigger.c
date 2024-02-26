@@ -26,9 +26,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "canfigger_config.h"
 #include "canfigger.h"
 
-// Function pointer type for string duplication functions
-// typedef char *(*strdup_func_t)(const char *, size_t);
-
 static int canfigger_delimiter = 0;
 char *canfigger_attr = NULL;
 

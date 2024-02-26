@@ -46,7 +46,7 @@ buildtarget = library(
 
 # How to use in a superproject and other info
 # https://mesonbuild.com/Subprojects.html
-dep_canfigger = declare_dependency(include_directories : inc,
+canfigger_dep = declare_dependency(include_directories : inc,
   link_with : buildtarget)
 
 if not meson.is_subproject()
@@ -70,7 +70,7 @@ if get_option('build_examples')
   exe = executable(
     'example',
     'example.c',
-    dependencies: dep_canfigger
+    dependencies: canfigger_dep
     )
 endif
 

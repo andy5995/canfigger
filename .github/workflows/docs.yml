@@ -1,0 +1,22 @@
+name: Deploy Documentation to GitHub Pages
+
+on:
+  push:
+    branches:
+      - trunk
+    paths:
+      - 'docs/**'
+      - '**/docs.yml'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Deploy to GitHub Pages
+      uses: JamesIves/github-pages-deploy-action@4
+      with:
+        branch: trunk # The branch the action should deploy to.
+        folder: docs # The folder the action should deploy.

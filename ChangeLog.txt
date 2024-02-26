@@ -1,5 +1,13 @@
 # Canfigger ChangeLog
 
+2024-02-25
+
+  * canfigger_free() replaced with canfigger_free_current_key_node_advance()
+  * canfigger_free_attr() removed
+  * use 'canfigger_free_current_attr_str_advance()' instead of
+    'list->attr_node = list->attr_node->next'
+  * canfigger_attr points to the current attribute, or NULL if there is none
+
 2024-02-21
 
   * Use dynamic memory allocation for keys, values, and attributes.

@@ -46,6 +46,13 @@ docs](https://mesonbuild.com/) for detailed usage).
 
     meson test (-v)
 
+## Example program
+
+An example program will be built when you run `ninja`. It will read
+`examplerc` in the source root directory. If you want to try it with a
+different config file, give `example` the name of a config file as an
+argument.
+
 <!-- Add your project here if it has had at least one release -->
 ## Projects using canfigger
 

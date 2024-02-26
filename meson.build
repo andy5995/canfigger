@@ -62,7 +62,7 @@ if not meson.is_subproject()
   install_dir : join_paths(get_option('docdir')),
   strip_directory : true
   )
-  install_data(files('README.md', 'LICENSE', 'ChangeLog'),
+  install_data(files('README.md', 'LICENSE', 'ChangeLog.txt', 'ReleaseNotes.txt'),
           install_dir : get_option('docdir'))
 endif
 

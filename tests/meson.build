@@ -5,6 +5,7 @@ main_lib = declare_dependency(link_with : buildtarget)
 test_cases = [
   'parse_file',
   'file_open_err',
+  'german',
   'colons',
   'unicode',
   'multiple_attributes',

@@ -3,12 +3,12 @@
 
 # canfigger v0.3.0999
 
-canfigger is a lightweight C language library designed to parse configuration
+Canfigger is a lightweight C language library designed to parse configuration
 files. It provides functionality to read them and represent their contents as
 a linked list of key-value pairs, along with associated attributes for each
 pair.
 
-* [website/API documentation and examples](https://github.com/andy5995/canfigger/)
+* [website/API documentation and examples](https://andy5995.github.io/canfigger/)
 * [source on GitHub](https://github.com/andy5995/canfigger/)
 
 ## Format

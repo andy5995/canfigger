@@ -33,7 +33,7 @@ static char *grab_str_segment(char *a, char **dest, const int c);
 static void free_list(struct Canfigger **node);
 static char *strdup_generic(const char *s, size_t n,
                             char *(*dup_func)(const char *, size_t));
-
+/** \cond */
 struct line
 {
   char *line;
@@ -41,6 +41,7 @@ struct line
   char *start;
   char *end;
 };
+/** \endcond */
 
 
 static char *

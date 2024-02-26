@@ -56,6 +56,12 @@ if not meson.is_subproject()
     description : 'Simple configuration file parser library')
 
   install_headers('canfigger.h')
+
+  install_subdir(
+  'docs',
+  install_dir : join_paths(get_option('docdir')),
+  strip_directory : true
+  )
   install_data(files('README.md', 'LICENSE', 'ChangeLog'),
           install_dir : get_option('docdir'))
 endif

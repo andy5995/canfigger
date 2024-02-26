@@ -39,7 +39,6 @@ struct line
   char *line;
   char *ptr;
   char *start;
-  char *end;
 };
 /** \endcond */
 
@@ -284,8 +283,7 @@ free_cur_line_and_advance(struct line *line)
 {
   free(line->line);
   line->line = NULL;
-  line->start = line->end;
-  line->end = grab_str_segment(line->start, &line->line, '\n');
+  line->start = grab_str_segment(line->start, &line->line, '\n');
 
   return;
 }
@@ -353,14 +351,14 @@ canfigger_parse_file(const char *file, const int delimiter)
   line.line = NULL;
   line.ptr = NULL;
 
-  line.end = grab_str_segment(line.start, &line.line, '\n');
+  line.start = grab_str_segment(line.start, &line.line, '\n');
   if (errno)
   {
     free(file_contents);
     return NULL;
   }
 
-  while (line.end)
+  while (line.start)
   {
     line.ptr = line.line;
 

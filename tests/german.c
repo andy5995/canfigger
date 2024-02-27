@@ -15,8 +15,7 @@ int main(void) {
     assert((size_t)snprintf(test_config_file, sizeof test_config_file, "%s/german.conf", SOURCE_DIR) < sizeof test_config_file);
 
     struct Canfigger *list = canfigger_parse_file(test_config_file, ',');
-    if (!list)
-      return -1;
+    assert (list);
 
     int i = 0;
     while (list) {

@@ -25,12 +25,7 @@ main(void)
 
   // call the primary library function to read your config file
   struct Canfigger *list = canfigger_parse_file(test_config_file, ',');
-
-  if (list == NULL)
-  {
-    fprintf(stderr, "list == NULL");
-    return -1;
-  }
+  assert (list);
 
   int i = 0;
   while (list)

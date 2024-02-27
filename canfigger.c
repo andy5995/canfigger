@@ -85,10 +85,10 @@ canfigger_free_current_attr_str_advance(struct attributes *attributes, char **at
     return;
   }
 
-  if (attributes->current && attributes->ptr)
+  if (attributes->current && attributes->iter_ptr)
     free(attributes->current);
 
-  if (!attributes->ptr)
+  if (!attributes->iter_ptr)
   {
     free(attributes->current);
     attributes->current = NULL;
@@ -96,7 +96,7 @@ canfigger_free_current_attr_str_advance(struct attributes *attributes, char **at
     return;
   }
 
-  attributes->ptr = grab_str_segment(attributes->ptr,
+  attributes->iter_ptr = grab_str_segment(attributes->iter_ptr,
                                      &attributes->current,
                                      '\n');
 
@@ -403,11 +403,11 @@ canfigger_parse_file(const char *file, const int delimiter)
         break;
       }
 
-      attr_ptr->ptr = attr_ptr->str;
+      attr_ptr->iter_ptr = attr_ptr->str;
 
       // Change the delimiter, which will be used later
       // in canfigger_free_current_attr_str_advance()
-      char *delimiter_ptr = strchr(attr_ptr->ptr, delimiter);
+      char *delimiter_ptr = strchr(attr_ptr->iter_ptr, delimiter);
       while(delimiter_ptr)
       {
         *delimiter_ptr = '\n';

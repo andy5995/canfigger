@@ -38,13 +38,13 @@
  *
  * @var attributes::str Original string containing all attributes.
  * @var attributes::current Pointer to the current attribute being processed.
- * @var attributes::ptr Pointer used for iterating through attributes.
+ * @var attributes::iter_ptr Pointer used for iterating through attributes.
  */
 struct attributes
 {
   char *str;
   char *current;
-  char *ptr;
+  char *iter_ptr;
 };
 
 /**
@@ -53,8 +53,8 @@ struct attributes
  *
  * @var Canfigger::key The key in a key-value pair.
  * @var Canfigger::value The value associated with the key.
- * @var Canfigger::attributes Attributes associated with the key.
- * @var Canfigger::next Pointer to the next key-value pair in the list.
+ * @var Canfigger::attributes pointer to an attributes struct associated with the key.
+ * @var Canfigger::next Pointer to the next node in the list.
  */
 struct Canfigger
 {
@@ -68,7 +68,7 @@ struct Canfigger
  * @brief Parses a configuration file and creates a linked list of key-value pairs.
  *
  * @param file Path to the configuration file to parse.
- * @param delimiter The character used to delimit key-value pairs in the file.
+ * @param delimiter The character used to delimit the attributes following 'value'.
  * @return Pointer to the head of the linked list of configuration entries.
  */
 struct Canfigger *canfigger_parse_file(const char *file, const int delimiter);

@@ -23,6 +23,9 @@ main(int argc, char *argv[])
   // a key (or a "setting", or an "option"), a value and attributes (if they
   // are provided in your program's configuration file.
   //
+  // The second argument is based on what the config file uses to separate
+  // the attributes.
+  //
   struct Canfigger *config = canfigger_parse_file(filename_ptr, ',');
 
   if (!config)

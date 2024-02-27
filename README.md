@@ -30,6 +30,12 @@ dhcp-range = 192.168.0.50, 192.168.0.150, 12
 # key, value with 9 attributes
 solar_system = sun, Mercury, Venus, Earth, Mars, Jupiter, Saturn, Neptune, Uranus, Pluto
 ```
+
+You can change the attribute delimiter character by passing it as the second
+argument:
+
+    canfigger_parse_file(filename_ptr, ':');
+
 ## Dependencies
 
 None

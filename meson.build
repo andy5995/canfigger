@@ -28,11 +28,10 @@ minor_version = version_components[1]
 patch_version = version_components[2]
 
 conf = configuration_data()
-conf.set_quoted('CANFIGGER_VERSION', meson.project_version())
 conf.set('CANFIGGER_VERSION_MAJOR', major_version)
 conf.set('CANFIGGER_VERSION_MINOR', minor_version)
 conf.set('CANFIGGER_VERSION_PATCH', patch_version)
-config_h = configure_file(output : 'canfigger_config.h', configuration : conf)
+config_h = configure_file(output : 'config.h', configuration : conf)
 
 inc = include_directories('.')
 

@@ -24,7 +24,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <stdlib.h> // free(), malloc()
 #include <string.h>
 
-#include "canfigger_config.h"
+// This is only required for version info and can be removed
+// if you're copying the canfigger source files to use as
+// an embedded library with your own project (i.e., not building
+// canfigger with the build system it's shipped with).
+#include "config.h"
+
 #include "canfigger.h"
 
 static char *grab_str_segment(char *a, char **dest, const int c);

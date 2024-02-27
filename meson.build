@@ -58,8 +58,8 @@ if not meson.is_subproject()
   install_headers('canfigger.h')
 
   install_subdir(
-  'docs',
-  install_dir : join_paths(get_option('docdir')),
+  join_paths('docs'),
+  install_dir : join_paths(get_option('docdir'), 'html'),
   strip_directory : true
   )
   install_data(files('README.md', 'LICENSE', 'ChangeLog.txt', 'ReleaseNotes.txt'),

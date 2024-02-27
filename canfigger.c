@@ -18,6 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include <ctype.h> // isspace()
+#include <errno.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h> // free(), malloc()
@@ -266,30 +267,36 @@ add_key_node(struct Canfigger **root, struct Canfigger **cur_node)
 static char *
 read_entire_file(const char *filename)
 {
-  FILE *file = fopen(filename, "r");
-  if (!file)
+  FILE *fp = fopen(filename, "r");
+  if (!fp)
   {
-    perror("canfigger->fopen");
+    fprintf(stderr, "Failed to open %s:%s\n", filename, strerror(errno));
     return NULL;
   }
 
-  fseek(file, 0, SEEK_END);
-  long file_size = ftell(file);
-  fseek(file, 0, SEEK_SET);
+  fseek(fp, 0, SEEK_END);
+  long file_size = ftell(fp);
+  fseek(fp, 0, SEEK_SET);
 
-  char *buffer = malloc(file_size + 1);
+  char *buffer = malloc_wrap(file_size + 1);
   if (!buffer)
   {
-    perror("canfigger->malloc");
-    fclose(file);
+    fclose(fp);
     return NULL;
   }
 
-  fread(buffer, 1, file_size, file);
+  fread(buffer, 1, file_size, fp);
   buffer[file_size] = '\0';
 
-  fclose(file);
-  return buffer;
+  int r = ferror(fp);
+  clearerr(fp);
+  fclose(fp);
+
+  if (r == 0)
+    return buffer;
+
+  fprintf(stderr, "Error reading %s(%d)\n", filename, r);
+  return NULL;
 }
 
 

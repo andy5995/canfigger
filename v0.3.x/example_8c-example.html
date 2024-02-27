@@ -100,6 +100,9 @@ $(function() {
 <div class="line">  <span class="comment">// a key (or a &quot;setting&quot;, or an &quot;option&quot;), a value and attributes (if they</span></div>
 <div class="line">  <span class="comment">// are provided in your program&#39;s configuration file.</span></div>
 <div class="line">  <span class="comment">//</span></div>
+<div class="line">  <span class="comment">// The second argument is based on what the config file uses to separate</span></div>
+<div class="line">  <span class="comment">// the attributes.</span></div>
+<div class="line">  <span class="comment">//</span></div>
 <div class="line">  <span class="keyword">struct </span><a id="_a0" name="_a0"></a><a class="code hl_struct" href="canfigger_8h.html#structCanfigger">Canfigger</a> *config = <a id="a1" name="a1"></a><a class="code hl_function" href="canfigger_8h.html#a37053197894e04e253629a9bdae52da0">canfigger_parse_file</a>(filename_ptr, <span class="charliteral">&#39;,&#39;</span>);</div>
 <div class="line"> </div>
 <div class="line">  <span class="keywordflow">if</span> (!config)</div>
@@ -139,9 +142,9 @@ $(function() {
 <div class="line">  <span class="keywordflow">return</span> 0;</div>
 <div class="line">}</div>
 <div class="ttc" id="acanfigger_8h_html"><div class="ttname"><a href="canfigger_8h.html">canfigger.h</a></div><div class="ttdoc">Header file for the Canfigger configuration parser.</div></div>
-<div class="ttc" id="acanfigger_8h_html_a095f7a89a1f2e3422870165280205a0b"><div class="ttname"><a href="canfigger_8h.html#a095f7a89a1f2e3422870165280205a0b">canfigger_free_current_key_node_advance</a></div><div class="ttdeci">void canfigger_free_current_key_node_advance(struct Canfigger **list)</div><div class="ttdoc">Frees the current key node and advances to the next node in the list.</div><div class="ttdef"><b>Definition</b> canfigger.c:112</div></div>
+<div class="ttc" id="acanfigger_8h_html_a095f7a89a1f2e3422870165280205a0b"><div class="ttname"><a href="canfigger_8h.html#a095f7a89a1f2e3422870165280205a0b">canfigger_free_current_key_node_advance</a></div><div class="ttdeci">void canfigger_free_current_key_node_advance(struct Canfigger **list)</div><div class="ttdoc">Frees the current key node and advances to the next node in the list.</div><div class="ttdef"><b>Definition</b> canfigger.c:115</div></div>
 <div class="ttc" id="acanfigger_8h_html_a37053197894e04e253629a9bdae52da0"><div class="ttname"><a href="canfigger_8h.html#a37053197894e04e253629a9bdae52da0">canfigger_parse_file</a></div><div class="ttdeci">struct Canfigger * canfigger_parse_file(const char *file, const int delimiter)</div><div class="ttdoc">Parses a configuration file and creates a linked list of key-value pairs.</div><div class="ttdef"><b>Definition</b> canfigger.c:330</div></div>
-<div class="ttc" id="acanfigger_8h_html_ae6d70f9e366beaa126a989bb2b4457b8"><div class="ttname"><a href="canfigger_8h.html#ae6d70f9e366beaa126a989bb2b4457b8">canfigger_free_current_attr_str_advance</a></div><div class="ttdeci">void canfigger_free_current_attr_str_advance(struct attributes *attributes, char **attr)</div><div class="ttdoc">Frees the current attribute string and advances to the next attribute.</div><div class="ttdef"><b>Definition</b> canfigger.c:83</div></div>
+<div class="ttc" id="acanfigger_8h_html_ae6d70f9e366beaa126a989bb2b4457b8"><div class="ttname"><a href="canfigger_8h.html#ae6d70f9e366beaa126a989bb2b4457b8">canfigger_free_current_attr_str_advance</a></div><div class="ttdeci">void canfigger_free_current_attr_str_advance(struct attributes *attributes, char **attr)</div><div class="ttdoc">Frees the current attribute string and advances to the next attribute.</div><div class="ttdef"><b>Definition</b> canfigger.c:86</div></div>
 <div class="ttc" id="acanfigger_8h_html_structCanfigger"><div class="ttname"><a href="canfigger_8h.html#structCanfigger">Canfigger</a></div><div class="ttdoc">Structure to represent a key-value pair with attributes in the configuration.</div><div class="ttdef"><b>Definition</b> canfigger.h:60</div></div>
 </div><!-- fragment --> </div><!-- contents -->
 <!-- start footer part -->

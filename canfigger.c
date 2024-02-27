@@ -23,6 +23,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <stdio.h>
 #include <stdlib.h> // free(), malloc()
 #include <string.h>
+#include <stdarg.h> // valist (variable argument function)
 
 // This is only required for version info and can be removed
 // if you're copying the canfigger source files to use as
@@ -32,10 +33,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "canfigger.h"
 
+#define strdup_wrap(...) strdup_wrap_real(__VA_ARGS__, (size_t)0)
+
 static char *grab_str_segment(char *a, char **dest, const int c);
 static void free_list(struct Canfigger **node);
-static char *strdup_generic(const char *s, size_t n,
-                            char *(*dup_func)(const char *, size_t));
+
 /** \cond */
 struct line
 {
@@ -47,33 +49,20 @@ struct line
 
 
 static char *
-strdup_wrapper(const char *s, size_t n)
+strdup_wrap_real(const char *argv, ...)
 {
-  (void) n;                     // Unused parameter, to match function signature of strndup
-  return strdup(s);
-}
+  va_list args;
+  char *src = (char *) argv;
+  va_start(args, argv);
+  size_t n = va_arg(args, size_t); // Try to get the second argument
 
+  char *retval = NULL;
+  if (n == 0) // If n is 0, it means there was no second argument
+    retval = strdup(src);
+  else
+    retval = strndup(src, n);
 
-static char *
-strdup_wrap(const char *s)
-{
-  return strdup_generic(s, 0, strdup_wrapper);  // Use the wrapper function for strdup
-}
-
-
-static char *
-strndup_wrap(const char *s, size_t n)
-{
-  return strdup_generic(s, n, strndup); // Directly use strndup
-}
-
-
-static char *
-strdup_generic(const char *s, size_t n,
-               char *(*dup_func)(const char *, size_t))
-{
-  char *retval = dup_func(s, n);
-
+  va_end(args);
   if (retval)
     return retval;
 
@@ -231,7 +220,8 @@ grab_str_segment(char *a, char **dest, const int c)
     return b;                   // NULL
   }
 
-  *dest = strndup_wrap(a, b - a);
+  size_t len = b - a;
+  *dest = strdup_wrap(a, len);
   if (!*dest)
     return NULL;
 

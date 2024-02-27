@@ -17,13 +17,13 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <ctype.h> // isspace()
+#include <ctype.h>              // isspace()
 #include <errno.h>
 #include <stdbool.h>
 #include <stdio.h>
-#include <stdlib.h> // free(), malloc()
+#include <stdlib.h>             // free(), malloc()
 #include <string.h>
-#include <stdarg.h> // valist (variable argument function)
+#include <stdarg.h>             // valist (variable argument function)
 
 // This is only required for version info and can be removed
 // if you're copying the canfigger source files to use as
@@ -54,10 +54,10 @@ strdup_wrap_real(const char *argv, ...)
   va_list args;
   char *src = (char *) argv;
   va_start(args, argv);
-  size_t n = va_arg(args, size_t); // Try to get the second argument
+  size_t n = va_arg(args, size_t);      // Try to get the second argument
 
   char *retval = NULL;
-  if (n == 0) // If n is 0, it means there was no second argument
+  if (n == 0)                   // If n is 0, it means there was no second argument
     retval = strdup(src);
   else
     retval = strndup(src, n);
@@ -72,7 +72,8 @@ strdup_wrap_real(const char *argv, ...)
 
 
 void
-canfigger_free_current_attr_str_advance(struct attributes *attributes, char **attr)
+canfigger_free_current_attr_str_advance(struct attributes *attributes,
+                                        char **attr)
 {
   if (!attributes)
   {
@@ -92,8 +93,7 @@ canfigger_free_current_attr_str_advance(struct attributes *attributes, char **at
   }
 
   attributes->iter_ptr = grab_str_segment(attributes->iter_ptr,
-                                     &attributes->current,
-                                     '\n');
+                                          &attributes->current, '\n');
 
   *attr = attributes->current;
   return;
@@ -410,7 +410,7 @@ canfigger_parse_file(const char *file, const int delimiter)
       // Change the delimiter, which will be used later
       // in canfigger_free_current_attr_str_advance()
       char *delimiter_ptr = strchr(attr_ptr->iter_ptr, delimiter);
-      while(delimiter_ptr)
+      while (delimiter_ptr)
       {
         *delimiter_ptr = '\n';
         delimiter_ptr = strchr(delimiter_ptr, delimiter);

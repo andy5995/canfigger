@@ -1,5 +1,6 @@
 [![codeql-badge]][codeql-url]
 [![actions-c-badge]][actions-c-url]
+[![cirrus-badge]][cirrus-url]
 
 # canfigger v0.3.0999
 
@@ -69,3 +70,6 @@ argument.
 [codeql-url]: https://github.com/andy5995/canfigger/actions?query=workflow%3ACodeQL
 [actions-c-badge]: https://github.com/andy5995/canfigger/actions/workflows/c-cpp.yml/badge.svg
 [actions-c-url]: https://github.com/andy5995/canfigger/actions/workflows/c-cpp.yml
+[cirrus-badge]:https://api.cirrus-ci.com/github/andy5995/canfigger.svg
+[cirrus-url]:https://cirrus-ci.com/github/andy5995/canfigger
+

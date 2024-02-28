@@ -355,7 +355,7 @@ canfigger_parse_file(const char *file, const int delimiter)
     while (isspace(*line_ptr))
       line_ptr = erase_lead_char(*line_ptr, line_ptr);
 
-    if (*line_ptr == '\0' || *line_ptr == '#')
+    if (*line_ptr == '\0' || *line_ptr == '#' || *line_ptr == '[')
       continue;
 
     node_complete = false;

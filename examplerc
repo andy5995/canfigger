@@ -3,7 +3,10 @@ Place = World, Earth
 
 FeatureEnabled
 
-IP = 192.168.1.200    
+IP = 192.168.1.200
+
+# a section to ignore
+[section]
 
 mx-host=maildomain.com,servermachine.com,50
 

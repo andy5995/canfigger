@@ -11,13 +11,13 @@ on:
     paths:
     - '**.c'
     - '**.h'
-    - '**/codeq-analysis.yml'
+    - '**/codeql-analysis.yml'
   pull_request:
     branches: trunk
     paths:
     - '**.c'
     - '**.h'
-    - '**/codeq-analysis.yml'
+    - '**/codeql-analysis.yml'
 #  schedule:
 #    - cron: '0 6 * * 6'
 

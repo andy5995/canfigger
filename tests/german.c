@@ -11,10 +11,7 @@ int main(void) {
     const char *data3[] = {"zweite", "nach eins"};
     const char *data4[] = {"ßchar", "Füße", "Gänsefüßchen", "über", "Änderung"};
 
-    char test_config_file[PATH_MAX];
-    assert((size_t)snprintf(test_config_file, sizeof test_config_file, "%s/german.conf", SOURCE_DIR) < sizeof test_config_file);
-
-    struct Canfigger *list = canfigger_parse_file(test_config_file, ',');
+    struct Canfigger *list = canfigger_parse_file(SOURCE_DIR "/german.conf", ',');
     assert (list);
 
     int i = 0;

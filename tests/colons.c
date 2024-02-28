@@ -14,9 +14,7 @@ main(void)
     {"statement", "hello world", "obvious"},
   };
 
-  char test_config_file[PATH_MAX];
-  sprintf(test_config_file, "%s/test_canfigger_colons.conf", SOURCE_DIR);
-  struct Canfigger *list = canfigger_parse_file(test_config_file, ':');
+  struct Canfigger *list = canfigger_parse_file(SOURCE_DIR "/test_canfigger_colons.conf", ':');
   assert (list);
 
   int i = 0;

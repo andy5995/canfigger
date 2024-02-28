@@ -1,11 +1,12 @@
 #include <stdio.h>
 
+#include "test.h" // Used for canfigger test, not normally needed
 #include "canfigger.h"
 
 int
 main(int argc, char *argv[])
 {
-  char *default_filename = "../examplerc";
+  char *default_filename = SOURCE_DIR "/examplerc";
   char *filename_ptr = default_filename;
 
   if (argc == 2)
@@ -30,6 +31,9 @@ main(int argc, char *argv[])
 
   if (!config)
     return -1;
+
+  // i is only used for testing
+  int i = 0;
 
   while (config != NULL)
   {
@@ -60,7 +64,12 @@ main(int argc, char *argv[])
     // Move to the next node and automatically free the current node
     canfigger_free_current_key_node_advance(&config);
     putchar('\n');
+
+    i++;
   }
+
+  // This should be the number of keys in the example config
+  assert(i == 6);
 
   return 0;
 }

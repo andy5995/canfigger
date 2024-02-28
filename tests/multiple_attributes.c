@@ -16,14 +16,8 @@ main(void)
     "after one",
   };
 
-  char test_config_file[PATH_MAX];
-  assert((size_t)
-         snprintf(test_config_file, sizeof test_config_file,
-                  "%s/multiple_attributes.conf",
-                  SOURCE_DIR) < sizeof test_config_file);
-
   // call the primary library function to read your config file
-  struct Canfigger *list = canfigger_parse_file(test_config_file, ',');
+  struct Canfigger *list = canfigger_parse_file(SOURCE_DIR "/multiple_attributes.conf", ',');
   assert (list);
 
   int i = 0;

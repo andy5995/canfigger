@@ -1,6 +1,5 @@
 #include <stdio.h>
 
-#include "test.h" // Used for canfigger test, not normally needed
 #include "canfigger.h"
 
 int
@@ -45,7 +44,12 @@ main(int argc, char *argv[])
            config->value != NULL ? config->value : "NULL");
 
     //
-    // Process attributes if necessary
+    // Process attributes if necessary. If you know there are no attributes
+    // for the current node, you can skip this, and there is no reason in
+    // this case to call canfigger_free_current_attr_str_advance().
+    //
+    // attr must be declared and initialized before using it as an
+    // argument to canfigger_free_current_attr_str_advance().
     char *attr = NULL;
     //
     // Pass '&addr' to this function and it will get assigned an
@@ -69,7 +73,8 @@ main(int argc, char *argv[])
   }
 
   // This should be the number of keys in the example config
-  assert(i == 6);
+  if (i != 6)
+    return -1;
 
   return 0;
 }

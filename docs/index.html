@@ -23,7 +23,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">canfigger<span id="projectnumber">&#160;v0.3.0</span>
+   <div id="projectname">canfigger<span id="projectnumber">&#160;v0.3.x</span>
    </div>
    <div id="projectbrief">Lightweight config file parser library</div>
   </td>
@@ -75,9 +75,9 @@ $(function() {
   <div class="headertitle"><div class="title">canfigger </div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p><a class="anchor" id="md_README"></a> <a href="https://github.com/andy5995/canfigger/actions?query=workflow%3ACodeQL">![codeql-badge]</a> <a href="https://github.com/andy5995/canfigger/actions/workflows/c-cpp.yml">![actions-c-badge]</a></p>
+<div class="textblock"><p><a class="anchor" id="md_README"></a> <a href="https://github.com/andy5995/canfigger/actions?query=workflow%3ACodeQL">![codeql-badge]</a> <a href="https://github.com/andy5995/canfigger/actions/workflows/c-cpp.yml">![actions-c-badge]</a> <a href="https://cirrus-ci.com/github/andy5995/canfigger">![cirrus-badge]</a></p>
 <h1><a class="anchor" id="autotoc_md0"></a>
-canfigger v0.3.0999</h1>
+canfigger v0.3.0</h1>
 <p><a class="el" href="canfigger_8h.html#structCanfigger" title="Structure to represent a key-value pair with attributes in the configuration.">Canfigger</a> is a lightweight C language library designed to parse configuration files. It provides functionality to read them and represent their contents as a linked list of key-value pairs, along with associated attributes for each pair.</p>
 <ul>
 <li><a href="https://andy5995.github.io/canfigger/">website/API documentation and examples</a></li>
@@ -116,6 +116,10 @@ Tests</h2>
 Example program</h2>
 <p>An example program will be built when you run <code>ninja</code>. It will read <code>examplerc</code> in the source root directory. If you want to try it with a different config file, give <code>example</code> the name of a config file as an argument.</p>
 <h2><a class="anchor" id="autotoc_md6"></a>
+Using canfigger in your project</h2>
+<p>If canfigger is not available for your operating system or distribution, you can copy the required sources (and the LICENSE file) into your project and add them to your build system. The line <code>include &lt;config.h&gt;</code> from the top of the .c file will need to be removed, as it is normally generated during the Meson setup and only contains version information.</p>
+<p>Alternatively, if your project uses Meson, you can add a <a href="https://mesonbuild.com/Wrap-dependency-system-manual.html#wrap-dependency-system-manual">wrap file</a> for canfigger in your 'subprojects' directory.</p>
+<h2><a class="anchor" id="autotoc_md7"></a>
 Projects using canfigger</h2>
 <ul>
 <li><a href="https://theimpossibleastronaut.github.io/rmw-website/">rmw</a> </li>

@@ -1,3 +1,14 @@
 Release Notes for v0.3.0
 
-will be added here before the upcoming release.
+This version introduces breaking changes. Please see example.c in the source
+root directory for usage.
+
+Notable changes:
+
+  * Use dynamic memory allocation for keys, values, and attributes.
+  * canfigger_free() replaced with canfigger_free_current_key_node_advance()
+  * canfigger_free_attr() removed
+  * use 'canfigger_free_current_attr_str_advance()' instead of
+    'list->attr_node = list->attr_node->next'
+  * In meson.build, rename dep_canfigger->canfigger_dep
+  * lines starting with '[' are ignored

@@ -1,12 +1,12 @@
 project(
   'canfigger',
   'c',
-  version: '0.3.0999',
+  version: '0.3.0',
   meson_version : '>= 0.48.0',
   default_options: [
     'warning_level=3',
-    'b_sanitize=address,undefined',
-    'b_lundef=false'
+#    'b_sanitize=address,undefined',
+#    'b_lundef=false'
     ]
   )
 
@@ -70,7 +70,6 @@ if get_option('build_examples')
     'example',
     'example.c',
     dependencies: canfigger_dep,
-    include_directories: 'tests',
     c_args: '-DSOURCE_DIR="@0@"'.format(meson.current_source_dir())
     )
 endif

@@ -1,17 +1,17 @@
 # Canfigger ChangeLog
 
-2024-02-26
+2024-02-29
 
-  - remove canfigger_attr
+  * release v0.3.0
 
-2024-02-25
+Changes since 2024-02-21
 
   * canfigger_free() replaced with canfigger_free_current_key_node_advance()
   * canfigger_free_attr() removed
   * use 'canfigger_free_current_attr_str_advance()' instead of
     'list->attr_node = list->attr_node->next'
-  * canfigger_attr points to the current attribute, or NULL if there is none
   * In meson.build, rename dep_canfigger->canfigger_dep
+  * lines starting with '[' are ignored
 
 2024-02-21
 

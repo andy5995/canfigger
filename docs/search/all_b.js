@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['v0_203_200999_0',['canfigger v0.3.0999',['../index.html#autotoc_md0',1,'']]]
+  ['using_20canfigger_0',['Projects using canfigger',['../index.html#autotoc_md7',1,'']]],
+  ['using_20canfigger_20in_20your_20project_1',['Using canfigger in your project',['../index.html#autotoc_md6',1,'']]]
 ];

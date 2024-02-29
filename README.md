@@ -10,6 +10,3 @@
 ## Version Documentation
 
 [v0.3.x](https://andy5995.github.io/canfigger/v0.3.x)
-
-Note that v0.3.0 has not been released yet, and the API documentation for
-v0.2.0 is mostly in the README for that release.

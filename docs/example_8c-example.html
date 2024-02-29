@@ -23,7 +23,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">canfigger<span id="projectnumber">&#160;v0.3.0</span>
+   <div id="projectname">canfigger<span id="projectnumber">&#160;v0.3.x</span>
    </div>
    <div id="projectbrief">Lightweight config file parser library</div>
   </td>
@@ -77,12 +77,13 @@ $(function() {
 <div class="contents">
 <div class="fragment"><div class="line"><span class="preprocessor">#include &lt;stdio.h&gt;</span></div>
 <div class="line"> </div>
+<div class="line"><span class="preprocessor">#include &quot;test.h&quot;</span> <span class="comment">// Used for canfigger test, not normally needed</span></div>
 <div class="line"><span class="preprocessor">#include &quot;<a class="code" href="canfigger_8h.html">canfigger.h</a>&quot;</span></div>
 <div class="line"> </div>
 <div class="line"><span class="keywordtype">int</span></div>
 <div class="line">main(<span class="keywordtype">int</span> argc, <span class="keywordtype">char</span> *argv[])</div>
 <div class="line">{</div>
-<div class="line">  <span class="keywordtype">char</span> *default_filename = <span class="stringliteral">&quot;../examplerc&quot;</span>;</div>
+<div class="line">  <span class="keywordtype">char</span> *default_filename = SOURCE_DIR <span class="stringliteral">&quot;/examplerc&quot;</span>;</div>
 <div class="line">  <span class="keywordtype">char</span> *filename_ptr = default_filename;</div>
 <div class="line"> </div>
 <div class="line">  <span class="keywordflow">if</span> (argc == 2)</div>
@@ -107,6 +108,9 @@ $(function() {
 <div class="line"> </div>
 <div class="line">  <span class="keywordflow">if</span> (!config)</div>
 <div class="line">    <span class="keywordflow">return</span> -1;</div>
+<div class="line"> </div>
+<div class="line">  <span class="comment">// i is only used for testing</span></div>
+<div class="line">  <span class="keywordtype">int</span> i = 0;</div>
 <div class="line"> </div>
 <div class="line">  <span class="keywordflow">while</span> (config != NULL)</div>
 <div class="line">  {</div>
@@ -137,14 +141,19 @@ $(function() {
 <div class="line">    <span class="comment">// Move to the next node and automatically free the current node</span></div>
 <div class="line">    <a id="a6" name="a6"></a><a class="code hl_function" href="canfigger_8h.html#a095f7a89a1f2e3422870165280205a0b">canfigger_free_current_key_node_advance</a>(&amp;config);</div>
 <div class="line">    putchar(<span class="charliteral">&#39;\n&#39;</span>);</div>
+<div class="line"> </div>
+<div class="line">    i++;</div>
 <div class="line">  }</div>
+<div class="line"> </div>
+<div class="line">  <span class="comment">// This should be the number of keys in the example config</span></div>
+<div class="line">  assert(i == 6);</div>
 <div class="line"> </div>
 <div class="line">  <span class="keywordflow">return</span> 0;</div>
 <div class="line">}</div>
 <div class="ttc" id="acanfigger_8h_html"><div class="ttname"><a href="canfigger_8h.html">canfigger.h</a></div><div class="ttdoc">Header file for the Canfigger configuration parser.</div></div>
-<div class="ttc" id="acanfigger_8h_html_a095f7a89a1f2e3422870165280205a0b"><div class="ttname"><a href="canfigger_8h.html#a095f7a89a1f2e3422870165280205a0b">canfigger_free_current_key_node_advance</a></div><div class="ttdeci">void canfigger_free_current_key_node_advance(struct Canfigger **list)</div><div class="ttdoc">Frees the current key node and advances to the next node in the list.</div><div class="ttdef"><b>Definition</b> canfigger.c:115</div></div>
+<div class="ttc" id="acanfigger_8h_html_a095f7a89a1f2e3422870165280205a0b"><div class="ttname"><a href="canfigger_8h.html#a095f7a89a1f2e3422870165280205a0b">canfigger_free_current_key_node_advance</a></div><div class="ttdeci">void canfigger_free_current_key_node_advance(struct Canfigger **list)</div><div class="ttdoc">Frees the current key node and advances to the next node in the list.</div><div class="ttdef"><b>Definition</b> canfigger.c:114</div></div>
 <div class="ttc" id="acanfigger_8h_html_a37053197894e04e253629a9bdae52da0"><div class="ttname"><a href="canfigger_8h.html#a37053197894e04e253629a9bdae52da0">canfigger_parse_file</a></div><div class="ttdeci">struct Canfigger * canfigger_parse_file(const char *file, const int delimiter)</div><div class="ttdoc">Parses a configuration file and creates a linked list of key-value pairs.</div><div class="ttdef"><b>Definition</b> canfigger.c:330</div></div>
-<div class="ttc" id="acanfigger_8h_html_ae6d70f9e366beaa126a989bb2b4457b8"><div class="ttname"><a href="canfigger_8h.html#ae6d70f9e366beaa126a989bb2b4457b8">canfigger_free_current_attr_str_advance</a></div><div class="ttdeci">void canfigger_free_current_attr_str_advance(struct attributes *attributes, char **attr)</div><div class="ttdoc">Frees the current attribute string and advances to the next attribute.</div><div class="ttdef"><b>Definition</b> canfigger.c:86</div></div>
+<div class="ttc" id="acanfigger_8h_html_ae6d70f9e366beaa126a989bb2b4457b8"><div class="ttname"><a href="canfigger_8h.html#ae6d70f9e366beaa126a989bb2b4457b8">canfigger_free_current_attr_str_advance</a></div><div class="ttdeci">void canfigger_free_current_attr_str_advance(struct attributes *attributes, char **attr)</div><div class="ttdoc">Frees the current attribute string and advances to the next attribute.</div><div class="ttdef"><b>Definition</b> canfigger.c:75</div></div>
 <div class="ttc" id="acanfigger_8h_html_structCanfigger"><div class="ttname"><a href="canfigger_8h.html#structCanfigger">Canfigger</a></div><div class="ttdoc">Structure to represent a key-value pair with attributes in the configuration.</div><div class="ttdef"><b>Definition</b> canfigger.h:60</div></div>
 </div><!-- fragment --> </div><!-- contents -->
 <!-- start footer part -->

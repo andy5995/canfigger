@@ -16,7 +16,8 @@ extra_flags = [
   '-Wshadow',
   '-Wstrict-overflow=5',
   '-Wformat-security',
-  '-Wformat-overflow=2'
+  '-Wformat-overflow=2',
+  '-Wunused-result'
 ]
 
 add_project_arguments(cc.get_supported_arguments(extra_flags), language: 'c')

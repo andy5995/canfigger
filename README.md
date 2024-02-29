@@ -61,6 +61,18 @@ An example program will be built when you run `ninja`. It will read
 different config file, give `example` the name of a config file as an
 argument.
 
+## Using canfigger in your project
+
+If canfigger is not available for your operating system or distribution, you
+can copy the required sources (and the LICENSE file) into your project and add
+them to your build system. The line `include <config.h>` from the top of the
+.c file will need to be removed, as it is normally generated during the Meson
+setup and only contains version information.
+
+Alternatively, if your project uses Meson, you can add a [wrap
+file](https://mesonbuild.com/Wrap-dependency-system-manual.html#wrap-dependency-system-manual)
+for canfigger in your 'subprojects' directory.
+
 <!-- Add your project here if it has had at least one release -->
 ## Projects using canfigger
 

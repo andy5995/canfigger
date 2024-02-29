@@ -95,7 +95,17 @@ canfigger_free_current_attr_str_advance(struct attributes *attributes,
   attributes->iter_ptr = grab_str_segment(attributes->iter_ptr,
                                           &attributes->current, '\n');
 
-  *attr = attributes->current;
+  if (*attributes->current)
+  {
+    *attr = attributes->current;
+    return;
+  }
+
+  // If we're here, that means strdup() failed to allocate memory in grab_str_segment()
+  // If an expected attribute isn't returned, the caller may want to terminate
+  // the remainder of the loop that's iterating through the entire linked list
+  // and exit the program.
+  *attr = NULL;
   return;
 }
 

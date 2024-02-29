@@ -62,8 +62,16 @@ if not meson.is_subproject()
   install_dir : join_paths(get_option('docdir'), 'html'),
   strip_directory : true
   )
-  install_data(files('README.md', 'LICENSE', 'ChangeLog.txt', 'ReleaseNotes.txt'),
-          install_dir : get_option('docdir'))
+
+  install_data(files(
+    'ChangeLog.txt',
+    'example.c',
+    'examplerc',
+    'LICENSE',
+    'README.md',
+    'ReleaseNotes.txt'
+    ),
+    install_dir : get_option('docdir'))
 endif
 
 if get_option('build_examples')

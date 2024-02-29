@@ -70,7 +70,6 @@ if get_option('build_examples')
     'example',
     'example.c',
     dependencies: canfigger_dep,
-    include_directories: 'tests',
     c_args: '-DSOURCE_DIR="@0@"'.format(meson.current_source_dir())
     )
 endif

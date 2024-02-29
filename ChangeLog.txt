@@ -1,5 +1,9 @@
 # Canfigger ChangeLog
 
+2024-02-29
+
+  * release v0.3.0
+
 Changes since 2024-02-21
 
   * canfigger_free() replaced with canfigger_free_current_key_node_advance()

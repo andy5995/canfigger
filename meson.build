@@ -42,12 +42,24 @@ buildtarget = library(
   src,
   include_directories : inc,
   version : meson.project_version(),
-  install: not meson.is_subproject())
+  install: not meson.is_subproject()
+  )
 
 # How to use in a superproject and other info
 # https://mesonbuild.com/Subprojects.html
-canfigger_dep = declare_dependency(include_directories : inc,
-  link_with : buildtarget)
+canfigger_dep = declare_dependency(
+  include_directories : inc,
+  link_with : buildtarget
+  )
+
+if get_option('build_examples')
+  example = executable(
+    'example',
+    'example.c',
+    dependencies: canfigger_dep,
+    c_args: '-DSOURCE_DIR="@0@"'.format(meson.current_source_dir())
+    )
+endif
 
 if not meson.is_subproject()
   pkg = import('pkgconfig')
@@ -72,17 +84,8 @@ if not meson.is_subproject()
     'ReleaseNotes.txt'
     ),
     install_dir : get_option('docdir'))
-endif
 
-if get_option('build_examples')
-  example = executable(
-    'example',
-    'example.c',
-    dependencies: canfigger_dep,
-    c_args: '-DSOURCE_DIR="@0@"'.format(meson.current_source_dir())
-    )
-endif
-
-if get_option('build_tests')
-  subdir('tests')
+  if get_option('build_tests')
+    subdir('tests')
+  endif
 endif

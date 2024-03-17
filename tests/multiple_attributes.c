@@ -23,11 +23,6 @@ main(void)
   int i = 0;
   while (list)
   {
-    printf("\n\
-Key: %s\n\
-Value: %s\n\
-Attribute: %s\n", list->key, list->value, list->attributes->current);
-
     // assert (strcmp (data[i].key, list->key) == 0);
     // assert (strcmp (data[i].value, list->value) == 0);
     int j = 0;
@@ -37,19 +32,25 @@ Attribute: %s\n", list->key, list->value, list->attributes->current);
     // Pass '&addr' to this function and it will get assigned an
     // attribute, or NULL if there are none.
     canfigger_free_current_attr_str_advance(list->attributes, &attr);
+
+    printf("\n\
+Key: %s\n\
+Value: %s\n\
+Attribute: %s\n", list->key, list->value, attr != NULL ? attr : "NULL");
+
     while (attr)
     {
-      fprintf(stderr, "attr: %s\n", list->attributes->current);
+      fprintf(stderr, "attr: %s\n", attr);
       switch (i)
       {
       case 0:
-        assert(strcmp(data1[j], list->attributes->current) == 0);
+        assert(strcmp(data1[j], attr) == 0);
         break;
       case 1:
-        assert(strcmp(data2[j], list->attributes->current) == 0);
+        assert(strcmp(data2[j], attr) == 0);
         break;
       case 2:
-        assert(strcmp(data3[j], list->attributes->current) == 0);
+        assert(strcmp(data3[j], attr) == 0);
         break;
       }
       j++;

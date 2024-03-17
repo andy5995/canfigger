@@ -25,7 +25,7 @@ main(void)
 
   // call the primary library function to read your config file
   struct Canfigger *list = canfigger_parse_file(test_config_file, ',');
-  assert (list);
+  assert(list);
 
   int i = 0;
   while (list)
@@ -36,14 +36,16 @@ main(void)
     fprintf(stderr, "\n\
 Key: %s | Expected: %s\n\
 Value: %s | Expected: %s\n\
-Attribute: %s | Expected: %s\n", list->key, data[i].key, list->value != NULL ? list->value : "NULL", data[i].value, attr != NULL ? attr : "NULL", data[i].attribute);
+Attribute: %s | Expected: %s\n",
+  list->key, data[i].key,
+  list->value ? list->value : "NULL",  data[i].value ? data[i].value : "NULL",
+  attr ? attr : "NULL", data[i].attribute ? data[i].attribute : "NULL");
 
     assert(strcmp(data[i].key, list->key) == 0);
     assert(strcmp
            (data[i].value != NULL ? data[i].value : "NULL",
             list->value != NULL ? list->value : "NULL") == 0);
-    fprintf(stderr, "attr: %s\n",
-            attr != NULL ? attr : "NULL");
+    fprintf(stderr, "attr: %s\n", attr != NULL ? attr : "NULL");
     assert(strcmp
            (attr != NULL ? data[i].attribute : "NULL",
             attr != NULL ? attr : "NULL") == 0);

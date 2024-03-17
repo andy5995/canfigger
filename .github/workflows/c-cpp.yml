@@ -24,8 +24,9 @@ on:
 jobs:
   linux:
     strategy:
+      fail-fast: false
       matrix:
-        cc: [gcc, clang]
+        cc: [gcc-10, gcc-11, clang-13, clang-14]
     runs-on: ubuntu-latest
     env:
       CC: ${{ matrix.cc }}
@@ -36,7 +37,7 @@ jobs:
       run: |
         sudo apt remove -y firefox
         sudo apt update && sudo apt upgrade -y
-        sudo apt install -y meson $CC
+        sudo apt install -y meson ninja-build $CC
 
     - name: Build
       run: |

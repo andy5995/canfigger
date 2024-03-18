@@ -18,7 +18,7 @@ freebsd13_task:
     - pkg install -y meson ninja
 
   setup_script:
-    - meson setup _build
+    - meson setup _build -Db_sanitize=address,undefined -Db_lundef=false
   build_script:
     - cd _build && ninja -v
   test_script:
@@ -35,7 +35,7 @@ freebsd14_task:
     - pkg install -y meson ninja
 
   setup_script:
-    - meson setup _build
+    - meson setup _build -Db_sanitize=address,undefined -Db_lundef=false
   build_script:
     - cd _build && ninja -v
   test_script:
@@ -50,7 +50,7 @@ macos_task:
     - brew update
     - brew install meson ninja
   setup_script:
-  - meson setup _build
+  - meson setup _build -Db_sanitize=address,undefined -Db_lundef=false
   build_script:
   - cd _build && ninja
   test_script:

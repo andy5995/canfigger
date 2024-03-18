@@ -26,7 +26,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        cc: [gcc-10, gcc-11, gcc-13, clang-13, clang-14]
+        cc: [gcc-9, gcc-11, clang-13, clang-14]
     runs-on: ubuntu-latest
     env:
       CC: ${{ matrix.cc }}
@@ -41,7 +41,7 @@ jobs:
 
     - name: Build
       run: |
-       meson setup _build
+       meson setup _build -Db_sanitize=address,undefined -Db_lundef=false
        cd _build
        ninja
     - name: Test
@@ -53,7 +53,7 @@ jobs:
     - uses: actions/checkout@v4
     - run: brew install meson
     - run: |
-       meson setup _build
+       meson setup _build -Db_sanitize=address,undefined -Db_lundef=false
        cd _build
        ninja
        meson test -v

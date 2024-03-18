@@ -35,8 +35,9 @@ jobs:
 
     - name: Install dependencies
       run: |
-        sudo apt remove -y firefox
-        sudo apt update && sudo apt upgrade -y
+        # sudo apt remove -y firefox
+        sudo apt update
+        # sudo apt upgrade -y
         sudo apt install -y meson ninja-build $CC
 
     - name: Build

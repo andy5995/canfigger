@@ -33,6 +33,12 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
+    - name: Fix kernel mmap rnd bits
+      # Asan in llvm 14 provided in ubuntu 22.04 is incompatible with
+      # high-entropy ASLR in much newer kernels that GitHub runners are
+      # using leading to random crashes: https://reviews.llvm.org/D148280
+      run: sudo sysctl vm.mmap_rnd_bits=28
+
     - name: Install dependencies
       run: |
         # sudo apt remove -y firefox

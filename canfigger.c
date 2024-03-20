@@ -275,12 +275,19 @@ read_entire_file(const char *filename)
   FILE *fp = fopen(filename, "r");
   if (!fp)
   {
-    fprintf(stderr, "Failed to open %s:%s\n", filename, strerror(errno));
+    fprintf(stderr, "Failed to open %s: %s\n", filename, strerror(errno));
     return NULL;
   }
 
   fseek(fp, 0, SEEK_END);
   long file_size = ftell(fp);
+  if (file_size < 0)
+  {
+    fprintf(stderr, "Error getting the size of %s: %s\n", filename,
+            strerror(errno));
+    fclose(fp);
+    return NULL;
+  }
   fseek(fp, 0, SEEK_SET);
 
   char *buffer = malloc_wrap(file_size + 1);
@@ -290,17 +297,30 @@ read_entire_file(const char *filename)
     return NULL;
   }
 
-  fread(buffer, 1, file_size, fp);
-  buffer[file_size] = '\0';
+  size_t n_bytes = fread(buffer, 1, file_size, fp);
 
-  int r = ferror(fp);
-  clearerr(fp);
-  fclose(fp);
+  if (ferror(fp))
+  {
+    fprintf(stderr, "Error reading %s: %s\n", filename, strerror(errno));
+    free(buffer);
+    fclose(fp);
+    return NULL;
+  }
 
-  if (r == 0)
+  // Note that if the return value of ftell() is -1 this cast would be bad.
+  // However, above, the return value of ftell() is checked, and the function
+  // returns if the value is < 0
+  if (n_bytes == (size_t) file_size)
+  {
+    buffer[file_size] = '\0';
+    fclose(fp);
     return buffer;
+  }
 
-  fprintf(stderr, "Error reading %s(%d)\n", filename, r);
+  free(buffer);
+  fprintf(stderr, "Partial read of %s: expected %ld bytes, got %zu bytes\n",
+          filename, file_size, n_bytes);
+  fclose(fp);
   return NULL;
 }
 

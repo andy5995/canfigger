@@ -15,7 +15,10 @@ extra_flags = [
   '-Wstrict-overflow=5',
   '-Wformat-security',
   '-Wformat-overflow=2',
-  '-Wunused-result'
+  '-Wunused-result',
+  '-Werror=odr',
+  '-Werror=lto-type-mismatch',
+  '-Werror=strict-aliasing',
 ]
 
 add_project_arguments(cc.get_supported_arguments(extra_flags), language: 'c')

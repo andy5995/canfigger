@@ -36,13 +36,10 @@ conf.set('CANFIGGER_VERSION_MINOR', minor_version)
 conf.set('CANFIGGER_VERSION_PATCH', patch_version)
 config_h = configure_file(output : 'config.h', configuration : conf)
 
-inc = include_directories('.')
-
 src = ('canfigger.c')
 buildtarget = library(
   meson.project_name(),
   src,
-  include_directories : inc,
   version : meson.project_version(),
   install: not meson.is_subproject()
   )
@@ -50,7 +47,7 @@ buildtarget = library(
 # How to use in a superproject and other info
 # https://mesonbuild.com/Subprojects.html
 canfigger_dep = declare_dependency(
-  include_directories : inc,
+  include_directories : include_directories('.'),
   link_with : buildtarget
   )
 

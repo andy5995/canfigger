@@ -1,0 +1,7 @@
+; canfigger.def
+LIBRARY "canfigger"
+EXPORTS
+    ; Export functions for use in other applications
+    canfigger_parse_file
+    canfigger_free_current_key_node_advance
+    canfigger_free_current_attr_str_advance

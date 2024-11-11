@@ -41,7 +41,8 @@ buildtarget = library(
   meson.project_name(),
   src,
   version : meson.project_version(),
-  install: not meson.is_subproject()
+  install: not meson.is_subproject(),
+  vs_module_defs: 'canfigger.def'
   )
 
 # How to use in a superproject and other info

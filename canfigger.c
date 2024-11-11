@@ -30,7 +30,6 @@ SOFTWARE.
 #include <stdio.h>
 #include <stdlib.h>             // free(), malloc()
 #include <string.h>
-#include <stdarg.h>             // valist (variable argument function)
 
 // This is only required for version info and can be removed
 // if you're copying the canfigger source files to use as
@@ -39,8 +38,6 @@ SOFTWARE.
 #include "config.h"
 
 #include "canfigger.h"
-
-#define strdup_wrap(...) strdup_wrap_real(__VA_ARGS__, (size_t)0)
 
 static char *grab_str_segment(char *a, char **dest, const int c);
 static void free_list(struct Canfigger **node);
@@ -56,34 +53,28 @@ struct line
 
 
 static char *
-strdup_wrap_real(const char *argv, ...)
+strclone(const char *src, size_t n)
 {
-  va_list args;
-  char *src = (char *) argv;
-  va_start(args, argv);
-  size_t n = va_arg(args, size_t);      // Try to get the second argument
-
-  char *retval = NULL;
+  char *dest = NULL;
   if (n == 0)                   // If n is 0, it means there was no second argument
   {
-    retval = malloc(strlen(src) + 1);
-    if (retval)
-      strcpy(retval, src);
+    dest = malloc(strlen(src) + 1);
+    if (dest)
+      strcpy(dest, src);
   }
   else
   {
-    retval = malloc(n + 1);
-    if (retval)
+    dest = malloc(n + 1);
+    if (dest)
     {
-      memcpy(retval, src, n);
-      retval[n] = '\0';
+      memcpy(dest, src, n);
+      dest[n] = '\0';
     }
   }
-  va_end(args);
 
-  if (!retval)
-    perror("Failed to duplicate string:");
-  return retval;
+  if (!dest)
+    perror("malloc (canfigger)");
+  return dest;
 }
 
 
@@ -242,12 +233,12 @@ grab_str_segment(char *a, char **dest, const int c)
   char *b = strchr(a, c);
   if (!b)
   {
-    *dest = strdup_wrap(a);
+    *dest = strclone(a, 0);
     return b;                   // NULL
   }
 
   size_t len = b - a;
-  *dest = strdup_wrap(a, len);
+  *dest = strclone(a, len);
   if (!*dest)
     return NULL;
 
@@ -454,7 +445,7 @@ canfigger_parse_file(const char *file, const int delimiter)
       struct attributes *attr_ptr = cur_node->attributes;
       attr_ptr->current = NULL;
 
-      attr_ptr->str = strdup_wrap(line_ptr);
+      attr_ptr->str = strclone(line_ptr, 0);
       if (!attr_ptr->str)
       {
         free(tmp_line);

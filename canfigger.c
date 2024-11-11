@@ -279,7 +279,7 @@ add_key_node(struct Canfigger **root, struct Canfigger **cur_node)
 static char *
 read_entire_file(const char *filename)
 {
-  FILE *fp = fopen(filename, "r");
+  FILE *fp = fopen(filename, "rb");
   if (!fp)
   {
     fprintf(stderr, "Failed to open %s: %s\n", filename, strerror(errno));

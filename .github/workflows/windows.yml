@@ -62,7 +62,7 @@ jobs:
 
       - name: Test
         run: |
-          meson test -v -C builddir || cat builddir\meson-logs\testlog.txt
+          meson test -t 2 -C builddir || cat builddir\meson-logs\testlog.txt
 
   #MSYS2:
       #runs-on: windows-latest

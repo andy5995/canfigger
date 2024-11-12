@@ -32,8 +32,6 @@ jobs:
         platform: ['x64', 'x86']
     steps:
       - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
       # Install a 32-bit Python so building related stuff work.
       - name: Setup x86 Python
@@ -55,14 +53,14 @@ jobs:
         with:
           arch: ${{matrix.platform}}
       - name: Configure
-        run: meson setup builddir -Db_sanitize=none
+        run: meson setup builddir -Ddefault_library=static -Db_sanitize=none
 
       - name: Build
         run: meson compile -C builddir
 
       - name: Test
         run: |
-          meson test -t 2 -C builddir || cat builddir\meson-logs\testlog.txt
+          meson test -C builddir || cat builddir\meson-logs\testlog.txt
 
   #MSYS2:
       #runs-on: windows-latest

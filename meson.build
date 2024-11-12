@@ -37,21 +37,12 @@ conf.set('CANFIGGER_VERSION_PATCH', patch_version)
 config_h = configure_file(output : 'config.h', configuration : conf)
 
 src = ('canfigger.c')
-if build_machine.system() != 'windows'
   buildtarget = library(
     meson.project_name(),
     src,
     version : meson.project_version(),
     install: not meson.is_subproject(),
     )
-else
-  buildtarget = static_library(
-    meson.project_name(),
-    src,
-    install: not meson.is_subproject(),
-    # vs_module_defs: 'canfigger.def'
-    )
-endif
 
 # How to use in a superproject and other info
 # https://mesonbuild.com/Subprojects.html

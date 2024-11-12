@@ -287,53 +287,56 @@ read_entire_file(const char *filename)
     return NULL;
   }
 
-  const size_t chunkSize = 1024;
-  char *buffer = NULL;
-  size_t bufferSize = 0;
-  size_t bytesRead;
+  //fseek(fp, 0, SEEK_END);
+  //long file_size = ftell(fp);
+  long file_size = -1;
+  struct stat st;
+  if (stat(filename, &st) == 0)
+    file_size = st.st_size;
+  else
+    perror("stat failed");
 
-  do
+  if (file_size < 0)
   {
-    char tempBuffer[chunkSize];
-    bytesRead = fread(tempBuffer, 1, chunkSize, fp);
-
-    if (bytesRead > 0)
-    {
-      // Reallocate buffer to accommodate new data plus a null terminator
-      char *newBuffer = realloc(buffer, bufferSize + bytesRead + 1);
-      if (!newBuffer)
-      {
-        free(buffer);
-        perror("Failed to allocate memory");
-        fclose(fp);
-        return NULL;
-      }
-      buffer = newBuffer;
-
-      // Append the read data to the end of the buffer
-      memcpy(buffer + bufferSize, tempBuffer, bytesRead);
-      bufferSize += bytesRead;
-    }
+    fprintf(stderr, "Error getting the size of %s: %s\n", filename,
+            strerror(errno));
+    fclose(fp);
+    return NULL;
   }
-  while (bytesRead == chunkSize);
+  fseek(fp, 0, SEEK_SET);
 
-  if (ferror(fp))
+  char *buffer = malloc_wrap(file_size + 1);
+  if (!buffer)
   {
-    free(buffer);
-    perror("Error reading file");
     fclose(fp);
     return NULL;
   }
 
-  fclose(fp);
+  size_t n_bytes = fread(buffer, 1, file_size, fp);
 
-  // Null-terminate the buffer
-  if (buffer)
+  if (ferror(fp))
   {
-    buffer[bufferSize] = '\0';
+    fprintf(stderr, "Error reading %s: %s\n", filename, strerror(errno));
+    free(buffer);
+    fclose(fp);
+    return NULL;
   }
 
-  return buffer;
+  // Note that if the return value of ftell() is -1 this cast would be bad.
+  // However, above, the return value of ftell() is checked, and the function
+  // returns if the value is < 0
+  if (n_bytes == (size_t) file_size)
+  {
+    buffer[file_size] = '\0';
+    fclose(fp);
+    return buffer;
+  }
+
+  free(buffer);
+  fprintf(stderr, "Partial read of %s: expected %ld bytes, got %zu bytes\n",
+          filename, file_size, n_bytes);
+  fclose(fp);
+  return NULL;
 }
 
 
@@ -363,9 +366,11 @@ canfigger_parse_file(const char *file, const int delimiter)
 {
   struct Canfigger *root = NULL, *cur_node = NULL;
 
-  char *file_contents = read_entire_file(file);
-  if (file_contents == NULL)
+  char *buffer = read_entire_file(file);
+  if (buffer == NULL)
     return NULL;
+
+  char *file_contents = buffer;
 
   struct line line;
   line.start = file_contents;

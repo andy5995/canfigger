@@ -26,6 +26,7 @@ SOFTWARE.
 
 #include <ctype.h>              // isspace()
 #include <errno.h>
+#include <sys/stat.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>             // free(), malloc()
@@ -286,8 +287,15 @@ read_entire_file(const char *filename)
     return NULL;
   }
 
-  fseek(fp, 0, SEEK_END);
-  long file_size = ftell(fp);
+  //fseek(fp, 0, SEEK_END);
+  //long file_size = ftell(fp);
+  long file_size = -1;
+  struct stat st;
+  if (stat(filename, &st) == 0)
+    file_size = st.st_size;
+  else
+    perror("stat failed");
+
   if (file_size < 0)
   {
     fprintf(stderr, "Error getting the size of %s: %s\n", filename,

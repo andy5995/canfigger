@@ -41,9 +41,9 @@ jobs:
 
     - name: Install dependencies
       run: |
-        # sudo apt remove -y firefox
         sudo apt update
-        # sudo apt upgrade -y
+        sudo apt remove -y firefox
+        sudo apt upgrade -y
         sudo apt install -y meson ninja-build $CC
 
     - name: Build
@@ -64,3 +64,28 @@ jobs:
        cd _build
        ninja
        meson test -v
+  rmw:
+    runs-on: ubuntu-latest
+    needs:
+      - linux
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        path: 'subprojects/canfigger'
+    - uses: actions/checkout@v4
+      with:
+        repository:
+          'theimpossibleastronaut/rmw'
+
+    - name: Install dependencies
+      run: |
+        sudo apt update
+        sudo apt remove -y firefox
+        sudo apt upgrade -y
+        sudo apt install -y meson ninja-build
+
+    - name: Configure
+      run: meson setup builddir -Dwithout-curses=true -Dnls=false
+
+    - name: Build and Test
+      run: meson test -v -C builddir

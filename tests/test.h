@@ -9,4 +9,8 @@
 #include <limits.h>
 #include "canfigger.h"
 
+#ifndef PATH_MAX
+#define PATH_MAX 1024
+#endif
+
 #define ARRAY_SIZE(a) (sizeof(a) / sizeof(a)[0])

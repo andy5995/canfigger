@@ -1,5 +1,9 @@
 # Canfigger ChangeLog
 
+2025-01-06
+
+  * Fix Windows build
+
 2024-02-29
 
   * release v0.3.0

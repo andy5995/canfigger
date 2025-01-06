@@ -37,6 +37,10 @@ SOFTWARE.
 
 #pragma once
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /**
  * \example example.c
  */
@@ -96,3 +100,7 @@ void canfigger_free_current_key_node_advance(struct Canfigger **list);
  * @param attr Current attribute that will get reassigned after the function call.
  */
 void canfigger_free_current_attr_str_advance(struct attributes *attributes, char **attr);
+
+#ifdef __cplusplus
+}
+#endif

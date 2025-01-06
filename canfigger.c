@@ -56,7 +56,7 @@ static char *
 strclone(const char *src, size_t n)
 {
   char *dest = NULL;
-  if (n == 0)                   // If n is 0, it means there was no second argument
+  if (n == 0)
   {
     dest = malloc(strlen(src) + 1);
     if (dest)
@@ -234,7 +234,7 @@ grab_str_segment(char *a, char **dest, const int c)
   if (!b)
   {
     *dest = strclone(a, 0);
-    return b;                   // NULL
+    return b;
   }
 
   size_t len = b - a;

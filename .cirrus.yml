@@ -9,9 +9,9 @@ filter_template: &filter_template
 
 freebsd13_task:
   <<: *filter_template
-  name: FreeBSD 13.3
+  name: FreeBSD 13.4
   freebsd_instance:
-    image_family: freebsd-13-3
+    image_family: freebsd-13-4
 
   pkginstall_script:
     - pkg update -f
@@ -26,9 +26,9 @@ freebsd13_task:
 
 freebsd14_task:
   <<: *filter_template
-  name: FreeBSD 14.1
+  name: FreeBSD 14.2
   freebsd_instance:
-    image_family: freebsd-14-1
+    image_family: freebsd-14-2
 
   pkginstall_script:
     - pkg update -f

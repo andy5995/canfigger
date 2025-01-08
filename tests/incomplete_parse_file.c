@@ -1,0 +1,77 @@
+#include "test.h"
+
+// Note this test may only return the correct result
+// when it and the library are built with sanitize enabled
+
+int
+main(void)
+{
+  const struct expected
+  {
+    const char *key;
+    const char *value;
+    const char *attribute;
+  } data[] = {
+    {"foo", "bar", NULL},
+    {"blue", "color", "shiny"},
+    {"statement", "hello world", "obvious"},
+    {"leadingSpace", "nullified", NULL},
+    {"fookey", "bar-value", NULL},
+    {"FeatureFooEnabled", NULL, NULL},
+  };
+
+  char test_config_file[PATH_MAX];
+  assert((size_t)
+         snprintf(test_config_file, sizeof test_config_file,
+                  "%s/test_canfigger.conf",
+                  SOURCE_DIR) < sizeof test_config_file);
+
+  // call the primary library function to read your config file
+  struct Canfigger *list = canfigger_parse_file(test_config_file, ',');
+  assert(list);
+
+  // Free the list without actually looking at any keys
+  canfigger_free_list(&list);
+  assert(!list);
+
+  list = canfigger_parse_file(test_config_file, ',');
+  assert(list);
+
+  int i = 0;
+  int incomplete_get = ARRAY_SIZE(data) / 2;
+  assert(incomplete_get == 3);
+  while (i < incomplete_get)
+  {
+    char *attr = NULL;
+    canfigger_free_current_attr_str_advance(list->attributes, &attr);
+
+    fprintf(stderr, "\n\
+Key: %s | Expected: %s\n\
+Value: %s | Expected: %s\n\
+Attribute: %s | Expected: %s\n",
+  list->key, data[i].key,
+  list->value ? list->value : "NULL",  data[i].value ? data[i].value : "NULL",
+  attr ? attr : "NULL", data[i].attribute ? data[i].attribute : "NULL");
+
+    assert(strcmp(data[i].key, list->key) == 0);
+    assert(strcmp
+           (data[i].value != NULL ? data[i].value : "NULL",
+            list->value != NULL ? list->value : "NULL") == 0);
+    fprintf(stderr, "attr: %s\n", attr != NULL ? attr : "NULL");
+    assert(strcmp
+           (attr != NULL ? data[i].attribute : "NULL",
+            attr != NULL ? attr : "NULL") == 0);
+    i++;
+
+    canfigger_free_current_key_node_advance(&list);
+  }
+
+  assert (list);
+  canfigger_free_list(&list);
+  // 'list' should be NULL, not a dangling pointer
+  assert(list == NULL);
+
+  assert(i == incomplete_get);
+
+  return 0;
+}

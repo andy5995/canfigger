@@ -101,6 +101,13 @@ void canfigger_free_current_key_node_advance(struct Canfigger **list);
  */
 void canfigger_free_current_attr_str_advance(struct attributes *attributes, char **attr);
 
+/**
+ * @brief Frees the remainder of list allocated by canfigger_parse_file().
+ *
+ * @param list Double pointer to the current node in the linked list.
+ */
+void canfigger_free_list(struct Canfigger **node);
+
 #ifdef __cplusplus
 }
 #endif

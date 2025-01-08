@@ -40,7 +40,6 @@ SOFTWARE.
 #include "canfigger.h"
 
 static char *grab_str_segment(char *a, char **dest, const int c);
-static void free_list(struct Canfigger **node);
 
 /** \cond */
 struct line
@@ -158,8 +157,8 @@ canfigger_free_current_key_node_advance(struct Canfigger **node)
 }
 
 
-static void
-free_list(struct Canfigger **node)
+void
+canfigger_free_list(struct Canfigger **node)
 {
   if (*node)
   {
@@ -466,7 +465,7 @@ canfigger_parse_file(const char *file, const int delimiter)
 
   if (!node_complete)
   {
-    free_list(&root);
+    canfigger_free_list(&root);
     return NULL;
   }
 

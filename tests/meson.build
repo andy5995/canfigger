@@ -2,6 +2,7 @@ test_cases = [
   'colons',
   'file_open_err',
   'german',
+  'incomplete_parse_file',
   'multiple_attributes',
   'parse_file',
   'skip_attributes',

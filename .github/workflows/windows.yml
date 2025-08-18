@@ -31,7 +31,7 @@ jobs:
         matrix:
           platform: ['UCRT64', 'CLANG64']
       steps:
-        - uses: actions/checkout@v4
+        - uses: actions/checkout@v5
 
         - uses: msys2/setup-msys2@v2
           with:
@@ -71,7 +71,7 @@ jobs:
       #matrix:
         #platform: ['x64', 'x86']
     #steps:
-      #- uses: actions/checkout@v4
+      #- uses: actions/checkout@v5
 
       ## Install a 32-bit Python so building related stuff work.
       #- name: Setup x86 Python

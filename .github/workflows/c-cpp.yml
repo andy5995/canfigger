@@ -32,7 +32,7 @@ jobs:
     env:
       CC: ${{ matrix.cc }}
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
 
     - name: Install dependencies
       run: |
@@ -52,7 +52,7 @@ jobs:
   macos:
     runs-on: macos-latest
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
     - run: brew install meson
     - run: |
        meson setup _build -Db_sanitize=address,undefined -Db_lundef=false
@@ -64,10 +64,10 @@ jobs:
     needs:
       - linux
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
       with:
         path: 'subprojects/canfigger'
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
       with:
         repository:
           'theimpossibleastronaut/rmw'

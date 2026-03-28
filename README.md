@@ -55,11 +55,10 @@ docs](https://mesonbuild.com/) for detailed usage).
 
     meson test (-v)
 
-## Example program
+## Example programs
 
-An example program will be built when you run `ninja`. It will read
-`examplerc` in the source root directory. If you want to try it with a
-different config file, give `example` the name of a config file as an
+Example programs will be built when you run `ninja`. If you want to try them
+with a different config file, give them the name of a config file as an
 argument.
 
 ## Using canfigger in your project
@@ -78,6 +77,7 @@ for canfigger in your 'subprojects' directory.
 ## Projects using canfigger
 
 * [rmw](https://theimpossibleastronaut.github.io/rmw-website/)
+* [Dealer's Choice](https://github.com/Dealer-s-Choice/dealers-choice)
 
 [codeql-badge]: https://github.com/andy5995/canfigger/workflows/CodeQL/badge.svg
 [codeql-url]: https://github.com/andy5995/canfigger/actions?query=workflow%3ACodeQL

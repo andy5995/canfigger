@@ -361,8 +361,13 @@ canfigger_parse_file(const char *file, const int delimiter)
   if (buffer == NULL)
     return NULL;
 
-  char file_contents[strlen(buffer) + 1];
-  memcpy(file_contents, buffer, sizeof file_contents);
+  size_t buffer_len = strlen(buffer) + 1;
+  char *file_contents = malloc_wrap(buffer_len);
+  if (!file_contents) {
+    free(buffer);
+    return NULL;
+  }
+  memcpy(file_contents, buffer, buffer_len);
   free(buffer);
 
   struct line line;
@@ -374,7 +379,11 @@ canfigger_parse_file(const char *file, const int delimiter)
   while (line.end)
   {
     line.len = line.end - line.start;
-    char tmp_line[line.len + 1];
+    char *tmp_line = malloc_wrap(line.len + 1);
+    if (!tmp_line) {
+      free(file_contents);
+      return NULL;
+    }
 
     memcpy(tmp_line, line.start, line.len);
     tmp_line[line.len] = '\0';
@@ -392,19 +401,24 @@ canfigger_parse_file(const char *file, const int delimiter)
     while (isspace(*line_ptr))
       line_ptr = erase_lead_char(*line_ptr, line_ptr);
 
-    if (*line_ptr == '\0' || *line_ptr == '#' || *line_ptr == '[')
+    if (*line_ptr == '\0' || *line_ptr == '#' || *line_ptr == '[') {
+      free(tmp_line);
       continue;
+    }
 
     node_complete = false;
     add_key_node(&root, &cur_node);
-    if (!cur_node)
+    if (!cur_node) {
+      free(tmp_line);
       break;
+    }
 
     // Get key
     cur_node->key = NULL;
     line_ptr = grab_str_segment(line_ptr, &cur_node->key, '=');
     if (!cur_node->key)
     {
+      free(tmp_line);
       free_incomplete_node(&cur_node);
       break;
     }
@@ -417,6 +431,7 @@ canfigger_parse_file(const char *file, const int delimiter)
       line_ptr = grab_str_segment(line_ptr, &cur_node->value, delimiter);
       if (!cur_node->value)
       {
+        free(tmp_line);
         free_incomplete_node(&cur_node);
         break;
       }
@@ -428,6 +443,7 @@ canfigger_parse_file(const char *file, const int delimiter)
       cur_node->attributes = malloc_wrap(sizeof(struct attributes));
       if (!cur_node->attributes)
       {
+        free(tmp_line);
         free_incomplete_node(&cur_node);
         break;
       }
@@ -438,6 +454,7 @@ canfigger_parse_file(const char *file, const int delimiter)
       attr_ptr->str = strclone(line_ptr, 0);
       if (!attr_ptr->str)
       {
+        free(tmp_line);
         free_incomplete_node(&cur_node);
         break;
       }
@@ -458,16 +475,21 @@ canfigger_parse_file(const char *file, const int delimiter)
 
     cur_node->next = NULL;
     node_complete = true;
+    free(tmp_line);
   }
 
-  if (!root)
+  if (!root) {
+    free(file_contents);
     return NULL;
+  }
 
   if (!node_complete)
   {
+    free(file_contents);
     canfigger_free_list(&root);
     return NULL;
   }
 
+  free(file_contents);
   return root;
 }

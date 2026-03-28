@@ -25,6 +25,11 @@ extra_flags = [
 
 add_project_arguments(cc.get_supported_arguments(extra_flags), language: 'c')
 
+# Suppress MSVC C4996 deprecation warnings for standard C functions like strerror()
+if cc.get_id() == 'msvc'
+  add_project_arguments('/D_CRT_SECURE_NO_WARNINGS', language: 'c')
+endif
+
 # Parse version components
 version_components = meson.project_version().split('.')
 major_version = version_components[0]

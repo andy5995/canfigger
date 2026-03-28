@@ -401,19 +401,24 @@ canfigger_parse_file(const char *file, const int delimiter)
     while (isspace(*line_ptr))
       line_ptr = erase_lead_char(*line_ptr, line_ptr);
 
-    if (*line_ptr == '\0' || *line_ptr == '#' || *line_ptr == '[')
+    if (*line_ptr == '\0' || *line_ptr == '#' || *line_ptr == '[') {
+      free(tmp_line);
       continue;
+    }
 
     node_complete = false;
     add_key_node(&root, &cur_node);
-    if (!cur_node)
+    if (!cur_node) {
+      free(tmp_line);
       break;
+    }
 
     // Get key
     cur_node->key = NULL;
     line_ptr = grab_str_segment(line_ptr, &cur_node->key, '=');
     if (!cur_node->key)
     {
+      free(tmp_line);
       free_incomplete_node(&cur_node);
       break;
     }
@@ -426,6 +431,7 @@ canfigger_parse_file(const char *file, const int delimiter)
       line_ptr = grab_str_segment(line_ptr, &cur_node->value, delimiter);
       if (!cur_node->value)
       {
+        free(tmp_line);
         free_incomplete_node(&cur_node);
         break;
       }
@@ -437,6 +443,7 @@ canfigger_parse_file(const char *file, const int delimiter)
       cur_node->attributes = malloc_wrap(sizeof(struct attributes));
       if (!cur_node->attributes)
       {
+        free(tmp_line);
         free_incomplete_node(&cur_node);
         break;
       }
@@ -447,6 +454,7 @@ canfigger_parse_file(const char *file, const int delimiter)
       attr_ptr->str = strclone(line_ptr, 0);
       if (!attr_ptr->str)
       {
+        free(tmp_line);
         free_incomplete_node(&cur_node);
         break;
       }

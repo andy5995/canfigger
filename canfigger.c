@@ -361,8 +361,13 @@ canfigger_parse_file(const char *file, const int delimiter)
   if (buffer == NULL)
     return NULL;
 
-  char file_contents[strlen(buffer) + 1];
-  memcpy(file_contents, buffer, sizeof file_contents);
+  size_t buffer_len = strlen(buffer) + 1;
+  char *file_contents = malloc_wrap(buffer_len);
+  if (!file_contents) {
+    free(buffer);
+    return NULL;
+  }
+  memcpy(file_contents, buffer, buffer_len);
   free(buffer);
 
   struct line line;
@@ -374,7 +379,11 @@ canfigger_parse_file(const char *file, const int delimiter)
   while (line.end)
   {
     line.len = line.end - line.start;
-    char tmp_line[line.len + 1];
+    char *tmp_line = malloc_wrap(line.len + 1);
+    if (!tmp_line) {
+      free(file_contents);
+      return NULL;
+    }
 
     memcpy(tmp_line, line.start, line.len);
     tmp_line[line.len] = '\0';
@@ -458,16 +467,21 @@ canfigger_parse_file(const char *file, const int delimiter)
 
     cur_node->next = NULL;
     node_complete = true;
+    free(tmp_line);
   }
 
-  if (!root)
+  if (!root) {
+    free(file_contents);
     return NULL;
+  }
 
   if (!node_complete)
   {
+    free(file_contents);
     canfigger_free_list(&root);
     return NULL;
   }
 
+  free(file_contents);
   return root;
 }

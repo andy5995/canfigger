@@ -1,11 +1,11 @@
 #include <stdio.h>
 
-#include "canfigger.h"
+#include "tests/test.h"
 
 int
 main(int argc, char *argv[])
 {
-  char *default_filename = SOURCE_DIR "/examplerc";
+  char *default_filename = SOURCE_DIR "/example-01.conf";
   char *filename_ptr = default_filename;
 
   if (argc == 2)

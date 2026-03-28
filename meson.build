@@ -53,12 +53,18 @@ canfigger_dep = declare_dependency(
   )
 
 if get_option('build_examples')
-  example = executable(
-    'example',
-    'example.c',
-    dependencies: canfigger_dep,
-    c_args: '-DSOURCE_DIR="@0@"'.format(meson.current_source_dir())
-    )
+  examples = ['example-01', 'example-02']
+    foreach ex : examples
+      example = executable(
+        ex,
+        ex + '.c',
+        dependencies: canfigger_dep,
+        c_args: '-DSOURCE_DIR="@0@"'.format(meson.current_source_dir())
+        )
+      if get_option('build_tests')
+        test('test_' + ex, example)
+      endif
+    endforeach
 endif
 
 if not meson.is_subproject()
@@ -77,8 +83,10 @@ if not meson.is_subproject()
 
   install_data(files(
     'ChangeLog.txt',
-    'example.c',
-    'examplerc',
+    'example-01.c',
+    'example-01.conf',
+    'example-02.c',
+    'example-02.conf',
     'LICENSE',
     'README.md',
     'ReleaseNotes.txt'

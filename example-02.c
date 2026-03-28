@@ -17,7 +17,11 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
-#include <strings.h>
+#ifdef _MSC_VER
+  #define strcasecmp _stricmp
+#else
+  #include <strings.h>
+#endif
 
 typedef enum {
   CFG_TYPE_STRING,

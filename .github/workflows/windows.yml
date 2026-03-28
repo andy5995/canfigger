@@ -98,4 +98,6 @@ jobs:
 
       - name: Test
         shell: cmd
-        run: meson test -C builddir --verbose || (if exist builddir\meson-logs\testlog.txt type builddir\meson-logs\testlog.txt)
+        env:
+          PYTHONUTF8: 1
+        run: meson test --no-stdsplit -v -C builddir || (if exist builddir\meson-logs\testlog.txt type builddir\meson-logs\testlog.txt)

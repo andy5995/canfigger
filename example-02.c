@@ -189,7 +189,8 @@ main(int argc, char *argv[])
       {
         if (strcmp(node->key, entries[i].key) == 0)
         {
-          config_set_field(&config, &entries[i], node->value);
+          config_set_field(&config, &entries[i],
+                           node->value ? node->value : entries[i].default_value);
           found_keys[i] = true;
           break;
         }

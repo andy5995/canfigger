@@ -5,10 +5,6 @@
  *
  * Numeric attribute lists use the form:
  *   key = list, v1, v2, ...
- *
- * attributes->current is NULL when a node is first returned; the caller must
- * invoke canfigger_free_current_attr_str_advance() with attr=NULL to load
- * the first attribute before entering the loop.
  */
 
 #include "tests/test.h"
@@ -157,10 +153,6 @@ main(int argc, char *argv[])
   }
 
   AppConfig_t config = { 0 };
-
-  /* Apply defaults for all scalar entries up front. */
-  for (size_t i = 0; i < ARRAY_SIZE(entries); i++)
-    config_set_field(&config, &entries[i], entries[i].default_value);
 
   struct Canfigger *list = canfigger_parse_file(filename_ptr, ',');
   if (!list)

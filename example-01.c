@@ -18,63 +18,40 @@ main(int argc, char *argv[])
     return -1;
   }
 
-  //
-  // Get a linked list containing the parsed config file. Each node contains
-  // a key (or a "setting", or an "option"), a value and attributes (if they
-  // are provided in your program's configuration file.
-  //
-  // The second argument is based on what the config file uses to separate
-  // the attributes.
-  //
-  struct Canfigger *config = canfigger_parse_file(filename_ptr, ',');
-
-  if (!config)
+  // Parse the config file. The second argument is the delimiter used to
+  // separate the value from any attributes on the same line.
+  struct Canfigger *list = canfigger_parse_file(filename_ptr, ',');
+  if (!list)
     return -1;
 
-  // i is only used for testing
-  int i = 0;
+  int count = 0;
 
-  while (config != NULL)
+  while (list)
   {
-    //
-    // The value member of the node must be checked for NULL
-    // before using it.
-    //
-    printf("Key: %s, Value: %s\n", config->key,
-           config->value != NULL ? config->value : "NULL");
+    // value may be NULL for keys with no '=' on the line.
+    printf("Key: %s, Value: %s\n", list->key,
+           list->value ? list->value : "NULL");
 
-    //
-    // Process attributes if necessary. If you know there are no attributes
-    // for the current node, you can skip this, and there is no reason in
-    // this case to call canfigger_free_current_attr_str_advance().
-    //
-    // attr must be declared and initialized before using it as an
-    // argument to canfigger_free_current_attr_str_advance().
+    // Iterate attributes if present. Initialize attr to NULL before the
+    // first call; each call frees the previous string and loads the next.
+    // Skip this block entirely if the node has no attributes.
     char *attr = NULL;
-    //
-    // Pass '&addr' to this function and it will get assigned an
-    // attribute, or NULL if there are none.
-    canfigger_free_current_attr_str_advance(config->attributes, &attr);
+    canfigger_free_current_attr_str_advance(list->attributes, &attr);
     while (attr)
     {
       printf("Attribute: %s\n", attr);
-
-      //
-      // Get the next attribute in the list (if there is one).
-      //
-      canfigger_free_current_attr_str_advance(config->attributes, &attr);
+      canfigger_free_current_attr_str_advance(list->attributes, &attr);
     }
 
-    // Move to the next node and automatically free the current node
-    canfigger_free_current_key_node_advance(&config);
+    // Free the current node and advance to the next.
+    canfigger_free_current_key_node_advance(&list);
     putchar('\n');
 
-    i++;
+    count++;
   }
 
-  // This should be the number of keys in the example config
-  if (i != 6)
-    return -1;
+  // Verify all entries in the example config were visited.
+  assert(count == 6);
 
   return 0;
 }

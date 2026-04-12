@@ -349,13 +349,20 @@ canfigger_parse_file(const char *file, const int delimiter)
   if (buffer == NULL)
     return NULL;
 
-  size_t buffer_len = strlen(buffer) + 1;
+  /* Skip UTF-8 BOM (EF BB BF) if present so it doesn't corrupt the first key. */
+  char *buf_ptr = buffer;
+  if ((unsigned char)buf_ptr[0] == 0xEF &&
+      (unsigned char)buf_ptr[1] == 0xBB &&
+      (unsigned char)buf_ptr[2] == 0xBF)
+    buf_ptr += 3;
+
+  size_t buffer_len = strlen(buf_ptr) + 1;
   char *file_contents = malloc_wrap(buffer_len);
   if (!file_contents) {
     free(buffer);
     return NULL;
   }
-  memcpy(file_contents, buffer, buffer_len);
+  memcpy(file_contents, buf_ptr, buffer_len);
   free(buffer);
 
   struct line line;

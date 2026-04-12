@@ -1,4 +1,5 @@
 test_cases = [
+  'bom',
   'colons',
   'file_open_err',
   'german',

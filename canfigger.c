@@ -347,28 +347,25 @@ canfigger_parse_file(const char *file, const int delimiter)
 {
   struct Canfigger *root = NULL, *cur_node = NULL;
 
-  char *buffer = read_entire_file(file);
-  if (buffer == NULL)
+  char *file_contents = read_entire_file(file);
+  if (file_contents == NULL)
     return NULL;
 
-  /* Skip UTF-8 BOM (EF BB BF) if present so it doesn't corrupt the first key. */
-  char *buf_ptr = buffer;
-  if ((unsigned char)buf_ptr[0] == 0xEF &&
-      (unsigned char)buf_ptr[1] == 0xBB &&
-      (unsigned char)buf_ptr[2] == 0xBF)
-    buf_ptr += 3;
-
-  size_t buffer_len = strlen(buf_ptr) + 1;
-  char *file_contents = malloc_wrap(buffer_len);
-  if (!file_contents) {
-    free(buffer);
-    return NULL;
-  }
-  memcpy(file_contents, buf_ptr, buffer_len);
-  free(buffer);
+  /* Skip UTF-8 BOM (EF BB BF) if present. Some editors (especially on Windows)
+   * prepend these three bytes silently; without this check they would be
+   * prepended to the first key, corrupting any strcmp against it.
+   * Array accesses are safe: read_entire_file allocates file_size+1 bytes with
+   * a null terminator, and && short-circuits — [1] is only read when [0]
+   * matched 0xEF (so at least 1 file byte exists), and [2] only when [1]
+   * matched 0xBB (so at least 2 exist). */
+  char *parse_start = file_contents;
+  if ((unsigned char)parse_start[0] == 0xEF &&
+      (unsigned char)parse_start[1] == 0xBB &&
+      (unsigned char)parse_start[2] == 0xBF)
+    parse_start += 3;
 
   struct line line;
-  line.start = file_contents;
+  line.start = parse_start;
 
   bool node_complete;
 

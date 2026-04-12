@@ -72,7 +72,7 @@ strclone(const char *src, size_t n)
   }
 
   if (!dest)
-    perror("malloc (canfigger)");
+    perror("canfigger: malloc");
   return dest;
 }
 
@@ -252,7 +252,7 @@ malloc_wrap(size_t size)
   if (retval)
     return retval;
 
-  perror("Failed to allocate memory: ");
+  perror("canfigger: malloc");
 
   return NULL;
 }
@@ -281,7 +281,7 @@ read_entire_file(const char *filename)
   FILE *fp = fopen(filename, "rb");
   if (!fp)
   {
-    fprintf(stderr, "Failed to open %s: %s\n", filename, strerror(errno));
+    fprintf(stderr, "canfigger: Failed to open %s: %s\n", filename, strerror(errno));
     return NULL;
   }
 
@@ -289,7 +289,7 @@ read_entire_file(const char *filename)
   long file_size = ftell(fp);
   if (file_size < 0)
   {
-    fprintf(stderr, "Error getting the size of %s: %s\n", filename,
+    fprintf(stderr, "canfigger: Error getting the size of %s: %s\n", filename,
             strerror(errno));
     fclose(fp);
     return NULL;
@@ -307,7 +307,7 @@ read_entire_file(const char *filename)
 
   if (ferror(fp))
   {
-    fprintf(stderr, "Error reading %s: %s\n", filename, strerror(errno));
+    fprintf(stderr, "canfigger: Error reading %s: %s\n", filename, strerror(errno));
     free(buffer);
     fclose(fp);
     return NULL;
@@ -324,7 +324,7 @@ read_entire_file(const char *filename)
   }
 
   free(buffer);
-  fprintf(stderr, "Partial read of %s: expected %ld bytes, got %zu bytes\n",
+  fprintf(stderr, "canfigger: Partial read of %s: expected %ld bytes, got %zu bytes\n",
           filename, file_size, n_bytes);
   fclose(fp);
   return NULL;

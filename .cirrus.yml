@@ -7,28 +7,11 @@ filter_template: &filter_template
     '.cirrus.yml'
     )"
 
-freebsd13_task:
-  <<: *filter_template
-  name: FreeBSD 13.4
-  freebsd_instance:
-    image_family: freebsd-13-4
-
-  pkginstall_script:
-    - pkg update -f
-    - pkg install -y meson ninja
-
-  setup_script:
-    - meson setup _build -Db_sanitize=address,undefined -Db_lundef=false
-  build_script:
-    - cd _build && ninja -v
-  test_script:
-    - cd _build && meson test -v
-
 freebsd14_task:
   <<: *filter_template
-  name: FreeBSD 14.2
+  name: FreeBSD 14.3
   freebsd_instance:
-    image_family: freebsd-14-2
+    image_family: freebsd-14-3
 
   pkginstall_script:
     - pkg update -f

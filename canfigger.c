@@ -278,6 +278,10 @@ add_key_node(struct Canfigger **root, struct Canfigger **cur_node)
 static char *
 read_entire_file(const char *filename)
 {
+  char *buffer = NULL;
+  long file_size;
+  size_t n_bytes;
+
   FILE *fp = fopen(filename, "rb");
   if (!fp)
   {
@@ -285,49 +289,33 @@ read_entire_file(const char *filename)
     return NULL;
   }
 
-  fseek(fp, 0, SEEK_END);
-  long file_size = ftell(fp);
-  if (file_size < 0)
+  if (fseek(fp, 0, SEEK_END) != 0 || (file_size = ftell(fp)) < 0 || fseek(fp, 0, SEEK_SET) != 0)
   {
-    fprintf(stderr, "canfigger: Error getting the size of %s: %s\n", filename,
-            strerror(errno));
-    fclose(fp);
-    return NULL;
+    fprintf(stderr, "canfigger: Failed to determine size of %s: %s\n", filename, strerror(errno));
+    goto done;
   }
-  fseek(fp, 0, SEEK_SET);
 
-  char *buffer = malloc_wrap(file_size + 1);
+  buffer = malloc_wrap(file_size + 1);
   if (!buffer)
-  {
-    fclose(fp);
-    return NULL;
-  }
+    goto done;
 
-  size_t n_bytes = fread(buffer, 1, file_size, fp);
-
-  if (ferror(fp))
+  n_bytes = fread(buffer, 1, file_size, fp);
+  if (n_bytes != (size_t) file_size)
   {
-    fprintf(stderr, "canfigger: Error reading %s: %s\n", filename, strerror(errno));
+    if (ferror(fp))
+      fprintf(stderr, "canfigger: Error reading %s: %s\n", filename, strerror(errno));
+    else
+      fprintf(stderr, "canfigger: Partial read of %s: expected %ld bytes, got %zu bytes\n",
+              filename, file_size, n_bytes);
     free(buffer);
-    fclose(fp);
-    return NULL;
+    buffer = NULL;
   }
-
-  // Note that if the return value of ftell() is -1 this cast would be bad.
-  // However, above, the return value of ftell() is checked, and the function
-  // returns if the value is < 0
-  if (n_bytes == (size_t) file_size)
-  {
+  else
     buffer[file_size] = '\0';
-    fclose(fp);
-    return buffer;
-  }
 
-  free(buffer);
-  fprintf(stderr, "canfigger: Partial read of %s: expected %ld bytes, got %zu bytes\n",
-          filename, file_size, n_bytes);
+done:
   fclose(fp);
-  return NULL;
+  return buffer;
 }
 
 

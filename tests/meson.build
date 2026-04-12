@@ -5,6 +5,7 @@ test_cases = [
   'german',
   'incomplete_parse_file',
   'multiple_attributes',
+  'no_trailing_newline',
   'parse_file',
   'skip_attributes',
   'unicode',

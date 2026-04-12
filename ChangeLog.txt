@@ -1,5 +1,19 @@
 # Canfigger ChangeLog
 
+2026-04-12
+
+  * bugfix: Last line without trailing newline was silently dropped
+  * bugfix: Memory leak — root list not freed on tmp_line allocation failure
+  * bugfix: free_incomplete_node leaked the attributes struct
+  * bugfix: add_key_node failure on 2nd+ node corrupted previous node's key
+  * bugfix: isspace() called on plain char (undefined behaviour); cast to
+    unsigned char
+  * Strip UTF-8 BOM so it doesn't corrupt the first key
+  * Refactor read_entire_file: single exit point, checked fseek return values
+  * Prefix all error messages with "canfigger:"
+  * Add tests: bom, no_trailing_newline; fix unicode test missing count/null
+    assertions
+
 2025-01-06
 
   * Fix Windows build

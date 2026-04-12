@@ -211,7 +211,7 @@ truncate_whitespace(char *str)
   else
     return;
 
-  while (isspace(*str))
+  while (isspace((unsigned char)*str))
   {
     *str = '\0';
     if (str != pos_0)
@@ -331,8 +331,10 @@ free_incomplete_node(struct Canfigger **node)
       free((*node)->value);
 
     if ((*node)->attributes)
-      if ((*node)->attributes->str)
-        free((*node)->attributes->str);
+    {
+      free((*node)->attributes->str);
+      free((*node)->attributes);
+    }
   }
   free(*node);
 
@@ -367,43 +369,46 @@ canfigger_parse_file(const char *file, const int delimiter)
 
   struct line line;
   line.start = file_contents;
-  line.end = strchr(line.start, '\n');
 
   bool node_complete;
 
-  while (line.end)
+  for (;;)
   {
-    line.len = line.end - line.start;
+    line.end = strchr(line.start, '\n');
+    line.len = line.end ? (size_t)(line.end - line.start) : strlen(line.start);
+
+    /* End of file with no remaining content */
+    if (line.len == 0 && !line.end)
+      break;
+
     char *tmp_line = malloc_wrap(line.len + 1);
     if (!tmp_line) {
+      canfigger_free_list(&root);
       free(file_contents);
       return NULL;
     }
 
     memcpy(tmp_line, line.start, line.len);
     tmp_line[line.len] = '\0';
-
-    // Used in the next loop
-    if (line.end)
-    {
-      line.start = line.end + 1;
-      line.end = strchr(line.start, '\n');
-    }
+    line.start = line.end ? line.end + 1 : line.start + line.len;
 
     char *line_ptr = tmp_line;
     truncate_whitespace(line_ptr);
 
-    while (isspace(*line_ptr))
+    while (isspace((unsigned char)*line_ptr))
       line_ptr = erase_lead_char(*line_ptr, line_ptr);
 
     if (*line_ptr == '\0' || *line_ptr == '#' || *line_ptr == '[') {
       free(tmp_line);
+      if (!line.end)
+        break;
       continue;
     }
 
     node_complete = false;
+    struct Canfigger *prev_node = cur_node;
     add_key_node(&root, &cur_node);
-    if (!cur_node) {
+    if (cur_node == prev_node) {
       free(tmp_line);
       break;
     }
@@ -471,6 +476,8 @@ canfigger_parse_file(const char *file, const int delimiter)
     cur_node->next = NULL;
     node_complete = true;
     free(tmp_line);
+    if (!line.end)
+      break;
   }
 
   if (!root) {

@@ -1,15 +1,37 @@
 /**
  * @file canfigger.h
- * @brief Header file for the Canfigger configuration parser.
+ * @brief Public API for the Canfigger configuration file parser.
  *
- * Canfigger is a lightweight C language library designed to parse configuration
- * files. It provides functionality to read them and represent their contents as
- * a linked list of key-value pairs, along with associated attributes for each
- * pair.
+ * Canfigger parses plain-text configuration files into a singly-linked list of
+ * key-value nodes. Each node may also carry a list of attributes — extra
+ * comma-separated (or user-specified delimiter) fields that follow the value on
+ * the same line.
+ *
+ * **File format** (one entry per line):
+ * @code
+ *   key = value
+ *   key = value, attr1, attr2
+ *   key = list, item1, item2, item3
+ *   # comment lines are ignored
+ *   [section headers are ignored]
+ * @endcode
+ *
+ * The `=` sign separates the key from the value. The delimiter character
+ * (passed to canfigger_parse_file()) separates the value from the first
+ * attribute, and each subsequent attribute from the next.  A UTF-8 BOM at the
+ * start of the file is silently skipped.
+ *
+ * **Typical usage:**
+ * @code
+ *   struct Canfigger *list = canfigger_parse_file("app.conf", ',');
+ *   while (list) {
+ *     // use list->key and list->value
+ *     canfigger_free_current_key_node_advance(&list);
+ *   }
+ * @endcode
  *
  * Part of canfigger (https://github.com/andy5995/canfigger).
- *
-**/
+ **/
 /* This file is part of canfigger<https://github.com/andy5995/canfigger>
 
 MIT License
@@ -42,16 +64,19 @@ extern "C" {
 #endif
 
 /**
- * \example example.c
- */
-
-/**
  * @struct attributes
- * @brief Structure to hold attribute details of a configuration key.
+ * @brief Internal iteration state for a node's attribute list.
  *
- * @var attributes::str Original string containing all attributes.
- * @var attributes::current Pointer to the current attribute being processed.
- * @var attributes::iter_ptr Pointer used for iterating through attributes.
+ * This struct is allocated and owned by the library. Callers should not
+ * read or modify its fields directly; use
+ * canfigger_free_current_attr_str_advance() to iterate.
+ *
+ * @var attributes::str    Heap-allocated copy of the raw attribute string.
+ * @var attributes::current Last attribute string returned to the caller;
+ *                          freed on the next call to
+ *                          canfigger_free_current_attr_str_advance().
+ * @var attributes::iter_ptr Read position within @p str; advanced by each
+ *                           call to canfigger_free_current_attr_str_advance().
  */
 struct attributes
 {
@@ -62,12 +87,18 @@ struct attributes
 
 /**
  * @struct Canfigger
- * @brief Structure to represent a key-value pair with attributes in the configuration.
+ * @brief A single node in the parsed configuration linked list.
  *
- * @var Canfigger::key The key in a key-value pair.
- * @var Canfigger::value The value associated with the key.
- * @var Canfigger::attributes pointer to an attributes struct associated with the key.
- * @var Canfigger::next Pointer to the next node in the list.
+ * Each node represents one key-value entry from the configuration file.
+ * Nodes are heap-allocated by canfigger_parse_file() and must be freed
+ * with canfigger_free_current_key_node_advance() or canfigger_free_list().
+ *
+ * @var Canfigger::key        The key string (never NULL).
+ * @var Canfigger::value      The value string, or NULL if no @c = sign was
+ *                            present on the line.
+ * @var Canfigger::attributes Attribute list, or NULL if the line had no
+ *                            attributes following the value.
+ * @var Canfigger::next       Next node, or NULL at end of list.
  */
 struct Canfigger
 {
@@ -78,33 +109,78 @@ struct Canfigger
 };
 
 /**
- * @brief Parses a configuration file and creates a linked list of key-value pairs.
+ * @brief Parse a configuration file into a linked list of key-value nodes.
  *
- * @param file Path to the configuration file to parse.
- * @param delimiter The character used to delimit the attributes following 'value'.
- * @return Pointer to the head of the linked list of configuration entries.
+ * Reads @p file, strips a leading UTF-8 BOM if present, and returns a
+ * singly-linked list where each node holds one key-value entry.  Lines
+ * beginning with @c # or @c [ and blank lines are ignored.
+ *
+ * The @p delimiter character separates the value from the first attribute
+ * and each subsequent attribute from the next.  Pass a character that does
+ * not appear in your values if you do not use attributes (e.g. @c ',').
+ *
+ * The caller owns the returned list and must free it with
+ * canfigger_free_current_key_node_advance() (while iterating) or
+ * canfigger_free_list() (to discard the whole list at once).
+ *
+ * @param file      Path to the configuration file.
+ * @param delimiter Character that separates the value from attributes on a line.
+ * @return Head of the linked list, or NULL if the file cannot be opened,
+ *         is empty, or a memory allocation failure occurs.
  */
 struct Canfigger *canfigger_parse_file(const char *file, const int delimiter);
 
 /**
- * @brief Frees the current key node and advances to the next node in the list.
+ * @brief Free the current node and advance the list pointer to the next node.
  *
- * @param list Double pointer to the current node in the linked list.
+ * Releases all memory owned by @c *node (key, value, and any attributes),
+ * then sets @c *node to the next node in the list.  Call this at the end of
+ * each loop iteration when walking the list:
+ *
+ * @code
+ *   while (list)
+ *     canfigger_free_current_key_node_advance(&list);
+ * @endcode
+ *
+ * @param node Double pointer to the current node; updated to point to the
+ *             next node (or NULL at end of list) before returning.
  */
-void canfigger_free_current_key_node_advance(struct Canfigger **list);
+void canfigger_free_current_key_node_advance(struct Canfigger **node);
 
 /**
- * @brief Frees the current attribute string and advances to the next attribute.
+ * @brief Free the current attribute string and advance to the next attribute.
  *
- * @param attributes Pointer to the attributes structure of the current node.
- * @param attr Current attribute that will get reassigned after the function call.
+ * On the first call for a given node, @c *attr must be NULL; the function
+ * loads the first attribute into @c *attr.  On each subsequent call it frees
+ * the previous attribute string and loads the next.  Sets @c *attr to NULL
+ * when no more attributes remain, or if @p attributes is NULL.
+ *
+ * Typical usage:
+ * @code
+ *   char *attr = NULL;
+ *   canfigger_free_current_attr_str_advance(node->attributes, &attr);
+ *   while (attr) {
+ *     // use attr
+ *     canfigger_free_current_attr_str_advance(node->attributes, &attr);
+ *   }
+ * @endcode
+ *
+ * @param attributes Pointer to the attributes structure of the current node
+ *                   (may be NULL, in which case @c *attr is set to NULL).
+ * @param attr       Output parameter; set to the next attribute string on
+ *                   success, or NULL when the list is exhausted.
  */
 void canfigger_free_current_attr_str_advance(struct attributes *attributes, char **attr);
 
 /**
- * @brief Frees the remainder of list allocated by canfigger_parse_file().
+ * @brief Free all remaining nodes in the list.
  *
- * @param list Double pointer to the current node in the linked list.
+ * Equivalent to calling canfigger_free_current_key_node_advance() in a loop
+ * until the list is empty.  Use this for early-exit cleanup when you need to
+ * discard a partially-iterated list.
+ *
+ * @param node Double pointer to the current (or head) node; set to NULL
+ *             on return.
  */
 void canfigger_free_list(struct Canfigger **node);
 

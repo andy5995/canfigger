@@ -1,7 +1,6 @@
-# Canfigger ChangeLog
-
-2026-04-12
-
+- canfigger (in progress):
+  * Fix Windows build
+  + Add canfigger_config_dir(), canfigger_data_dir(), canfigger_path_join()
   * bugfix: Last line without trailing newline was silently dropped
   * bugfix: Memory leak — root list not freed on tmp_line allocation failure
   * bugfix: free_incomplete_node leaked the attributes struct
@@ -13,10 +12,6 @@
   * Prefix all error messages with "canfigger:"
   * Add tests: bom, no_trailing_newline; fix unicode test missing count/null
     assertions
-
-2025-01-06
-
-  * Fix Windows build
 
 2024-02-29
 

@@ -1,6 +1,7 @@
 test_cases = [
   'bom',
   'colons',
+  'dirs',
   'file_open_err',
   'german',
   'incomplete_parse_file',

@@ -184,6 +184,51 @@ void canfigger_free_current_attr_str_advance(struct attributes *attributes, char
  */
 void canfigger_free_list(struct Canfigger **node);
 
+/**
+ * @brief Return the platform config directory for an application.
+ *
+ * On Unix, honours @c $XDG_CONFIG_HOME if set; otherwise uses
+ * @c $HOME/.config/appname.  On Windows, uses @c %APPDATA%\\appname.
+ *
+ * The returned string is heap-allocated; the caller must free it.
+ *
+ * @param appname Application name appended as a subdirectory.
+ * @return Malloc'd path string, or NULL on failure or if @p appname is
+ *         NULL/empty.
+ */
+char *canfigger_config_dir(const char *appname);
+
+/**
+ * @brief Return the platform data directory for an application.
+ *
+ * Intended for user-generated data (saves, state, cache) — not bundled
+ * application assets.  On Unix, honours @c $XDG_DATA_HOME if set; otherwise
+ * uses @c $HOME/.local/share/appname.  On Windows, uses
+ * @c %LOCALAPPDATA%\\appname.
+ *
+ * The returned string is heap-allocated; the caller must free it.
+ *
+ * @param appname Application name appended as a subdirectory.
+ * @return Malloc'd path string, or NULL on failure or if @p appname is
+ *         NULL/empty.
+ */
+char *canfigger_data_dir(const char *appname);
+
+/**
+ * @brief Join a directory path and a filename with the platform separator.
+ *
+ * A separator is inserted between @p dir and @p file unless @p dir already
+ * ends with @c / or @c \\.
+ *
+ * The returned string is heap-allocated; the caller must free it.
+ *
+ * @param dir  Directory portion of the path.
+ * @param file Filename (or relative sub-path) to append.
+ * @return Malloc'd joined path string, or NULL if either argument is NULL or
+ *         empty, or on allocation failure.
+ */
+char *canfigger_path_join(const char *dir, const char *file);
+
 #ifdef __cplusplus
 }
 #endif

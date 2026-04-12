@@ -38,6 +38,13 @@ argument:
 
     canfigger_parse_file(filename_ptr, ':');
 
+## Platform path helpers
+
+Canfigger also provides `canfigger_config_dir()`, `canfigger_data_dir()`, and
+`canfigger_path_join()` for locating the standard per-user config and data
+directories on Linux (XDG), macOS, and Windows. See the API documentation for
+details.
+
 ## Dependencies
 
 None

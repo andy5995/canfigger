@@ -31,6 +31,11 @@ SOFTWARE.
 #include <stdlib.h>             // free(), malloc()
 #include <string.h>
 
+#ifdef _WIN32
+#include <windows.h>
+#include <shlobj.h>
+#endif
+
 // This is only required for version info and can be removed
 // if you're copying the canfigger source files to use as
 // an embedded library with your own project (i.e., not building
@@ -491,4 +496,106 @@ canfigger_parse_file(const char *file, const int delimiter)
 
   free(file_contents);
   return root;
+}
+
+
+#ifdef _WIN32
+static char *
+dir_for_appname(const char *appname, int csidl)
+{
+  if (!appname || *appname == '\0')
+    return NULL;
+
+  char base[MAX_PATH];
+  if (FAILED(SHGetFolderPathA(NULL, csidl, NULL, 0, base)))
+    return NULL;
+
+  size_t len = strlen(base) + 1 + strlen(appname) + 1;
+  char *result = malloc_wrap(len);
+  if (!result)
+    return NULL;
+  snprintf(result, len, "%s\\%s", base, appname);
+  return result;
+}
+#else
+static char *
+dir_for_appname(const char *appname, const char *xdg_env, const char *xdg_fallback)
+{
+  if (!appname || *appname == '\0')
+    return NULL;
+
+  const char *base = getenv(xdg_env);
+  if (base && *base)
+  {
+    size_t len = strlen(base) + 1 + strlen(appname) + 1;
+    char *result = malloc_wrap(len);
+    if (!result)
+      return NULL;
+    snprintf(result, len, "%s/%s", base, appname);
+    return result;
+  }
+
+  const char *home = getenv("HOME");
+  if (!home || !*home)
+    return NULL;
+
+  size_t len = strlen(home) + 1 + strlen(xdg_fallback) + 1 + strlen(appname) + 1;
+  char *result = malloc_wrap(len);
+  if (!result)
+    return NULL;
+  snprintf(result, len, "%s/%s/%s", home, xdg_fallback, appname);
+  return result;
+}
+#endif
+
+
+char *
+canfigger_config_dir(const char *appname)
+{
+#ifdef _WIN32
+  return dir_for_appname(appname, CSIDL_APPDATA);
+#else
+  return dir_for_appname(appname, "XDG_CONFIG_HOME", ".config");
+#endif
+}
+
+
+char *
+canfigger_data_dir(const char *appname)
+{
+#ifdef _WIN32
+  return dir_for_appname(appname, CSIDL_LOCAL_APPDATA);
+#else
+  return dir_for_appname(appname, "XDG_DATA_HOME", ".local/share");
+#endif
+}
+
+
+char *
+canfigger_path_join(const char *dir, const char *file)
+{
+  if (!dir || !*dir || !file || !*file)
+    return NULL;
+
+  size_t dirlen = strlen(dir);
+  size_t filelen = strlen(file);
+  bool needs_sep = dirlen > 0 && dir[dirlen - 1] != '/' && dir[dirlen - 1] != '\\';
+  size_t total = dirlen + (needs_sep ? 1 : 0) + filelen + 1;
+
+  char *result = malloc_wrap(total);
+  if (!result)
+    return NULL;
+
+#ifdef _WIN32
+  const char sep = '\\';
+#else
+  const char sep = '/';
+#endif
+
+  if (needs_sep)
+    snprintf(result, total, "%s%c%s", dir, sep, file);
+  else
+    snprintf(result, total, "%s%s", dir, file);
+
+  return result;
 }

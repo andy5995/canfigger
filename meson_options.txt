@@ -8,13 +8,13 @@ option(
 option(
   'build_tests',
     type : 'boolean',
-    value : 'true',
+    value : true,
     description : 'Build tests'
   )
 option(
   'build_examples',
     type : 'boolean',
-    value : 'true',
+    value : true,
     description : 'Build examples'
   )
 

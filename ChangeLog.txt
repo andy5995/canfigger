@@ -1,4 +1,6 @@
-- canfigger (in progress):
+2026-04-17
+
+- canfigger (v0.3.1):
   * Fix Windows build
   + Add canfigger_config_dir(), canfigger_data_dir(), canfigger_path_join()
   * bugfix: Last line without trailing newline was silently dropped

@@ -1,7 +1,7 @@
 project(
   'canfigger',
   'c',
-  version: '0.3.1999',
+  version: '0.3.1',
   meson_version : '>= 0.48.0',
   license: 'MIT',
   default_options: [

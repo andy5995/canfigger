@@ -2,13 +2,10 @@ project(
   'canfigger',
   'c',
   version: '0.3.1',
-  meson_version : '>= 0.48.0',
+  meson_version: '>= 0.48.0',
   license: 'MIT',
-  default_options: [
-    'warning_level=3',
-    'c_std=c99'
-    ]
-  )
+  default_options: ['warning_level=3', 'c_std=c99'],
+)
 
 cc = meson.get_compiler('c')
 extra_flags = [
@@ -40,63 +37,66 @@ conf = configuration_data()
 conf.set('CANFIGGER_VERSION_MAJOR', major_version)
 conf.set('CANFIGGER_VERSION_MINOR', minor_version)
 conf.set('CANFIGGER_VERSION_PATCH', patch_version)
-config_h = configure_file(output : 'canfigger_version.h', configuration : conf)
+config_h = configure_file(output: 'canfigger_version.h', configuration: conf)
 
 src = ('canfigger.c')
-  buildtarget = library(
-    meson.project_name(),
-    src,
-    version : meson.project_version(),
-    install: not meson.is_subproject(),
-    )
+buildtarget = library(
+  meson.project_name(),
+  src,
+  version: meson.project_version(),
+  install: not meson.is_subproject(),
+)
 
 # How to use in a superproject and other info
 # https://mesonbuild.com/Subprojects.html
 canfigger_dep = declare_dependency(
-  include_directories : include_directories('.'),
-  link_with : buildtarget
-  )
+  include_directories: include_directories('.'),
+  link_with: buildtarget,
+)
 
 if get_option('build_examples')
   examples = ['example-01', 'example-02']
-    foreach ex : examples
-      example = executable(
-        ex,
-        ex + '.c',
-        dependencies: canfigger_dep,
-        c_args: '-DSOURCE_DIR="@0@"'.format(meson.current_source_dir())
-        )
-      if get_option('build_tests')
-        test('test_' + ex, example)
-      endif
-    endforeach
+  foreach ex : examples
+    example = executable(
+      ex,
+      ex + '.c',
+      dependencies: canfigger_dep,
+      c_args: '-DSOURCE_DIR="@0@"'.format(meson.current_source_dir()),
+    )
+    if get_option('build_tests')
+      test('test_' + ex, example)
+    endif
+  endforeach
 endif
 
 if not meson.is_subproject()
   pkg = import('pkgconfig')
   pkg.generate(
     buildtarget,
-    description : 'Simple configuration file parser library')
+    description: 'Simple configuration file parser library',
+  )
 
   install_headers('canfigger.h', config_h)
 
   install_subdir(
-  join_paths('docs'),
-  install_dir : join_paths(get_option('docdir'), 'html'),
-  strip_directory : true
+    join_paths('docs'),
+    install_dir: join_paths(get_option('docdir'), 'html'),
+    strip_directory: true,
   )
 
-  install_data(files(
-    'ChangeLog.txt',
-    'example-01.c',
-    'example-01.conf',
-    'example-02.c',
-    'example-02.conf',
-    'LICENSE',
-    'README.md',
-    'ReleaseNotes.txt'
+  install_data(
+    files(
+      'ChangeLog.txt',
+      'LICENSE',
+      'README.md',
+      'ReleaseNotes.txt',
+      'example-01.c',
+      'example-01.conf',
+      'example-02.c',
+      'example-02.conf',
     ),
-    install_dir : get_option('docdir'))
+    install_dir: get_option('docdir'),
+  )
 
   if get_option('build_tests')
     subdir('tests')

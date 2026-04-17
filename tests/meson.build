@@ -11,14 +11,14 @@ test_cases = [
   'parse_file',
   'skip_attributes',
   'unicode',
-  ]
+]
 
 foreach case : test_cases
   exe = executable(
     'test_' + case,
     case + '.c',
-    dependencies : [canfigger_dep],
-    c_args: '-DSOURCE_DIR="@0@"'.format(meson.current_source_dir())
+    dependencies: [canfigger_dep],
+    c_args: '-DSOURCE_DIR="@0@"'.format(meson.current_source_dir()),
   )
   test(case, exe)
 endforeach

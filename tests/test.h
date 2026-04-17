@@ -7,7 +7,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <limits.h>
-#include "canfigger.h"
+#include <canfigger.h>
 
 #ifndef PATH_MAX
 #define PATH_MAX 1024

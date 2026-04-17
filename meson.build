@@ -74,9 +74,10 @@ if not meson.is_subproject()
   pkg.generate(
     buildtarget,
     description: 'Simple configuration file parser library',
+    subdirs: meson.project_name(),
   )
 
-  install_headers('canfigger.h', config_h)
+  install_headers('canfigger.h', config_h, subdir: meson.project_name())
 
   install_subdir(
     join_paths('docs'),

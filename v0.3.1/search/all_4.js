@@ -2,7 +2,7 @@ var searchData=
 [
   ['canfigger_0',['Canfigger',['../canfigger_8h.html#structCanfigger',1,'']]],
   ['canfigger_1',['canfigger',['../index.html',1,'']]],
-  ['canfigger_20v0_203_201_20dev_2',['canfigger v0.3.1-dev',['../index.html#autotoc_md0',1,'']]],
+  ['canfigger_20v0_203_201_2',['canfigger v0.3.1',['../index.html#autotoc_md0',1,'']]],
   ['canfigger_2eh_3',['canfigger.h',['../canfigger_8h.html',1,'']]],
   ['canfigger_5fcheck_5fversion_4',['CANFIGGER_CHECK_VERSION',['../canfigger_8h.html#abb6ff099480fd7510018651b718a60c1',1,'canfigger.h']]],
   ['canfigger_5fconfig_5fdir_5',['canfigger_config_dir',['../canfigger_8h.html#ae86f14e5545edad23f3b00674dc1a558',1,'canfigger.c']]],

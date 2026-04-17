@@ -1,4 +1,5 @@
 test_cases = [
+  'check_version',
   'bom',
   'colons',
   'dirs',

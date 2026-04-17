@@ -68,24 +68,6 @@ Example programs will be built when you run `ninja`. If you want to try them
 with a different config file, give them the name of a config file as an
 argument.
 
-## Using canfigger in your project
-
-If canfigger is not available for your operating system or distribution, you
-can copy the required sources (and the LICENSE file) into your project and add
-them to your build system. The line `include <config.h>` from the top of the
-.c file will need to be removed, as it is normally generated during the Meson
-setup and only contains version information.
-
-Alternatively, if your project uses Meson, you can add a [wrap
-file](https://mesonbuild.com/Wrap-dependency-system-manual.html#wrap-dependency-system-manual)
-for canfigger in your 'subprojects' directory.
-
-<!-- Add your project here if it has had at least one release -->
-## Projects using canfigger
-
-* [rmw](https://theimpossibleastronaut.github.io/rmw-website/)
-* [Dealer's Choice](https://github.com/Dealer-s-Choice/dealers-choice)
-
 [codeql-badge]: https://github.com/andy5995/canfigger/workflows/CodeQL/badge.svg
 [codeql-url]: https://github.com/andy5995/canfigger/actions?query=workflow%3ACodeQL
 [actions-c-badge]: https://github.com/andy5995/canfigger/actions/workflows/c-cpp.yml/badge.svg

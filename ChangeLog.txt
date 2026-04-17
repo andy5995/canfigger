@@ -12,6 +12,10 @@
   * Prefix all error messages with "canfigger:"
   * Add tests: bom, no_trailing_newline; fix unicode test missing count/null
     assertions
+  + Add canfigger_version.h (generated at build time) exposing
+    CANFIGGER_VERSION_MAJOR, CANFIGGER_VERSION_MINOR, CANFIGGER_VERSION_PATCH
+  + Add CANFIGGER_CHECK_VERSION(maj, min) macro to canfigger.h for
+    compile-time version checks
 
 2024-02-29
 

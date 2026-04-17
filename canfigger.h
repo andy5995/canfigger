@@ -59,6 +59,28 @@ SOFTWARE.
 
 #pragma once
 
+#include "canfigger_version.h"
+
+/**
+ * @brief Compile-time version check.
+ *
+ * Evaluates to a non-zero value if the canfigger headers are at least the
+ * given major and minor version.  Useful for conditional compilation when
+ * a feature was added in a known release:
+ *
+ * @code
+ *   #if CANFIGGER_CHECK_VERSION(0, 4)
+ *     // use API added in 0.4
+ *   #endif
+ * @endcode
+ *
+ * @param maj Required major version.
+ * @param min Required minor version.
+ */
+#define CANFIGGER_CHECK_VERSION(maj, min) \
+  (CANFIGGER_VERSION_MAJOR > (maj) || \
+   (CANFIGGER_VERSION_MAJOR == (maj) && CANFIGGER_VERSION_MINOR >= (min)))
+
 #ifdef __cplusplus
 extern "C" {
 #endif

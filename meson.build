@@ -40,7 +40,7 @@ conf = configuration_data()
 conf.set('CANFIGGER_VERSION_MAJOR', major_version)
 conf.set('CANFIGGER_VERSION_MINOR', minor_version)
 conf.set('CANFIGGER_VERSION_PATCH', patch_version)
-config_h = configure_file(output : 'config.h', configuration : conf)
+config_h = configure_file(output : 'canfigger_version.h', configuration : conf)
 
 src = ('canfigger.c')
   buildtarget = library(
@@ -78,7 +78,7 @@ if not meson.is_subproject()
     buildtarget,
     description : 'Simple configuration file parser library')
 
-  install_headers('canfigger.h')
+  install_headers('canfigger.h', config_h)
 
   install_subdir(
   join_paths('docs'),

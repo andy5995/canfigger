@@ -40,7 +40,7 @@ SOFTWARE.
 // if you're copying the canfigger source files to use as
 // an embedded library with your own project (i.e., not building
 // canfigger with the build system it's shipped with).
-#include "config.h"
+#include "canfigger_version.h"
 
 #include "canfigger.h"
 

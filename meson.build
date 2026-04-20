@@ -90,7 +90,6 @@ if not meson.is_subproject()
       'ChangeLog.txt',
       'LICENSE',
       'README.md',
-      'ReleaseNotes.txt',
       'example-01.c',
       'example-01.conf',
       'example-02.c',

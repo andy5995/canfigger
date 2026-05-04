@@ -3,6 +3,7 @@
   * Headers are now installed to /usr/include/canfigger/; the pkgconfig
     Cflags is updated accordingly so #include <canfigger.h> continues to
     work without changes
+  * Only build examples if not a subproject
 
 2026-04-17
 

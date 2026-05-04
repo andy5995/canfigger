@@ -54,22 +54,22 @@ canfigger_dep = declare_dependency(
   link_with: buildtarget,
 )
 
-if get_option('build_examples')
-  examples = ['example-01', 'example-02']
-  foreach ex : examples
-    example = executable(
-      ex,
-      ex + '.c',
-      dependencies: canfigger_dep,
-      c_args: '-DSOURCE_DIR="@0@"'.format(meson.current_source_dir()),
-    )
-    if get_option('build_tests')
-      test('test_' + ex, example)
-    endif
-  endforeach
-endif
-
 if not meson.is_subproject()
+  if get_option('build_examples')
+    examples = ['example-01', 'example-02']
+    foreach ex : examples
+      example = executable(
+        ex,
+        ex + '.c',
+        dependencies: canfigger_dep,
+        c_args: '-DSOURCE_DIR="@0@"'.format(meson.current_source_dir()),
+      )
+      if get_option('build_tests')
+        test('test_' + ex, example)
+      endif
+    endforeach
+  endif
+
   pkg = import('pkgconfig')
   pkg.generate(
     buildtarget,

@@ -41,13 +41,15 @@ jobs:
         sudo apt upgrade -y
         sudo apt install -y meson ninja-build
 
-    - name: Build
+    - name: Setup
+      env:
+        CFLAGS: '-Werror -fno-sanitize-recover=all'
       run: |
-       meson setup _build -Db_sanitize=address,undefined -Db_lundef=false
-       cd _build
-       ninja
+        meson setup _build -Db_sanitize=address,undefined -Db_lundef=false
+    - name: Build
+      run: meson compile -C _build
     - name: Test
-      run: cd _build && meson test -v
+      run: meson test --no-stdsplit -v -C _build
 
   macos:
     runs-on: macos-latest
@@ -77,7 +79,10 @@ jobs:
         sudo apt update
         sudo apt remove -y firefox
         sudo apt upgrade -y
-        sudo apt install -y meson ninja-build
+        sudo apt install -y \
+            libglib2.0-dev \
+            meson \
+            ninja-build
 
     - name: Configure
       run: meson setup builddir -Dwithout-curses=true -Dnls=false

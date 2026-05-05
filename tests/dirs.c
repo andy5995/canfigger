@@ -3,8 +3,6 @@
 #endif
 
 #include "tests/test.h"
-#include <stdlib.h>
-#include <string.h>
 
 static void
 test_path_join(void)
@@ -12,15 +10,21 @@ test_path_join(void)
   char *path;
 
 #ifdef _WIN32
-  path = canfigger_path_join("C:\\Users\\user\\AppData\\Roaming\\app", "settings.conf");
+  path =
+    canfigger_path_join("C:\\Users\\user\\AppData\\Roaming\\app",
+                        "settings.conf");
   assert(path != NULL);
-  assert(strcmp(path, "C:\\Users\\user\\AppData\\Roaming\\app\\settings.conf") == 0);
+  assert(strcmp(path, "C:\\Users\\user\\AppData\\Roaming\\app\\settings.conf")
+         == 0);
   free(path);
 
   // Trailing separator: no double backslash
-  path = canfigger_path_join("C:\\Users\\user\\AppData\\Roaming\\app\\", "settings.conf");
+  path =
+    canfigger_path_join("C:\\Users\\user\\AppData\\Roaming\\app\\",
+                        "settings.conf");
   assert(path != NULL);
-  assert(strcmp(path, "C:\\Users\\user\\AppData\\Roaming\\app\\settings.conf") == 0);
+  assert(strcmp(path, "C:\\Users\\user\\AppData\\Roaming\\app\\settings.conf")
+         == 0);
   free(path);
 #else
   path = canfigger_path_join("/home/user/.config/app", "settings.conf");

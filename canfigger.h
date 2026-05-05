@@ -82,7 +82,8 @@ SOFTWARE.
    (CANFIGGER_VERSION_MAJOR == (maj) && CANFIGGER_VERSION_MINOR >= (min)))
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
 /**
@@ -100,12 +101,12 @@ extern "C" {
  * @var attributes::iter_ptr Read position within @p str; advanced by each
  *                           call to canfigger_free_current_attr_str_advance().
  */
-struct attributes
-{
-  char *str;
-  char *current;
-  char *iter_ptr;
-};
+  struct attributes
+  {
+    char *str;
+    char *current;
+    char *iter_ptr;
+  };
 
 /**
  * @struct Canfigger
@@ -122,13 +123,13 @@ struct attributes
  *                            attributes following the value.
  * @var Canfigger::next       Next node, or NULL at end of list.
  */
-struct Canfigger
-{
-  char *key;
-  char *value;
-  struct attributes *attributes;
-  struct Canfigger *next;
-};
+  struct Canfigger
+  {
+    char *key;
+    char *value;
+    struct attributes *attributes;
+    struct Canfigger *next;
+  };
 
 /**
  * @brief Parse a configuration file into a linked list of key-value nodes.
@@ -150,7 +151,8 @@ struct Canfigger
  * @return Head of the linked list, or NULL if the file cannot be opened,
  *         is empty, or a memory allocation failure occurs.
  */
-struct Canfigger *canfigger_parse_file(const char *file, const int delimiter);
+  struct Canfigger *canfigger_parse_file(const char *file,
+                                         const int delimiter);
 
 /**
  * @brief Free the current node and advance the list pointer to the next node.
@@ -167,7 +169,7 @@ struct Canfigger *canfigger_parse_file(const char *file, const int delimiter);
  * @param node Double pointer to the current node; updated to point to the
  *             next node (or NULL at end of list) before returning.
  */
-void canfigger_free_current_key_node_advance(struct Canfigger **node);
+  void canfigger_free_current_key_node_advance(struct Canfigger **node);
 
 /**
  * @brief Free the current attribute string and advance to the next attribute.
@@ -192,7 +194,8 @@ void canfigger_free_current_key_node_advance(struct Canfigger **node);
  * @param attr       Output parameter; set to the next attribute string on
  *                   success, or NULL when the list is exhausted.
  */
-void canfigger_free_current_attr_str_advance(struct attributes *attributes, char **attr);
+  void canfigger_free_current_attr_str_advance(struct attributes *attributes,
+                                               char **attr);
 
 /**
  * @brief Free all remaining nodes in the list.
@@ -204,7 +207,7 @@ void canfigger_free_current_attr_str_advance(struct attributes *attributes, char
  * @param node Double pointer to the current (or head) node; set to NULL
  *             on return.
  */
-void canfigger_free_list(struct Canfigger **node);
+  void canfigger_free_list(struct Canfigger **node);
 
 /**
  * @brief Return the platform config directory for an application.
@@ -218,7 +221,27 @@ void canfigger_free_list(struct Canfigger **node);
  * @return Malloc'd path string, or NULL on failure or if @p appname is
  *         NULL/empty.
  */
-char *canfigger_config_dir(const char *appname);
+  char *canfigger_config_dir(const char *appname);
+
+/**
+ * @brief Return the path to a config file in the platform base config directory.
+ *
+ * Joins the base config directory with @p filename, without inserting an
+ * application-name subdirectory.  On Unix, honours @c $XDG_CONFIG_HOME if
+ * set; otherwise uses @c $HOME/.config/filename.  On Windows, uses
+ * @c %APPDATA%\\filename.
+ *
+ * Use this when the config file lives directly under the config root rather
+ * than in a per-application subdirectory (e.g. @c $HOME/.config/apprc rather
+ * than @c $HOME/.config/app/apprc).
+ *
+ * The returned string is heap-allocated; the caller must free it.
+ *
+ * @param filename Config file name (or relative sub-path) to append.
+ * @return Malloc'd path string, or NULL on failure or if @p filename is
+ *         NULL or empty.
+ */
+  char *canfigger_config_file(const char *filename);
 
 /**
  * @brief Return the platform data directory for an application.
@@ -234,7 +257,7 @@ char *canfigger_config_dir(const char *appname);
  * @return Malloc'd path string, or NULL on failure or if @p appname is
  *         NULL/empty.
  */
-char *canfigger_data_dir(const char *appname);
+  char *canfigger_data_dir(const char *appname);
 
 /**
  * @brief Join a directory path and a filename with the platform separator.
@@ -249,7 +272,7 @@ char *canfigger_data_dir(const char *appname);
  * @return Malloc'd joined path string, or NULL if either argument is NULL or
  *         empty, or on allocation failure.
  */
-char *canfigger_path_join(const char *dir, const char *file);
+  char *canfigger_path_join(const char *dir, const char *file);
 
 #ifdef __cplusplus
 }

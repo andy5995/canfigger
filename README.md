@@ -40,10 +40,22 @@ argument:
 
 ## Platform path helpers
 
-Canfigger also provides `canfigger_config_dir()`, `canfigger_data_dir()`, and
-`canfigger_path_join()` for locating the standard per-user config and data
-directories on Linux (XDG), macOS, and Windows. See the API documentation for
-details.
+Canfigger provides helpers for locating standard per-user paths on Linux
+(XDG), macOS, and Windows:
+
+- `canfigger_config_dir(appname)` — returns the per-application config
+  directory (`$XDG_CONFIG_HOME/appname` or `$HOME/.config/appname`)
+- `canfigger_data_dir(appname)` — returns the per-application data
+  directory (`$XDG_DATA_HOME/appname` or `$HOME/.local/share/appname`)
+- `canfigger_config_file(filename)` — returns a path directly under the
+  base config directory, without an application subdirectory
+  (`$XDG_CONFIG_HOME/filename` or `$HOME/.config/filename`); useful when
+  the config file lives at the config root rather than in a per-application
+  subdirectory
+- `canfigger_path_join(dir, file)` — joins a directory and filename with
+  the platform separator
+
+See the API documentation for details.
 
 ## Dependencies
 

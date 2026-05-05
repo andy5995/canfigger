@@ -1,6 +1,6 @@
 name: "CodeQL"
 concurrency:
-  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.sha }}
+  group: ${{ github.workflow }}-${{ github.sha }}
   cancel-in-progress: true
 
 on:
@@ -10,12 +10,7 @@ on:
     - '**.c'
     - '**.h'
     - '**/codeql-analysis.yml'
-  pull_request:
-    branches: trunk
-    paths:
-    - '**.c'
-    - '**.h'
-    - '**/codeql-analysis.yml'
+
 #  schedule:
 #    - cron: '0 6 * * 6'
 

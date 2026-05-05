@@ -2,6 +2,7 @@ test_cases = [
   'check_version',
   'bom',
   'colons',
+  'config_file',
   'dirs',
   'file_open_err',
   'german',

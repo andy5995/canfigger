@@ -216,7 +216,7 @@ truncate_whitespace(char *str)
   else
     return;
 
-  while (isspace((unsigned char)*str))
+  while (isspace((unsigned char) *str))
   {
     *str = '\0';
     if (str != pos_0)
@@ -290,13 +290,16 @@ read_entire_file(const char *filename)
   FILE *fp = fopen(filename, "rb");
   if (!fp)
   {
-    fprintf(stderr, "canfigger: Failed to open %s: %s\n", filename, strerror(errno));
+    fprintf(stderr, "canfigger: Failed to open %s: %s\n", filename,
+            strerror(errno));
     return NULL;
   }
 
-  if (fseek(fp, 0, SEEK_END) != 0 || (file_size = ftell(fp)) < 0 || fseek(fp, 0, SEEK_SET) != 0)
+  if (fseek(fp, 0, SEEK_END) != 0 || (file_size = ftell(fp)) < 0
+      || fseek(fp, 0, SEEK_SET) != 0)
   {
-    fprintf(stderr, "canfigger: Failed to determine size of %s: %s\n", filename, strerror(errno));
+    fprintf(stderr, "canfigger: Failed to determine size of %s: %s\n",
+            filename, strerror(errno));
     goto done;
   }
 
@@ -308,9 +311,11 @@ read_entire_file(const char *filename)
   if (n_bytes != (size_t) file_size)
   {
     if (ferror(fp))
-      fprintf(stderr, "canfigger: Error reading %s: %s\n", filename, strerror(errno));
+      fprintf(stderr, "canfigger: Error reading %s: %s\n", filename,
+              strerror(errno));
     else
-      fprintf(stderr, "canfigger: Partial read of %s: expected %ld bytes, got %zu bytes\n",
+      fprintf(stderr,
+              "canfigger: Partial read of %s: expected %ld bytes, got %zu bytes\n",
               filename, file_size, n_bytes);
     free(buffer);
     buffer = NULL;
@@ -364,9 +369,9 @@ canfigger_parse_file(const char *file, const int delimiter)
    * matched 0xEF (so at least 1 file byte exists), and [2] only when [1]
    * matched 0xBB (so at least 2 exist). */
   char *parse_start = file_contents;
-  if ((unsigned char)parse_start[0] == 0xEF &&
-      (unsigned char)parse_start[1] == 0xBB &&
-      (unsigned char)parse_start[2] == 0xBF)
+  if ((unsigned char) parse_start[0] == 0xEF &&
+      (unsigned char) parse_start[1] == 0xBB &&
+      (unsigned char) parse_start[2] == 0xBF)
     parse_start += 3;
 
   struct line line;
@@ -377,14 +382,16 @@ canfigger_parse_file(const char *file, const int delimiter)
   for (;;)
   {
     line.end = strchr(line.start, '\n');
-    line.len = line.end ? (size_t)(line.end - line.start) : strlen(line.start);
+    line.len =
+      line.end ? (size_t) (line.end - line.start) : strlen(line.start);
 
     /* End of file with no remaining content */
     if (line.len == 0 && !line.end)
       break;
 
     char *tmp_line = malloc_wrap(line.len + 1);
-    if (!tmp_line) {
+    if (!tmp_line)
+    {
       canfigger_free_list(&root);
       free(file_contents);
       return NULL;
@@ -397,10 +404,11 @@ canfigger_parse_file(const char *file, const int delimiter)
     char *line_ptr = tmp_line;
     truncate_whitespace(line_ptr);
 
-    while (isspace((unsigned char)*line_ptr))
+    while (isspace((unsigned char) *line_ptr))
       line_ptr = erase_lead_char(*line_ptr, line_ptr);
 
-    if (*line_ptr == '\0' || *line_ptr == '#' || *line_ptr == '[') {
+    if (*line_ptr == '\0' || *line_ptr == '#' || *line_ptr == '[')
+    {
       free(tmp_line);
       if (!line.end)
         break;
@@ -410,7 +418,8 @@ canfigger_parse_file(const char *file, const int delimiter)
     node_complete = false;
     struct Canfigger *prev_node = cur_node;
     add_key_node(&root, &cur_node);
-    if (cur_node == prev_node) {
+    if (cur_node == prev_node)
+    {
       free(tmp_line);
       break;
     }
@@ -482,7 +491,8 @@ canfigger_parse_file(const char *file, const int delimiter)
       break;
   }
 
-  if (!root) {
+  if (!root)
+  {
     free(file_contents);
     return NULL;
   }
@@ -519,7 +529,8 @@ dir_for_appname(const char *appname, int csidl)
 }
 #else
 static char *
-dir_for_appname(const char *appname, const char *xdg_env, const char *xdg_fallback)
+dir_for_appname(const char *appname, const char *xdg_env,
+                const char *xdg_fallback)
 {
   if (!appname || *appname == '\0')
     return NULL;
@@ -539,7 +550,8 @@ dir_for_appname(const char *appname, const char *xdg_env, const char *xdg_fallba
   if (!home || !*home)
     return NULL;
 
-  size_t len = strlen(home) + 1 + strlen(xdg_fallback) + 1 + strlen(appname) + 1;
+  size_t len =
+    strlen(home) + 1 + strlen(xdg_fallback) + 1 + strlen(appname) + 1;
   char *result = malloc_wrap(len);
   if (!result)
     return NULL;
@@ -556,6 +568,49 @@ canfigger_config_dir(const char *appname)
   return dir_for_appname(appname, CSIDL_APPDATA);
 #else
   return dir_for_appname(appname, "XDG_CONFIG_HOME", ".config");
+#endif
+}
+
+
+char *
+canfigger_config_file(const char *filename)
+{
+  if (!filename || !*filename)
+    return NULL;
+
+#ifdef _WIN32
+  char base[MAX_PATH];
+  if (FAILED(SHGetFolderPathA(NULL, CSIDL_APPDATA, NULL, 0, base)))
+    return NULL;
+
+  size_t len = strlen(base) + 1 + strlen(filename) + 1;
+  char *result = malloc_wrap(len);
+  if (!result)
+    return NULL;
+  snprintf(result, len, "%s\\%s", base, filename);
+  return result;
+#else
+  const char *base = getenv("XDG_CONFIG_HOME");
+  if (base && *base)
+  {
+    size_t len = strlen(base) + 1 + strlen(filename) + 1;
+    char *result = malloc_wrap(len);
+    if (!result)
+      return NULL;
+    snprintf(result, len, "%s/%s", base, filename);
+    return result;
+  }
+
+  const char *home = getenv("HOME");
+  if (!home || !*home)
+    return NULL;
+
+  size_t len = strlen(home) + strlen("/.config/") + strlen(filename) + 1;
+  char *result = malloc_wrap(len);
+  if (!result)
+    return NULL;
+  snprintf(result, len, "%s/.config/%s", home, filename);
+  return result;
 #endif
 }
 
@@ -579,7 +634,8 @@ canfigger_path_join(const char *dir, const char *file)
 
   size_t dirlen = strlen(dir);
   size_t filelen = strlen(file);
-  bool needs_sep = dirlen > 0 && dir[dirlen - 1] != '/' && dir[dirlen - 1] != '\\';
+  bool needs_sep = dirlen > 0 && dir[dirlen - 1] != '/'
+    && dir[dirlen - 1] != '\\';
   size_t total = dirlen + (needs_sep ? 1 : 0) + filelen + 1;
 
   char *result = malloc_wrap(total);

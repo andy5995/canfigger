@@ -509,6 +509,28 @@ canfigger_parse_file(const char *file, const int delimiter)
 }
 
 
+#ifndef _WIN32
+static char *
+xdg_base_dir(const char *xdg_env, const char *fallback)
+{
+  const char *base = getenv(xdg_env);
+  if (base && *base)
+    return strclone(base, 0);
+
+  const char *home = getenv("HOME");
+  if (!home || !*home)
+    return NULL;
+
+  size_t len = strlen(home) + 1 + strlen(fallback) + 1;
+  char *result = malloc_wrap(len);
+  if (!result)
+    return NULL;
+  snprintf(result, len, "%s/%s", home, fallback);
+  return result;
+}
+#endif
+
+
 #ifdef _WIN32
 static char *
 dir_for_appname(const char *appname, int csidl)
@@ -535,27 +557,11 @@ dir_for_appname(const char *appname, const char *xdg_env,
   if (!appname || *appname == '\0')
     return NULL;
 
-  const char *base = getenv(xdg_env);
-  if (base && *base)
-  {
-    size_t len = strlen(base) + 1 + strlen(appname) + 1;
-    char *result = malloc_wrap(len);
-    if (!result)
-      return NULL;
-    snprintf(result, len, "%s/%s", base, appname);
-    return result;
-  }
-
-  const char *home = getenv("HOME");
-  if (!home || !*home)
+  char *base = xdg_base_dir(xdg_env, xdg_fallback);
+  if (!base)
     return NULL;
-
-  size_t len =
-    strlen(home) + 1 + strlen(xdg_fallback) + 1 + strlen(appname) + 1;
-  char *result = malloc_wrap(len);
-  if (!result)
-    return NULL;
-  snprintf(result, len, "%s/%s/%s", home, xdg_fallback, appname);
+  char *result = canfigger_path_join(base, appname);
+  free(base);
   return result;
 }
 #endif
@@ -590,26 +596,11 @@ canfigger_config_file(const char *filename)
   snprintf(result, len, "%s\\%s", base, filename);
   return result;
 #else
-  const char *base = getenv("XDG_CONFIG_HOME");
-  if (base && *base)
-  {
-    size_t len = strlen(base) + 1 + strlen(filename) + 1;
-    char *result = malloc_wrap(len);
-    if (!result)
-      return NULL;
-    snprintf(result, len, "%s/%s", base, filename);
-    return result;
-  }
-
-  const char *home = getenv("HOME");
-  if (!home || !*home)
+  char *base = xdg_base_dir("XDG_CONFIG_HOME", ".config");
+  if (!base)
     return NULL;
-
-  size_t len = strlen(home) + strlen("/.config/") + strlen(filename) + 1;
-  char *result = malloc_wrap(len);
-  if (!result)
-    return NULL;
-  snprintf(result, len, "%s/.config/%s", home, filename);
+  char *result = canfigger_path_join(base, filename);
+  free(base);
   return result;
 #endif
 }

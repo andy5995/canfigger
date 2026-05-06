@@ -1,0 +1,47 @@
+name: BSD
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.sha }}
+  cancel-in-progress: true
+
+on:
+  push:
+    branches: [ trunk ]
+    paths: &shared_paths
+    - '**'
+    - '!**.md'
+    - '!docs/**'
+    - '!**.yml'
+    - '**/c-cpp.yml'
+      - '**/bsd.yml'
+
+  pull_request:
+    branches: [ trunk ]
+    paths: *shared_paths
+
+jobs:
+  BSD:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: freebsd
+            version: '15.0'
+            install: sudo pkg install -y meson ninja
+          - os: openbsd
+            version: '7.8'
+            install: sudo pkg_add meson ninja
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v6
+
+    - name: Test on ${{ matrix.os }} ${{ matrix.version }}
+      uses: cross-platform-actions/action@v1
+      with:
+        operating_system: ${{ matrix.os }}
+        version: ${{ matrix.version }}
+        run: |
+          ${{ matrix.install }}
+          CFLAGS="-Werror" meson setup _build
+          meson compile -C _build
+          meson test --no-stdsplit -v -C _build
+          meson install --destdir=install_test -C _build

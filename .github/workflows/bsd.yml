@@ -7,11 +7,11 @@ on:
   push:
     branches: [ trunk ]
     paths: &shared_paths
-    - '**'
-    - '!**.md'
-    - '!docs/**'
-    - '!**.yml'
-    - '**/c-cpp.yml'
+      - '**'
+      - '!**.md'
+      - '!docs/**'
+      - '!**.yml'
+      - '**/c-cpp.yml'
       - '**/bsd.yml'
 
   pull_request:

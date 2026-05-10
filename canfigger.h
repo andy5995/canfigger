@@ -260,6 +260,20 @@ extern "C"
   char *canfigger_data_dir(const char *appname);
 
 /**
+ * @brief Return the platform cache directory for an application.
+ *
+ * On Unix, honours @c $XDG_CACHE_HOME if set; otherwise uses
+ * @c $HOME/.cache/appname.  On Windows, uses @c %LOCALAPPDATA%\\appname.
+ *
+ * The returned string is heap-allocated; the caller must free it.
+ *
+ * @param appname Application name appended as a subdirectory.
+ * @return Malloc'd path string, or NULL on failure or if @p appname is
+ *         NULL/empty.
+ */
+  char *canfigger_cache_dir(const char *appname);
+
+/**
  * @brief Join a directory path and a filename with the platform separator.
  *
  * A separator is inserted between @p dir and @p file unless @p dir already

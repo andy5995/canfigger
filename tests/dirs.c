@@ -62,10 +62,17 @@ test_dirs(void)
   assert(strstr(dir, "testapp") != NULL);
   free(dir);
 
+  dir = canfigger_cache_dir("testapp");
+  assert(dir != NULL);
+  assert(strstr(dir, "testapp") != NULL);
+  free(dir);
+
   assert(canfigger_config_dir(NULL) == NULL);
   assert(canfigger_config_dir("") == NULL);
   assert(canfigger_data_dir(NULL) == NULL);
   assert(canfigger_data_dir("") == NULL);
+  assert(canfigger_cache_dir(NULL) == NULL);
+  assert(canfigger_cache_dir("") == NULL);
 }
 #else
 static void
@@ -102,11 +109,27 @@ test_dirs(void)
   assert(strcmp(dir, "/tmp/testhome/.local/share/myapp") == 0);
   free(dir);
 
+  // XDG_CACHE_HOME set
+  setenv("XDG_CACHE_HOME", "/tmp/testcache", 1);
+  dir = canfigger_cache_dir("myapp");
+  assert(dir != NULL);
+  assert(strcmp(dir, "/tmp/testcache/myapp") == 0);
+  free(dir);
+  unsetenv("XDG_CACHE_HOME");
+
+  // XDG_CACHE_HOME unset: fall back to $HOME/.cache
+  dir = canfigger_cache_dir("myapp");
+  assert(dir != NULL);
+  assert(strcmp(dir, "/tmp/testhome/.cache/myapp") == 0);
+  free(dir);
+
   // NULL / empty guards
   assert(canfigger_config_dir(NULL) == NULL);
   assert(canfigger_config_dir("") == NULL);
   assert(canfigger_data_dir(NULL) == NULL);
   assert(canfigger_data_dir("") == NULL);
+  assert(canfigger_cache_dir(NULL) == NULL);
+  assert(canfigger_cache_dir("") == NULL);
 }
 #endif
 

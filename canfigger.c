@@ -618,6 +618,17 @@ canfigger_data_dir(const char *appname)
 
 
 char *
+canfigger_cache_dir(const char *appname)
+{
+#ifdef _WIN32
+  return dir_for_appname(appname, CSIDL_LOCAL_APPDATA);
+#else
+  return dir_for_appname(appname, "XDG_CACHE_HOME", ".cache");
+#endif
+}
+
+
+char *
 canfigger_path_join(const char *dir, const char *file)
 {
   if (!dir || !*dir || !file || !*file)

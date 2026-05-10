@@ -1,5 +1,7 @@
 - (in-progress)
 
+  + Add canfigger_cache_dir(): $XDG_CACHE_HOME/appname or $HOME/.cache/appname
+    on POSIX; %LOCALAPPDATA%\appname on Windows
   + Add canfigger_config_file(): returns $XDG_CONFIG_HOME/filename or
     $HOME/.config/filename, for config files that live directly under the
     config root rather than in a per-application subdirectory

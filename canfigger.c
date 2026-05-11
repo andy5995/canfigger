@@ -377,7 +377,7 @@ canfigger_parse_file(const char *file, const int delimiter)
   struct line line;
   line.start = parse_start;
 
-  bool node_complete;
+  bool node_complete = false;
 
   for (;;)
   {

@@ -1,7 +1,7 @@
 project(
   'canfigger',
   'c',
-  version: '0.3.2999',
+  version: '0.3.2',
   meson_version: '>= 0.48.0',
   license: 'MIT',
   default_options: ['warning_level=3', 'c_std=c99'],
@@ -11,7 +11,7 @@ cc = meson.get_compiler('c')
 extra_flags = [
   '-fno-common',
   '-Wshadow',
-  '-Wstrict-overflow=5',
+  '-Wstrict-overflow=2',
   '-Wformat-security',
   '-Wformat-overflow=2',
   '-Wunused-result',

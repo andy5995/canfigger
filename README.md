@@ -5,5 +5,6 @@
 
 ## Version Documentation
 
+* [v0.3.2](https://andy5995.github.io/canfigger/v0.3.2)
 * [v0.3.1](https://andy5995.github.io/canfigger/v0.3.1)
 * [v0.3.0](https://andy5995.github.io/canfigger/v0.3.0)

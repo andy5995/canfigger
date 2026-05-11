@@ -2,7 +2,7 @@ project(
   'canfigger',
   'c',
   version: '0.3.2',
-  meson_version: '>= 0.60.0',
+  meson_version: '>= 0.48.0',
   license: 'MIT',
   default_options: ['warning_level=3', 'c_std=c99'],
 )
@@ -83,7 +83,6 @@ if not meson.is_subproject()
     join_paths('docs'),
     install_dir: join_paths(get_option('docdir'), 'html'),
     strip_directory: true,
-    install_tag: 'doc',
   )
 
   install_data(
@@ -97,7 +96,6 @@ if not meson.is_subproject()
       'example-02.conf',
     ),
     install_dir: get_option('docdir'),
-    install_tag: 'doc',
   )
 
   if get_option('build_tests')

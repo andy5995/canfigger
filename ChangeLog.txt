@@ -1,5 +1,6 @@
-- (in-progress)
+2026-05-11
 
+- canfigger (v0.3.2):
   + Add canfigger_cache_dir(): $XDG_CACHE_HOME/appname or $HOME/.cache/appname
     on POSIX; %LOCALAPPDATA%\appname on Windows
   + Add canfigger_config_file(): returns $XDG_CONFIG_HOME/filename or

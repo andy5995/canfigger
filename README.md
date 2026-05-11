@@ -3,12 +3,14 @@
 [![cirrus-badge]][cirrus-url]
 [![windows-badge]][windows-url]
 
-# canfigger v0.3.2999
+# canfigger v0.3.2
 
 Canfigger is a lightweight C language library designed to parse configuration
 files. It provides functionality to read them and represent their contents as
 a linked list of key-value pairs, along with associated attributes for each
-pair.
+pair. It also includes utility functions for locating standard per-user
+directories (config, data, cache) and joining paths, with support for XDG on
+Linux/macOS and the Windows CSIDL equivalents.
 
 * [website/API documentation and examples](https://andy5995.github.io/canfigger/)
 * [source on GitHub](https://github.com/andy5995/canfigger/)
@@ -47,6 +49,8 @@ Canfigger provides helpers for locating standard per-user paths on Linux
   directory (`$XDG_CONFIG_HOME/appname` or `$HOME/.config/appname`)
 - `canfigger_data_dir(appname)` — returns the per-application data
   directory (`$XDG_DATA_HOME/appname` or `$HOME/.local/share/appname`)
+- `canfigger_cache_dir(appname)` — returns the per-application cache
+  directory (`$XDG_CACHE_HOME/appname` or `$HOME/.cache/appname`)
 - `canfigger_config_file(filename)` — returns a path directly under the
   base config directory, without an application subdirectory
   (`$XDG_CONFIG_HOME/filename` or `$HOME/.config/filename`); useful when

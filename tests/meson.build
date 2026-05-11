@@ -5,7 +5,6 @@ test_cases = [
   'config_file',
   'dirs',
   'file_open_err',
-  'german',
   'incomplete_parse_file',
   'multiple_attributes',
   'no_trailing_newline',

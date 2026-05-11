@@ -220,6 +220,16 @@ extern "C"
  * @param appname Application name appended as a subdirectory.
  * @return Malloc'd path string, or NULL on failure or if @p appname is
  *         NULL/empty.
+ *
+ * @code
+ * char *dir = canfigger_config_dir("myapp");
+ * if (dir) {
+ *     char *path = canfigger_path_join(dir, "settings.conf");
+ *     free(dir);
+ *     // open path ...
+ *     free(path);
+ * }
+ * @endcode
  */
   char *canfigger_config_dir(const char *appname);
 
@@ -240,6 +250,15 @@ extern "C"
  * @param filename Config file name (or relative sub-path) to append.
  * @return Malloc'd path string, or NULL on failure or if @p filename is
  *         NULL or empty.
+ *
+ * @code
+ * char *path = canfigger_config_file("apprc");
+ * if (path) {
+ *     struct Canfigger *list = canfigger_parse_file(path, ',');
+ *     free(path);
+ *     // use list ...
+ * }
+ * @endcode
  */
   char *canfigger_config_file(const char *filename);
 
@@ -285,6 +304,15 @@ extern "C"
  * @param file Filename (or relative sub-path) to append.
  * @return Malloc'd joined path string, or NULL if either argument is NULL or
  *         empty, or on allocation failure.
+ *
+ * @code
+ * char *path = canfigger_path_join("/home/user/.config/myapp", "settings.conf");
+ * if (path) {
+ *     struct Canfigger *list = canfigger_parse_file(path, ',');
+ *     free(path);
+ *     // use list ...
+ * }
+ * @endcode
  */
   char *canfigger_path_join(const char *dir, const char *file);
 

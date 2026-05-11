@@ -318,8 +318,17 @@ value</td>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>Malloc'd path string, or NULL on failure or if <code class="param">appname</code> is NULL/empty. </dd></dl>
-
+<dl class="section return"><dt>Returns</dt><dd>Malloc'd path string, or NULL on failure or if <code class="param">appname</code> is NULL/empty.</dd></dl>
+<div class="fragment"><div class="line"><span class="keywordtype">char</span> *dir = <a class="code hl_function" href="#ae86f14e5545edad23f3b00674dc1a558">canfigger_config_dir</a>(<span class="stringliteral">&quot;myapp&quot;</span>);</div>
+<div class="line"><span class="keywordflow">if</span> (dir) {</div>
+<div class="line">    <span class="keywordtype">char</span> *path = <a class="code hl_function" href="#aea0d9accc934afc7de5f4a94a246f0a2">canfigger_path_join</a>(dir, <span class="stringliteral">&quot;settings.conf&quot;</span>);</div>
+<div class="line">    free(dir);</div>
+<div class="line">    <span class="comment">// open path ...</span></div>
+<div class="line">    free(path);</div>
+<div class="line">}</div>
+<div class="ttc" id="acanfigger_8h_html_ae86f14e5545edad23f3b00674dc1a558"><div class="ttname"><a href="#ae86f14e5545edad23f3b00674dc1a558">canfigger_config_dir</a></div><div class="ttdeci">char * canfigger_config_dir(const char *appname)</div><div class="ttdoc">Return the platform config directory for an application.</div><div class="ttdef"><b>Definition</b> <a href="canfigger_8c_source.html#l00571">canfigger.c:571</a></div></div>
+<div class="ttc" id="acanfigger_8h_html_aea0d9accc934afc7de5f4a94a246f0a2"><div class="ttname"><a href="#aea0d9accc934afc7de5f4a94a246f0a2">canfigger_path_join</a></div><div class="ttdeci">char * canfigger_path_join(const char *dir, const char *file)</div><div class="ttdoc">Join a directory path and a filename with the platform separator.</div><div class="ttdef"><b>Definition</b> <a href="canfigger_8c_source.html#l00632">canfigger.c:632</a></div></div>
+</div><!-- fragment --> 
 <p class="definition">Definition at line <a class="el" href="canfigger_8c_source.html#l00571">571</a> of file <a class="el" href="canfigger_8c_source.html">canfigger.c</a>.</p>
 
 </div>
@@ -349,8 +358,15 @@ value</td>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>Malloc'd path string, or NULL on failure or if <code class="param">filename</code> is NULL or empty. </dd></dl>
-
+<dl class="section return"><dt>Returns</dt><dd>Malloc'd path string, or NULL on failure or if <code class="param">filename</code> is NULL or empty.</dd></dl>
+<div class="fragment"><div class="line"><span class="keywordtype">char</span> *path = <a class="code hl_function" href="#a19e1f1869c0e3d3e077f094d160a9c42">canfigger_config_file</a>(<span class="stringliteral">&quot;apprc&quot;</span>);</div>
+<div class="line"><span class="keywordflow">if</span> (path) {</div>
+<div class="line">    <span class="keyword">struct </span><a class="code hl_struct" href="#structCanfigger">Canfigger</a> *list = <a class="code hl_function" href="#a37053197894e04e253629a9bdae52da0">canfigger_parse_file</a>(path, <span class="charliteral">&#39;,&#39;</span>);</div>
+<div class="line">    free(path);</div>
+<div class="line">    <span class="comment">// use list ...</span></div>
+<div class="line">}</div>
+<div class="ttc" id="acanfigger_8h_html_a19e1f1869c0e3d3e077f094d160a9c42"><div class="ttname"><a href="#a19e1f1869c0e3d3e077f094d160a9c42">canfigger_config_file</a></div><div class="ttdeci">char * canfigger_config_file(const char *filename)</div><div class="ttdoc">Return the path to a config file in the platform base config directory.</div><div class="ttdef"><b>Definition</b> <a href="canfigger_8c_source.html#l00582">canfigger.c:582</a></div></div>
+</div><!-- fragment --> 
 <p class="definition">Definition at line <a class="el" href="canfigger_8c_source.html#l00582">582</a> of file <a class="el" href="canfigger_8c_source.html">canfigger.c</a>.</p>
 
 </div>
@@ -548,8 +564,14 @@ value</td>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>Malloc'd joined path string, or NULL if either argument is NULL or empty, or on allocation failure. </dd></dl>
-
+<dl class="section return"><dt>Returns</dt><dd>Malloc'd joined path string, or NULL if either argument is NULL or empty, or on allocation failure.</dd></dl>
+<div class="fragment"><div class="line"><span class="keywordtype">char</span> *path = <a class="code hl_function" href="#aea0d9accc934afc7de5f4a94a246f0a2">canfigger_path_join</a>(<span class="stringliteral">&quot;/home/user/.config/myapp&quot;</span>, <span class="stringliteral">&quot;settings.conf&quot;</span>);</div>
+<div class="line"><span class="keywordflow">if</span> (path) {</div>
+<div class="line">    <span class="keyword">struct </span><a class="code hl_struct" href="#structCanfigger">Canfigger</a> *list = <a class="code hl_function" href="#a37053197894e04e253629a9bdae52da0">canfigger_parse_file</a>(path, <span class="charliteral">&#39;,&#39;</span>);</div>
+<div class="line">    free(path);</div>
+<div class="line">    <span class="comment">// use list ...</span></div>
+<div class="line">}</div>
+</div><!-- fragment --> 
 <p class="definition">Definition at line <a class="el" href="canfigger_8c_source.html#l00632">632</a> of file <a class="el" href="canfigger_8c_source.html">canfigger.c</a>.</p>
 
 </div>

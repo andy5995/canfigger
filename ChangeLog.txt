@@ -1,3 +1,7 @@
+(in-progress):
+
+* Doxyfile: Exclude tests (remove unused structs from docs)
+
 2026-05-11
 
 - canfigger (v0.3.2):

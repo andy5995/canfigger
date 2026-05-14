@@ -13,6 +13,5 @@ var searchData=
   ['canfigger_5ffree_5fcurrent_5fkey_5fnode_5fadvance_10',['canfigger_free_current_key_node_advance',['../canfigger_8h.html#af005f74a446bdbfb1d7aa252ab7d9738',1,'canfigger.c']]],
   ['canfigger_5ffree_5flist_11',['canfigger_free_list',['../canfigger_8h.html#ad2f138abcb4faa2ec7619cca7d2cbfde',1,'canfigger.c']]],
   ['canfigger_5fparse_5ffile_12',['canfigger_parse_file',['../canfigger_8h.html#a37053197894e04e253629a9bdae52da0',1,'canfigger.c']]],
-  ['canfigger_5fpath_5fjoin_13',['canfigger_path_join',['../canfigger_8h.html#aea0d9accc934afc7de5f4a94a246f0a2',1,'canfigger.c']]],
-  ['configentry_14',['ConfigEntry',['../structConfigEntry.html',1,'']]]
+  ['canfigger_5fpath_5fjoin_13',['canfigger_path_join',['../canfigger_8h.html#aea0d9accc934afc7de5f4a94a246f0a2',1,'canfigger.c']]]
 ];

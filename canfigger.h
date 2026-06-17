@@ -60,6 +60,7 @@ SOFTWARE.
 #pragma once
 
 #include <stddef.h>
+#include <stdint.h>
 #include "canfigger_version.h"
 
 /**
@@ -340,6 +341,58 @@ extern "C"
  */
   size_t canfigger_get_double_attrs(const struct Canfigger *node, double *out,
                                     size_t max);
+
+/**
+ * @brief Parse a hex color string into RGBA components.
+ *
+ * Accepts strings of the form @c \#RRGGBB or @c \#RRGGBBAA (case-insensitive).
+ * If only six hex digits are given, @p a is set to 255.
+ *
+ * The string does not have to come from a node's @c value field — it works on
+ * any raw string the caller holds (an attribute value, a command-line argument,
+ * etc.).
+ *
+ * @param str  String to parse.  Must start with @c '#'.
+ * @param r    Output: red component (0–255).
+ * @param g    Output: green component.
+ * @param b    Output: blue component.
+ * @param a    Output: alpha component (255 if no alpha digits in string).
+ * @return     3 if RGB was parsed, 4 if RGBA was parsed,
+ *             0 on failure (NULL input, missing @c #, wrong length, or
+ *             invalid hex digits).
+ *
+ * @since 0.3.3
+ *
+ * @snippet examples/canfigger_parse_color_hex.c canfigger_parse_color_hex
+ */
+  int canfigger_parse_color_hex(const char *str, uint8_t * r, uint8_t * g,
+                                uint8_t * b, uint8_t * a);
+
+/**
+ * @brief Parse a color from a config node, accepting hex or integer-attribute format.
+ *
+ * Dispatches on @c node->value:
+ * - If it starts with @c '#', delegates to canfigger_parse_color_hex().
+ *   Config line form: @c key=\#RRGGBB or @c key=\#RRGGBBAA.
+ * - Otherwise reads 3 or 4 integer attributes via canfigger_get_int_attrs().
+ *   Conventional form: @c key=rgb,R,G,B or @c key=rgba,R,G,B,A where the
+ *   value acts as a type tag and the integers follow as comma-separated attributes.
+ *
+ * In both cases @p a is set to 255 when no alpha is present.
+ *
+ * @param node  Config node to read (may be NULL).
+ * @param r     Output: red component.
+ * @param g     Output: green component.
+ * @param b     Output: blue component.
+ * @param a     Output: alpha component.
+ * @return      3 or 4 on success (number of components found), 0 on failure.
+ *
+ * @since 0.3.3
+ *
+ * @snippet examples/canfigger_parse_color.c canfigger_parse_color
+ */
+  int canfigger_parse_color(const struct Canfigger *node, uint8_t * r,
+                            uint8_t * g, uint8_t * b, uint8_t * a);
 
 #ifdef __cplusplus
 }

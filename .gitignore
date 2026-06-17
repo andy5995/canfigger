@@ -1,5 +1,6 @@
 
 /_build/
 /docs/
+/gh-pages/
 *~
 .meson-subproject-wrap-hash.txt

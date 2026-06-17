@@ -4,6 +4,8 @@ snippet_examples = [
   'canfigger_path_join',
   'canfigger_get_int_attrs',
   'canfigger_get_double_attrs',
+  'canfigger_parse_color_hex',
+  'canfigger_parse_color',
 ]
 
 foreach ex : snippet_examples

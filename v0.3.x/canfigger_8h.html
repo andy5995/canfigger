@@ -81,6 +81,7 @@ $(function() {
 <p>Public API for the <a class="el" href="canfigger_8h.html#structCanfigger" title="A single node in the parsed configuration linked list.">Canfigger</a> configuration file parser.  
 <a href="#details">More...</a></p>
 <div class="textblock"><code>#include &lt;stddef.h&gt;</code><br />
+<code>#include &lt;stdint.h&gt;</code><br />
 <code>#include &quot;canfigger_version.h&quot;</code><br />
 </div>
 <p><a href="canfigger_8h_source.html">Go to the source code of this file.</a></p>
@@ -135,6 +136,12 @@ Functions</h2></td></tr>
 <tr class="memitem:a20f817784b72c9b5ea40d1b4a8f61ddc" id="r_a20f817784b72c9b5ea40d1b4a8f61ddc"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="canfigger_8h.html#a20f817784b72c9b5ea40d1b4a8f61ddc">canfigger_get_double_attrs</a> (const struct <a class="el" href="canfigger_8h.html#structCanfigger">Canfigger</a> *node, double *out, size_t max)</td></tr>
 <tr class="memdesc:a20f817784b72c9b5ea40d1b4a8f61ddc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Parse a node's attributes as an array of doubles.  <br /></td></tr>
 <tr class="separator:a20f817784b72c9b5ea40d1b4a8f61ddc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abf9a86f69aab5211cb8ccfb577ed3153" id="r_abf9a86f69aab5211cb8ccfb577ed3153"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="canfigger_8h.html#abf9a86f69aab5211cb8ccfb577ed3153">canfigger_parse_color_hex</a> (const char *str, uint8_t *r, uint8_t *g, uint8_t *b, uint8_t *a)</td></tr>
+<tr class="memdesc:abf9a86f69aab5211cb8ccfb577ed3153"><td class="mdescLeft">&#160;</td><td class="mdescRight">Parse a hex color string into RGBA components.  <br /></td></tr>
+<tr class="separator:abf9a86f69aab5211cb8ccfb577ed3153"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6bf62392cad41e15effc23139c6e0cc7" id="r_a6bf62392cad41e15effc23139c6e0cc7"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="canfigger_8h.html#a6bf62392cad41e15effc23139c6e0cc7">canfigger_parse_color</a> (const struct <a class="el" href="canfigger_8h.html#structCanfigger">Canfigger</a> *node, uint8_t *r, uint8_t *g, uint8_t *b, uint8_t *a)</td></tr>
+<tr class="memdesc:a6bf62392cad41e15effc23139c6e0cc7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Parse a color from a config node, accepting hex or integer-attribute format.  <br /></td></tr>
+<tr class="separator:a6bf62392cad41e15effc23139c6e0cc7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Public API for the <a class="el" href="canfigger_8h.html#structCanfigger" title="A single node in the parsed configuration linked list.">Canfigger</a> configuration file parser. </p>
@@ -150,9 +157,9 @@ Functions</h2></td></tr>
 <div class="line">  <span class="comment">// use list-&gt;key and list-&gt;value</span></div>
 <div class="line">  <a class="code hl_function" href="canfigger_8h.html#af005f74a446bdbfb1d7aa252ab7d9738">canfigger_free_current_key_node_advance</a>(&amp;list);</div>
 <div class="line">}</div>
-<div class="ttc" id="acanfigger_8h_html_a37053197894e04e253629a9bdae52da0"><div class="ttname"><a href="canfigger_8h.html#a37053197894e04e253629a9bdae52da0">canfigger_parse_file</a></div><div class="ttdeci">struct Canfigger * canfigger_parse_file(const char *file, const int delimiter)</div><div class="ttdoc">Parse a configuration file into a linked list of key-value nodes.</div><div class="ttdef"><b>Definition</b> <a href="canfigger_8c_source.html#l00356">canfigger.c:356</a></div></div>
-<div class="ttc" id="acanfigger_8h_html_af005f74a446bdbfb1d7aa252ab7d9738"><div class="ttname"><a href="canfigger_8h.html#af005f74a446bdbfb1d7aa252ab7d9738">canfigger_free_current_key_node_advance</a></div><div class="ttdeci">void canfigger_free_current_key_node_advance(struct Canfigger **node)</div><div class="ttdoc">Free the current node and advance the list pointer to the next node.</div><div class="ttdef"><b>Definition</b> <a href="canfigger_8c_source.html#l00125">canfigger.c:125</a></div></div>
-<div class="ttc" id="acanfigger_8h_html_structCanfigger"><div class="ttname"><a href="canfigger_8h.html#structCanfigger">Canfigger</a></div><div class="ttdoc">A single node in the parsed configuration linked list.</div><div class="ttdef"><b>Definition</b> <a href="canfigger_8h_source.html#l00127">canfigger.h:128</a></div></div>
+<div class="ttc" id="acanfigger_8h_html_a37053197894e04e253629a9bdae52da0"><div class="ttname"><a href="canfigger_8h.html#a37053197894e04e253629a9bdae52da0">canfigger_parse_file</a></div><div class="ttdeci">struct Canfigger * canfigger_parse_file(const char *file, const int delimiter)</div><div class="ttdoc">Parse a configuration file into a linked list of key-value nodes.</div><div class="ttdef"><b>Definition</b> <a href="canfigger_8c_source.html#l00357">canfigger.c:357</a></div></div>
+<div class="ttc" id="acanfigger_8h_html_af005f74a446bdbfb1d7aa252ab7d9738"><div class="ttname"><a href="canfigger_8h.html#af005f74a446bdbfb1d7aa252ab7d9738">canfigger_free_current_key_node_advance</a></div><div class="ttdeci">void canfigger_free_current_key_node_advance(struct Canfigger **node)</div><div class="ttdoc">Free the current node and advance the list pointer to the next node.</div><div class="ttdef"><b>Definition</b> <a href="canfigger_8c_source.html#l00126">canfigger.c:126</a></div></div>
+<div class="ttc" id="acanfigger_8h_html_structCanfigger"><div class="ttname"><a href="canfigger_8h.html#structCanfigger">Canfigger</a></div><div class="ttdoc">A single node in the parsed configuration linked list.</div><div class="ttdef"><b>Definition</b> <a href="canfigger_8h_source.html#l00128">canfigger.h:129</a></div></div>
 </div><!-- fragment --><p>Part of canfigger (<a href="https://github.com/andy5995/canfigger">https://github.com/andy5995/canfigger</a>). </p>
 
 <p class="definition">Definition in file <a class="el" href="canfigger_8h_source.html">canfigger.h</a>.</p>
@@ -171,7 +178,7 @@ Functions</h2></td></tr>
 <div class="textblock"><p>Internal iteration state for a node's attribute list. </p>
 <p>This struct is allocated and owned by the library. Callers should not read or modify its fields directly; use canfigger_free_current_attr_str_advance() to iterate. </p>
 
-<p class="definition">Definition at line <a class="el" href="canfigger_8h_source.html#l00105">105</a> of file <a class="el" href="canfigger_8h_source.html">canfigger.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="canfigger_8h_source.html#l00106">106</a> of file <a class="el" href="canfigger_8h_source.html">canfigger.h</a>.</p>
 </div><table class="fieldtable">
 <tr><th colspan="3">Data Fields</th></tr>
 <tr><td class="fieldtype">
@@ -210,7 +217,7 @@ str</td>
 <div class="textblock"><p>A single node in the parsed configuration linked list. </p>
 <p>Each node represents one key-value entry from the configuration file. Nodes are heap-allocated by canfigger_parse_file() and must be freed with canfigger_free_current_key_node_advance() or canfigger_free_list(). </p>
 
-<p class="definition">Definition at line <a class="el" href="canfigger_8h_source.html#l00127">127</a> of file <a class="el" href="canfigger_8h_source.html">canfigger.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="canfigger_8h_source.html#l00128">128</a> of file <a class="el" href="canfigger_8h_source.html">canfigger.h</a>.</p>
 </div><table class="fieldtable">
 <tr><th colspan="3">Data Fields</th></tr>
 <tr><td class="fieldtype">
@@ -283,7 +290,7 @@ value</td>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="canfigger_8h_source.html#l00081">81</a> of file <a class="el" href="canfigger_8h_source.html">canfigger.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="canfigger_8h_source.html#l00082">82</a> of file <a class="el" href="canfigger_8h_source.html">canfigger.h</a>.</p>
 
 </div>
 </div>
@@ -316,7 +323,7 @@ value</td>
 <dl class="section return"><dt>Returns</dt><dd>Malloc'd path string, or NULL on failure or if <code>appname</code> is NULL/empty.</dd></dl>
 <dl class="section since"><dt>Since</dt><dd>0.3.2 </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="canfigger_8c_source.html#l00700">700</a> of file <a class="el" href="canfigger_8c_source.html">canfigger.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="canfigger_8c_source.html#l00744">744</a> of file <a class="el" href="canfigger_8c_source.html">canfigger.c</a>.</p>
 
 </div>
 </div>
@@ -358,9 +365,9 @@ value</td>
 <div class="line">      <a class="code hl_function" href="canfigger_8h.html#ad2f138abcb4faa2ec7619cca7d2cbfde">canfigger_free_list</a>(&amp;list);</div>
 <div class="line">    }</div>
 <div class="line">  }</div>
-<div class="ttc" id="acanfigger_8h_html_ad2f138abcb4faa2ec7619cca7d2cbfde"><div class="ttname"><a href="canfigger_8h.html#ad2f138abcb4faa2ec7619cca7d2cbfde">canfigger_free_list</a></div><div class="ttdeci">void canfigger_free_list(struct Canfigger **node)</div><div class="ttdoc">Free all remaining nodes in the list.</div><div class="ttdef"><b>Definition</b> <a href="canfigger_8c_source.html#l00166">canfigger.c:166</a></div></div>
+<div class="ttc" id="acanfigger_8h_html_ad2f138abcb4faa2ec7619cca7d2cbfde"><div class="ttname"><a href="canfigger_8h.html#ad2f138abcb4faa2ec7619cca7d2cbfde">canfigger_free_list</a></div><div class="ttdeci">void canfigger_free_list(struct Canfigger **node)</div><div class="ttdoc">Free all remaining nodes in the list.</div><div class="ttdef"><b>Definition</b> <a href="canfigger_8c_source.html#l00167">canfigger.c:167</a></div></div>
 </div><!-- fragment --> 
-<p class="definition">Definition at line <a class="el" href="canfigger_8c_source.html#l00650">650</a> of file <a class="el" href="canfigger_8c_source.html">canfigger.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="canfigger_8c_source.html#l00694">694</a> of file <a class="el" href="canfigger_8c_source.html">canfigger.c</a>.</p>
 
 </div>
 </div>
@@ -399,7 +406,7 @@ value</td>
 <div class="line">    <a class="code hl_function" href="canfigger_8h.html#ad2f138abcb4faa2ec7619cca7d2cbfde">canfigger_free_list</a>(&amp;list);</div>
 <div class="line">  }</div>
 </div><!-- fragment --> 
-<p class="definition">Definition at line <a class="el" href="canfigger_8c_source.html#l00661">661</a> of file <a class="el" href="canfigger_8c_source.html">canfigger.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="canfigger_8c_source.html#l00705">705</a> of file <a class="el" href="canfigger_8c_source.html">canfigger.c</a>.</p>
 
 </div>
 </div>
@@ -430,7 +437,7 @@ value</td>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Malloc'd path string, or NULL on failure or if <code>appname</code> is NULL/empty. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="canfigger_8c_source.html#l00689">689</a> of file <a class="el" href="canfigger_8c_source.html">canfigger.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="canfigger_8c_source.html#l00733">733</a> of file <a class="el" href="canfigger_8c_source.html">canfigger.c</a>.</p>
 
 </div>
 </div>
@@ -476,7 +483,7 @@ value</td>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="canfigger_8c_source.html#l00086">86</a> of file <a class="el" href="canfigger_8c_source.html">canfigger.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="canfigger_8c_source.html#l00087">87</a> of file <a class="el" href="canfigger_8c_source.html">canfigger.c</a>.</p>
 
 </div>
 </div>
@@ -507,7 +514,7 @@ value</td>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="canfigger_8c_source.html#l00125">125</a> of file <a class="el" href="canfigger_8c_source.html">canfigger.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="canfigger_8c_source.html#l00126">126</a> of file <a class="el" href="canfigger_8c_source.html">canfigger.c</a>.</p>
 
 </div>
 </div>
@@ -536,7 +543,7 @@ value</td>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="canfigger_8c_source.html#l00166">166</a> of file <a class="el" href="canfigger_8c_source.html">canfigger.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="canfigger_8c_source.html#l00167">167</a> of file <a class="el" href="canfigger_8c_source.html">canfigger.c</a>.</p>
 
 </div>
 </div>
@@ -594,7 +601,7 @@ value</td>
 <div class="line">  }</div>
 </div><!-- fragment --><dl class="section since"><dt>Since</dt><dd>0.3.3 </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="canfigger_8c_source.html#l00552">552</a> of file <a class="el" href="canfigger_8c_source.html">canfigger.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="canfigger_8c_source.html#l00553">553</a> of file <a class="el" href="canfigger_8c_source.html">canfigger.c</a>.</p>
 
 </div>
 </div>
@@ -654,7 +661,161 @@ value</td>
 <div class="line">  }</div>
 </div><!-- fragment --><dl class="section since"><dt>Since</dt><dd>0.3.3 </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="canfigger_8c_source.html#l00513">513</a> of file <a class="el" href="canfigger_8c_source.html">canfigger.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="canfigger_8c_source.html#l00514">514</a> of file <a class="el" href="canfigger_8c_source.html">canfigger.c</a>.</p>
+
+</div>
+</div>
+<a id="a6bf62392cad41e15effc23139c6e0cc7" name="a6bf62392cad41e15effc23139c6e0cc7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6bf62392cad41e15effc23139c6e0cc7">&#9670;&#160;</a></span>canfigger_parse_color()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int canfigger_parse_color </td>
+          <td>(</td>
+          <td class="paramtype">const struct <a class="el" href="canfigger_8h.html#structCanfigger">Canfigger</a> *&#160;</td>
+          <td class="paramname"><em>node</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint8_t *&#160;</td>
+          <td class="paramname"><em>r</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint8_t *&#160;</td>
+          <td class="paramname"><em>g</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint8_t *&#160;</td>
+          <td class="paramname"><em>b</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint8_t *&#160;</td>
+          <td class="paramname"><em>a</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Parse a color from a config node, accepting hex or integer-attribute format. </p>
+<p>Dispatches on <code>node-&gt;value:</code> </p><ul>
+<li>If it starts with <code>'#'</code>, delegates to <a class="el" href="canfigger_8h.html#abf9a86f69aab5211cb8ccfb577ed3153" title="Parse a hex color string into RGBA components.">canfigger_parse_color_hex()</a>. Config line form: <code>key=#RRGGBB</code> or <code>key=#RRGGBBAA</code>.</li>
+<li>Otherwise reads 3 or 4 integer attributes via <a class="el" href="canfigger_8h.html#a16a76eb1209349a26a5f90ff5fde84e6" title="Parse a node&#39;s attributes as an array of integers.">canfigger_get_int_attrs()</a>. Conventional form: <code>key=rgb</code>,R,G,B or <code>key=rgba</code>,R,G,B,A where the value acts as a type tag and the integers follow as comma-separated attributes.</li>
+</ul>
+<p>In both cases <code>a</code> is set to 255 when no alpha is present.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">node</td><td>Config node to read (may be NULL). </td></tr>
+    <tr><td class="paramname">r</td><td>Output: red component. </td></tr>
+    <tr><td class="paramname">g</td><td>Output: green component. </td></tr>
+    <tr><td class="paramname">b</td><td>Output: blue component. </td></tr>
+    <tr><td class="paramname">a</td><td>Output: alpha component. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>3 or 4 on success (number of components found), 0 on failure.</dd></dl>
+<dl class="section since"><dt>Since</dt><dd>0.3.3</dd></dl>
+<div class="fragment"><div class="line">  <span class="comment">/*</span></div>
+<div class="line"><span class="comment">   * Config file entries this example handles:</span></div>
+<div class="line"><span class="comment">   *   bg_hex  = #FF8000</span></div>
+<div class="line"><span class="comment">   *   bg_rgb  = rgb, 255, 128, 0</span></div>
+<div class="line"><span class="comment">   *   bg_rgba = rgba, 255, 128, 0, 128</span></div>
+<div class="line"><span class="comment">   */</span></div>
+<div class="line">  <span class="keyword">struct </span><a class="code hl_struct" href="canfigger_8h.html#structCanfigger">Canfigger</a> *list = <a class="code hl_function" href="canfigger_8h.html#a37053197894e04e253629a9bdae52da0">canfigger_parse_file</a>(<span class="stringliteral">&quot;colors.conf&quot;</span>, <span class="charliteral">&#39;,&#39;</span>);</div>
+<div class="line">  <span class="keywordflow">while</span> (list)</div>
+<div class="line">  {</div>
+<div class="line">    uint8_t r, g, b, a;</div>
+<div class="line">    <span class="keywordtype">int</span> n = <a class="code hl_function" href="canfigger_8h.html#a6bf62392cad41e15effc23139c6e0cc7">canfigger_parse_color</a>(list, &amp;r, &amp;g, &amp;b, &amp;a);</div>
+<div class="line">    <span class="keywordflow">if</span> (n &gt;= 3)</div>
+<div class="line">      fprintf(stderr, <span class="stringliteral">&quot;%s: rgba(%u,%u,%u,%u)\n&quot;</span>, list-&gt;key, r, g, b, a);</div>
+<div class="line">    <a class="code hl_function" href="canfigger_8h.html#af005f74a446bdbfb1d7aa252ab7d9738">canfigger_free_current_key_node_advance</a>(&amp;list);</div>
+<div class="line">  }</div>
+<div class="ttc" id="acanfigger_8h_html_a6bf62392cad41e15effc23139c6e0cc7"><div class="ttname"><a href="canfigger_8h.html#a6bf62392cad41e15effc23139c6e0cc7">canfigger_parse_color</a></div><div class="ttdeci">int canfigger_parse_color(const struct Canfigger *node, uint8_t *r, uint8_t *g, uint8_t *b, uint8_t *a)</div><div class="ttdoc">Parse a color from a config node, accepting hex or integer-attribute format.</div><div class="ttdef"><b>Definition</b> <a href="canfigger_8c_source.html#l00616">canfigger.c:616</a></div></div>
+</div><!-- fragment --> 
+<p class="definition">Definition at line <a class="el" href="canfigger_8c_source.html#l00616">616</a> of file <a class="el" href="canfigger_8c_source.html">canfigger.c</a>.</p>
+
+</div>
+</div>
+<a id="abf9a86f69aab5211cb8ccfb577ed3153" name="abf9a86f69aab5211cb8ccfb577ed3153"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abf9a86f69aab5211cb8ccfb577ed3153">&#9670;&#160;</a></span>canfigger_parse_color_hex()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int canfigger_parse_color_hex </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>str</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint8_t *&#160;</td>
+          <td class="paramname"><em>r</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint8_t *&#160;</td>
+          <td class="paramname"><em>g</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint8_t *&#160;</td>
+          <td class="paramname"><em>b</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint8_t *&#160;</td>
+          <td class="paramname"><em>a</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Parse a hex color string into RGBA components. </p>
+<p>Accepts strings of the form <code>#RRGGBB</code> or <code>#RRGGBBAA</code> (case-insensitive). If only six hex digits are given, <code>a</code> is set to 255.</p>
+<p>The string does not have to come from a node's <code>value</code> field — it works on any raw string the caller holds (an attribute value, a command-line argument, etc.).</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">str</td><td>String to parse. Must start with <code>'#'</code>. </td></tr>
+    <tr><td class="paramname">r</td><td>Output: red component (0–255). </td></tr>
+    <tr><td class="paramname">g</td><td>Output: green component. </td></tr>
+    <tr><td class="paramname">b</td><td>Output: blue component. </td></tr>
+    <tr><td class="paramname">a</td><td>Output: alpha component (255 if no alpha digits in string). </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>3 if RGB was parsed, 4 if RGBA was parsed, 0 on failure (NULL input, missing <code>#</code>, wrong length, or invalid hex digits).</dd></dl>
+<dl class="section since"><dt>Since</dt><dd>0.3.3</dd></dl>
+<div class="fragment"><div class="line">  uint8_t r, g, b, a;</div>
+<div class="line"> </div>
+<div class="line">  <span class="keywordflow">if</span> (canfigger_parse_color_hex(<span class="stringliteral">&quot;#FF8000&quot;</span>, &amp;r, &amp;g, &amp;b, &amp;a) == 3)</div>
+<div class="line">    fprintf(stderr, <span class="stringliteral">&quot;rgb: %u %u %u\n&quot;</span>, r, g, b);</div>
+<div class="line"> </div>
+<div class="line">  <span class="keywordflow">if</span> (canfigger_parse_color_hex(<span class="stringliteral">&quot;#FF800080&quot;</span>, &amp;r, &amp;g, &amp;b, &amp;a) == 4)</div>
+<div class="line">    fprintf(stderr, <span class="stringliteral">&quot;rgba: %u %u %u %u\n&quot;</span>, r, g, b, a);</div>
+</div><!-- fragment --> 
+<p class="definition">Definition at line <a class="el" href="canfigger_8c_source.html#l00593">593</a> of file <a class="el" href="canfigger_8c_source.html">canfigger.c</a>.</p>
 
 </div>
 </div>
@@ -697,7 +858,7 @@ value</td>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Head of the linked list, or NULL if the file cannot be opened, is empty, or a memory allocation failure occurs. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="canfigger_8c_source.html#l00356">356</a> of file <a class="el" href="canfigger_8c_source.html">canfigger.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="canfigger_8c_source.html#l00357">357</a> of file <a class="el" href="canfigger_8c_source.html">canfigger.c</a>.</p>
 
 </div>
 </div>
@@ -747,7 +908,7 @@ value</td>
 <div class="line">    <a class="code hl_function" href="canfigger_8h.html#ad2f138abcb4faa2ec7619cca7d2cbfde">canfigger_free_list</a>(&amp;list);</div>
 <div class="line">  }</div>
 </div><!-- fragment --> 
-<p class="definition">Definition at line <a class="el" href="canfigger_8c_source.html#l00711">711</a> of file <a class="el" href="canfigger_8c_source.html">canfigger.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="canfigger_8c_source.html#l00755">755</a> of file <a class="el" href="canfigger_8c_source.html">canfigger.c</a>.</p>
 
 </div>
 </div>

@@ -275,6 +275,8 @@ extern "C"
  * @param appname Application name appended as a subdirectory.
  * @return Malloc'd path string, or NULL on failure or if @p appname is
  *         NULL/empty.
+ *
+ * @since 0.3.2
  */
   char *canfigger_cache_dir(const char *appname);
 
@@ -314,6 +316,8 @@ extern "C"
  *              attributes or arguments are invalid.
  *
  * @snippet examples/canfigger_get_int_attrs.c canfigger_get_int_attrs
+ *
+ * @since 0.3.3
  */
   size_t canfigger_get_int_attrs(const struct Canfigger *node, int *out,
                                  size_t max);
@@ -331,6 +335,8 @@ extern "C"
  *              attributes or arguments are invalid.
  *
  * @snippet examples/canfigger_get_double_attrs.c canfigger_get_double_attrs
+ *
+ * @since 0.3.3
  */
   size_t canfigger_get_double_attrs(const struct Canfigger *node, double *out,
                                     size_t max);

@@ -80,11 +80,26 @@ if not meson.is_subproject()
 
   install_headers('canfigger.h', config_h, subdir: meson.project_name())
 
-  install_subdir(
-    join_paths('docs'),
-    install_dir: join_paths(get_option('docdir'), 'html'),
-    strip_directory: true,
-  )
+  if get_option('gen_docs')
+    doxygen = find_program('doxygen', required: true)
+    doxyfile = configure_file(
+      input: 'doxygen/Doxyfile.in',
+      output: 'Doxyfile',
+      configuration: {
+        'PROJECT_VERSION': meson.project_version(),
+        'SOURCE_ROOT': meson.current_source_dir(),
+        'BUILD_ROOT': meson.current_build_dir(),
+      },
+    )
+    docs_tgt = custom_target(
+      'doxygen-html',
+      input: [doxyfile, 'canfigger.h', 'canfigger.c', 'README.md'],
+      output: ['html'],
+      command: [doxygen, doxyfile],
+      build_by_default: false,
+    )
+    alias_target('docs', docs_tgt)
+  endif
 
   install_data(
     files(

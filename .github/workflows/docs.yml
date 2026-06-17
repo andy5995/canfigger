@@ -1,0 +1,90 @@
+name: docs
+
+on:
+  push:
+    branches: trunk
+  workflow_dispatch:
+
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Check out gh-pages
+        uses: actions/checkout@v6
+        with:
+          ref: gh-pages
+          path: gh-pages-out
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y meson ninja-build doxygen
+
+      - name: Build docs
+        run: |
+          meson setup builddir -Dgen_docs=true
+          ninja -C builddir docs
+
+      - name: Get version info
+        id: version
+        run: |
+          VERSION=$(meson introspect builddir --projectinfo | python3 -c "import sys,json; print(json.load(sys.stdin)['version'])")
+          MAJOR=$(echo "$VERSION" | cut -d. -f1)
+          MINOR=$(echo "$VERSION" | cut -d. -f2)
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "version_dir=v${MAJOR}.${MINOR}.x" >> "$GITHUB_OUTPUT"
+
+      - name: Publish to gh-pages
+        run: |
+          VERSION_DIR="${{ steps.version.outputs.version_dir }}"
+          MAJOR=$(echo "$VERSION_DIR" | cut -d. -f1 | tr -d v)
+          MINOR=$(echo "$VERSION_DIR" | cut -d. -f2)
+          mkdir -p "gh-pages-out/${VERSION_DIR}"
+          cp -a builddir/html/. "gh-pages-out/${VERSION_DIR}/"
+          # Remove old per-patch dirs for the same minor series
+          find gh-pages-out -maxdepth 1 -type d \
+            -name "v${MAJOR}.${MINOR}.[0-9]*" \
+            -exec rm -rf {} +
+
+      - name: Update README
+        run: |
+          python3 - <<'EOF'
+          import os, re
+
+          gh = 'gh-pages-out'
+          dirs = sorted(
+              [d for d in os.listdir(gh)
+               if os.path.isdir(os.path.join(gh, d)) and d.startswith('v')],
+              reverse=True,
+          )
+          items = '\n'.join(
+              f'* [{d}](https://andy5995.github.io/canfigger/{d})' for d in dirs
+          )
+          readme = os.path.join(gh, 'README.md')
+          with open(readme) as f:
+              content = f.read()
+          new_section = f'## Version Documentation\n\n{items}'
+          content = re.sub(
+              r'## Version Documentation\n\n(?:.*\n)*',
+              new_section + '\n',
+              content,
+          )
+          with open(readme, 'w') as f:
+              f.write(content)
+          EOF
+
+      - name: Commit and push
+        run: |
+          cd gh-pages-out
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          if [ -n "$(git status --porcelain)" ]; then
+            git add .
+            git commit -m "docs: publish v${{ steps.version.outputs.version }} (from ${{ github.sha }})"
+            git push
+          fi

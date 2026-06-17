@@ -68,6 +68,7 @@ if not meson.is_subproject()
         test('test_' + ex, example)
       endif
     endforeach
+    subdir('examples')
   endif
 
   pkg = import('pkgconfig')

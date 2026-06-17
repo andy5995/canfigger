@@ -509,6 +509,85 @@ canfigger_parse_file(const char *file, const int delimiter)
 }
 
 
+size_t
+canfigger_get_int_attrs(const struct Canfigger *node, int *out, size_t max)
+{
+  if (!node || !node->attributes || !node->attributes->str || !out || !max)
+    return 0;
+
+  size_t count = 0;
+  char *p = node->attributes->str;
+
+  while (count < max)
+  {
+    while (*p == ' ' || *p == '\t')
+      p++;
+
+    if (*p == '\0' || *p == '\n')
+      break;
+
+    char *endptr;
+    errno = 0;
+    long val = strtol(p, &endptr, 10);
+    if (endptr == p || errno == ERANGE)
+      break;
+    out[count++] = (int) val;
+
+    p = endptr;
+    while (*p == ' ' || *p == '\t')
+      p++;
+
+    if (*p == '\0')
+      break;
+    if (*p != '\n')
+      break;
+    p++;
+  }
+
+  return count;
+}
+
+
+size_t
+canfigger_get_double_attrs(const struct Canfigger *node, double *out,
+                           size_t max)
+{
+  if (!node || !node->attributes || !node->attributes->str || !out || !max)
+    return 0;
+
+  size_t count = 0;
+  char *p = node->attributes->str;
+
+  while (count < max)
+  {
+    while (*p == ' ' || *p == '\t')
+      p++;
+
+    if (*p == '\0' || *p == '\n')
+      break;
+
+    char *endptr;
+    errno = 0;
+    double val = strtod(p, &endptr);
+    if (endptr == p || errno == ERANGE)
+      break;
+    out[count++] = val;
+
+    p = endptr;
+    while (*p == ' ' || *p == '\t')
+      p++;
+
+    if (*p == '\0')
+      break;
+    if (*p != '\n')
+      break;
+    p++;
+  }
+
+  return count;
+}
+
+
 #ifndef _WIN32
 static char *
 xdg_base_dir(const char *xdg_env, const char *fallback)

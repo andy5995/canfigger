@@ -1,6 +1,8 @@
 test_cases = [
   'check_version',
   'bom',
+  'double_attrs',
+  'int_attrs',
   'colons',
   'config_file',
   'dirs',

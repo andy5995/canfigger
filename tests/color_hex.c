@@ -37,5 +37,10 @@ main(void)
   assert(canfigger_parse_color_hex("#FF80", &r, &g, &b, &a) == 0);
   assert(canfigger_parse_color_hex("#FF80000", &r, &g, &b, &a) == 0);
 
+  /* non-hex characters — must be rejected, not silently mis-parsed */
+  assert(canfigger_parse_color_hex("#12345g", &r, &g, &b, &a) == 0);
+  assert(canfigger_parse_color_hex("#GGGGGG", &r, &g, &b, &a) == 0);
+  assert(canfigger_parse_color_hex("#FF800X80", &r, &g, &b, &a) == 0);
+
   return 0;
 }

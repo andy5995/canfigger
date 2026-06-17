@@ -2,9 +2,8 @@
 
 * Doxyfile: Exclude tests (remove unused structs from docs)
   + Add canfigger_get_int_attrs(): parse node attributes as an int array
-  + Add canfigger_get_double_attrs(): parse node attributes as a double array
   + Add canfigger_parse_color_hex(): parse #RRGGBB / #RRGGBBAA into uint8_t RGBA components
-  + Add canfigger_parse_color(): parse a color node in hex or integer-attribute format
+  * canfigger_parse_color_hex(): reject strings with non-hex characters (strspn guard)
   + Add canfigger_parse_color_pair(): parse a foreground/background hex color pair from one node
 
 2026-05-11

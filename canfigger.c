@@ -549,46 +549,6 @@ canfigger_get_int_attrs(const struct Canfigger *node, int *out, size_t max)
 }
 
 
-size_t
-canfigger_get_double_attrs(const struct Canfigger *node, double *out,
-                           size_t max)
-{
-  if (!node || !node->attributes || !node->attributes->str || !out || !max)
-    return 0;
-
-  size_t count = 0;
-  char *p = node->attributes->str;
-
-  while (count < max)
-  {
-    while (*p == ' ' || *p == '\t')
-      p++;
-
-    if (*p == '\0' || *p == '\n')
-      break;
-
-    char *endptr;
-    errno = 0;
-    double val = strtod(p, &endptr);
-    if (endptr == p || errno == ERANGE)
-      break;
-    out[count++] = val;
-
-    p = endptr;
-    while (*p == ' ' || *p == '\t')
-      p++;
-
-    if (*p == '\0')
-      break;
-    if (*p != '\n')
-      break;
-    p++;
-  }
-
-  return count;
-}
-
-
 int
 canfigger_parse_color_hex(const char *str, uint8_t *r, uint8_t *g, uint8_t *b,
                           uint8_t *a)
@@ -598,6 +558,8 @@ canfigger_parse_color_hex(const char *str, uint8_t *r, uint8_t *g, uint8_t *b,
   str++;
   size_t len = strlen(str);
   if (len != 6 && len != 8)
+    return 0;
+  if (strspn(str, "0123456789abcdefABCDEF") != len)
     return 0;
   unsigned int rv, gv, bv, av = 255;
   if (sscanf(str, "%2x%2x%2x", &rv, &gv, &bv) != 3)
@@ -609,26 +571,6 @@ canfigger_parse_color_hex(const char *str, uint8_t *r, uint8_t *g, uint8_t *b,
   *b = (uint8_t) bv;
   *a = (uint8_t) av;
   return len == 6 ? 3 : 4;
-}
-
-
-int
-canfigger_parse_color(const struct Canfigger *node, uint8_t *r, uint8_t *g,
-                      uint8_t *b, uint8_t *a)
-{
-  if (!node || !r || !g || !b || !a)
-    return 0;
-  if (node->value && node->value[0] == '#')
-    return canfigger_parse_color_hex(node->value, r, g, b, a);
-  int v[4];
-  size_t count = canfigger_get_int_attrs(node, v, 4);
-  if (count < 3)
-    return 0;
-  *r = (uint8_t) v[0];
-  *g = (uint8_t) v[1];
-  *b = (uint8_t) v[2];
-  *a = count == 4 ? (uint8_t) v[3] : 255;
-  return (int) count;
 }
 
 

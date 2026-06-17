@@ -324,25 +324,6 @@ extern "C"
                                  size_t max);
 
 /**
- * @brief Parse a node's attributes as an array of doubles.
- *
- * Like canfigger_get_int_attrs() but parses each attribute as a
- * floating-point value using strtod().
- *
- * @param node  Node whose attributes are to be parsed (may be NULL).
- * @param out   Output array; must have room for at least @p max elements.
- * @param max   Maximum number of values to store.
- * @return      Number of values actually parsed; 0 if @p node has no
- *              attributes or arguments are invalid.
- *
- * @snippet examples/canfigger_get_double_attrs.c canfigger_get_double_attrs
- *
- * @since 0.3.3
- */
-  size_t canfigger_get_double_attrs(const struct Canfigger *node, double *out,
-                                    size_t max);
-
-/**
  * @brief Parse a hex color string into RGBA components.
  *
  * Accepts strings of the form @c \#RRGGBB or @c \#RRGGBBAA (case-insensitive).
@@ -367,32 +348,6 @@ extern "C"
  */
   int canfigger_parse_color_hex(const char *str, uint8_t * r, uint8_t * g,
                                 uint8_t * b, uint8_t * a);
-
-/**
- * @brief Parse a color from a config node, accepting hex or integer-attribute format.
- *
- * Dispatches on @c node->value:
- * - If it starts with @c '#', delegates to canfigger_parse_color_hex().
- *   Config line form: @c key=\#RRGGBB or @c key=\#RRGGBBAA.
- * - Otherwise reads 3 or 4 integer attributes via canfigger_get_int_attrs().
- *   Conventional form: @c key=rgb,R,G,B or @c key=rgba,R,G,B,A where the
- *   value acts as a type tag and the integers follow as comma-separated attributes.
- *
- * In both cases @p a is set to 255 when no alpha is present.
- *
- * @param node  Config node to read (may be NULL).
- * @param r     Output: red component.
- * @param g     Output: green component.
- * @param b     Output: blue component.
- * @param a     Output: alpha component.
- * @return      3 or 4 on success (number of components found), 0 on failure.
- *
- * @since 0.3.3
- *
- * @snippet examples/canfigger_parse_color.c canfigger_parse_color
- */
-  int canfigger_parse_color(const struct Canfigger *node, uint8_t * r,
-                            uint8_t * g, uint8_t * b, uint8_t * a);
 
 /**
  * @brief Parse a foreground/background color pair from a config node.

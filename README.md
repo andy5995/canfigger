@@ -5,12 +5,12 @@
 
 # canfigger v0.3.3
 
-Canfigger is a lightweight C language library designed to parse configuration
-files. It provides functionality to read them and represent their contents as
-a linked list of key-value pairs, along with associated attributes for each
-pair. It also includes utility functions for locating standard per-user
-directories (config, data, cache) and joining paths, with support for XDG on
-Linux/macOS and the Windows CSIDL equivalents.
+Canfigger is a C library for parsing configuration files. It reads a file and
+returns the contents as a linked list of key-value nodes. Each node can carry
+a list of attributes — extra values separated by a delimiter on the same line.
+The library includes helpers for reading attributes as integers and for parsing
+RGBA hex colors. It also provides functions for locating standard user
+directories on Linux (XDG), macOS, and Windows.
 
 * [website/API documentation and examples](https://andy5995.github.io/canfigger/)
 * [source on GitHub](https://github.com/andy5995/canfigger/)

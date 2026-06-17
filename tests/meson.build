@@ -12,6 +12,7 @@ test_cases = [
   'multiple_attributes',
   'no_trailing_newline',
   'parse_color',
+  'parse_color_pair',
   'parse_file',
   'skip_attributes',
   'unicode',

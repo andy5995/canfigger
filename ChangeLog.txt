@@ -1,6 +1,8 @@
 (in-progress):
 
 * Doxyfile: Exclude tests (remove unused structs from docs)
+  + Add canfigger_get_int_attrs(): parse node attributes as an int array
+  + Add canfigger_get_double_attrs(): parse node attributes as a double array
 
 2026-05-11
 

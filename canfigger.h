@@ -59,6 +59,7 @@ SOFTWARE.
 
 #pragma once
 
+#include <stddef.h>
 #include "canfigger_version.h"
 
 /**
@@ -221,15 +222,7 @@ extern "C"
  * @return Malloc'd path string, or NULL on failure or if @p appname is
  *         NULL/empty.
  *
- * @code
- * char *dir = canfigger_config_dir("myapp");
- * if (dir) {
- *     char *path = canfigger_path_join(dir, "settings.conf");
- *     free(dir);
- *     // open path ...
- *     free(path);
- * }
- * @endcode
+ * @snippet examples/canfigger_config_dir.c canfigger_config_dir
  */
   char *canfigger_config_dir(const char *appname);
 
@@ -251,14 +244,7 @@ extern "C"
  * @return Malloc'd path string, or NULL on failure or if @p filename is
  *         NULL or empty.
  *
- * @code
- * char *path = canfigger_config_file("apprc");
- * if (path) {
- *     struct Canfigger *list = canfigger_parse_file(path, ',');
- *     free(path);
- *     // use list ...
- * }
- * @endcode
+ * @snippet examples/canfigger_config_file.c canfigger_config_file
  */
   char *canfigger_config_file(const char *filename);
 
@@ -305,16 +291,49 @@ extern "C"
  * @return Malloc'd joined path string, or NULL if either argument is NULL or
  *         empty, or on allocation failure.
  *
- * @code
- * char *path = canfigger_path_join("/home/user/.config/myapp", "settings.conf");
- * if (path) {
- *     struct Canfigger *list = canfigger_parse_file(path, ',');
- *     free(path);
- *     // use list ...
- * }
- * @endcode
+ * @snippet examples/canfigger_path_join.c canfigger_path_join
  */
   char *canfigger_path_join(const char *dir, const char *file);
+
+/**
+ * @brief Parse a node's attributes as an array of integers.
+ *
+ * Reads the comma-separated (or user-delimited) attributes following a value
+ * and fills @p out with up to @p max integer values parsed via strtol().
+ * Stops at the first attribute that cannot be parsed as an integer, or when
+ * @p max is reached.
+ *
+ * This accessor is independent of canfigger_free_current_attr_str_advance():
+ * it reads from the beginning of the attribute string and does not advance
+ * or free the string iterator.
+ *
+ * @param node  Node whose attributes are to be parsed (may be NULL).
+ * @param out   Output array; must have room for at least @p max elements.
+ * @param max   Maximum number of integers to store.
+ * @return      Number of integers actually parsed; 0 if @p node has no
+ *              attributes or arguments are invalid.
+ *
+ * @snippet examples/canfigger_get_int_attrs.c canfigger_get_int_attrs
+ */
+  size_t canfigger_get_int_attrs(const struct Canfigger *node, int *out,
+                                 size_t max);
+
+/**
+ * @brief Parse a node's attributes as an array of doubles.
+ *
+ * Like canfigger_get_int_attrs() but parses each attribute as a
+ * floating-point value using strtod().
+ *
+ * @param node  Node whose attributes are to be parsed (may be NULL).
+ * @param out   Output array; must have room for at least @p max elements.
+ * @param max   Maximum number of values to store.
+ * @return      Number of values actually parsed; 0 if @p node has no
+ *              attributes or arguments are invalid.
+ *
+ * @snippet examples/canfigger_get_double_attrs.c canfigger_get_double_attrs
+ */
+  size_t canfigger_get_double_attrs(const struct Canfigger *node, double *out,
+                                    size_t max);
 
 #ifdef __cplusplus
 }

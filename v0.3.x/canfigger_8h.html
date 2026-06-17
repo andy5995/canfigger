@@ -142,6 +142,9 @@ Functions</h2></td></tr>
 <tr class="memitem:a6bf62392cad41e15effc23139c6e0cc7" id="r_a6bf62392cad41e15effc23139c6e0cc7"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="canfigger_8h.html#a6bf62392cad41e15effc23139c6e0cc7">canfigger_parse_color</a> (const struct <a class="el" href="canfigger_8h.html#structCanfigger">Canfigger</a> *node, uint8_t *r, uint8_t *g, uint8_t *b, uint8_t *a)</td></tr>
 <tr class="memdesc:a6bf62392cad41e15effc23139c6e0cc7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Parse a color from a config node, accepting hex or integer-attribute format.  <br /></td></tr>
 <tr class="separator:a6bf62392cad41e15effc23139c6e0cc7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a975499f1a39d3225c6258ef3d8a0c676" id="r_a975499f1a39d3225c6258ef3d8a0c676"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="canfigger_8h.html#a975499f1a39d3225c6258ef3d8a0c676">canfigger_parse_color_pair</a> (const struct <a class="el" href="canfigger_8h.html#structCanfigger">Canfigger</a> *node, uint8_t *r1, uint8_t *g1, uint8_t *b1, uint8_t *a1, uint8_t *r2, uint8_t *g2, uint8_t *b2, uint8_t *a2)</td></tr>
+<tr class="memdesc:a975499f1a39d3225c6258ef3d8a0c676"><td class="mdescLeft">&#160;</td><td class="mdescRight">Parse a foreground/background color pair from a config node.  <br /></td></tr>
+<tr class="separator:a975499f1a39d3225c6258ef3d8a0c676"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Public API for the <a class="el" href="canfigger_8h.html#structCanfigger" title="A single node in the parsed configuration linked list.">Canfigger</a> configuration file parser. </p>
@@ -323,7 +326,7 @@ value</td>
 <dl class="section return"><dt>Returns</dt><dd>Malloc'd path string, or NULL on failure or if <code>appname</code> is NULL/empty.</dd></dl>
 <dl class="section since"><dt>Since</dt><dd>0.3.2 </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="canfigger_8c_source.html#l00744">744</a> of file <a class="el" href="canfigger_8c_source.html">canfigger.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="canfigger_8c_source.html#l00789">789</a> of file <a class="el" href="canfigger_8c_source.html">canfigger.c</a>.</p>
 
 </div>
 </div>
@@ -367,7 +370,7 @@ value</td>
 <div class="line">  }</div>
 <div class="ttc" id="acanfigger_8h_html_ad2f138abcb4faa2ec7619cca7d2cbfde"><div class="ttname"><a href="canfigger_8h.html#ad2f138abcb4faa2ec7619cca7d2cbfde">canfigger_free_list</a></div><div class="ttdeci">void canfigger_free_list(struct Canfigger **node)</div><div class="ttdoc">Free all remaining nodes in the list.</div><div class="ttdef"><b>Definition</b> <a href="canfigger_8c_source.html#l00167">canfigger.c:167</a></div></div>
 </div><!-- fragment --> 
-<p class="definition">Definition at line <a class="el" href="canfigger_8c_source.html#l00694">694</a> of file <a class="el" href="canfigger_8c_source.html">canfigger.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="canfigger_8c_source.html#l00739">739</a> of file <a class="el" href="canfigger_8c_source.html">canfigger.c</a>.</p>
 
 </div>
 </div>
@@ -406,7 +409,7 @@ value</td>
 <div class="line">    <a class="code hl_function" href="canfigger_8h.html#ad2f138abcb4faa2ec7619cca7d2cbfde">canfigger_free_list</a>(&amp;list);</div>
 <div class="line">  }</div>
 </div><!-- fragment --> 
-<p class="definition">Definition at line <a class="el" href="canfigger_8c_source.html#l00705">705</a> of file <a class="el" href="canfigger_8c_source.html">canfigger.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="canfigger_8c_source.html#l00750">750</a> of file <a class="el" href="canfigger_8c_source.html">canfigger.c</a>.</p>
 
 </div>
 </div>
@@ -437,7 +440,7 @@ value</td>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Malloc'd path string, or NULL on failure or if <code>appname</code> is NULL/empty. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="canfigger_8c_source.html#l00733">733</a> of file <a class="el" href="canfigger_8c_source.html">canfigger.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="canfigger_8c_source.html#l00778">778</a> of file <a class="el" href="canfigger_8c_source.html">canfigger.c</a>.</p>
 
 </div>
 </div>
@@ -819,6 +822,114 @@ value</td>
 
 </div>
 </div>
+<a id="a975499f1a39d3225c6258ef3d8a0c676" name="a975499f1a39d3225c6258ef3d8a0c676"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a975499f1a39d3225c6258ef3d8a0c676">&#9670;&#160;</a></span>canfigger_parse_color_pair()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int canfigger_parse_color_pair </td>
+          <td>(</td>
+          <td class="paramtype">const struct <a class="el" href="canfigger_8h.html#structCanfigger">Canfigger</a> *&#160;</td>
+          <td class="paramname"><em>node</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint8_t *&#160;</td>
+          <td class="paramname"><em>r1</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint8_t *&#160;</td>
+          <td class="paramname"><em>g1</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint8_t *&#160;</td>
+          <td class="paramname"><em>b1</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint8_t *&#160;</td>
+          <td class="paramname"><em>a1</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint8_t *&#160;</td>
+          <td class="paramname"><em>r2</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint8_t *&#160;</td>
+          <td class="paramname"><em>g2</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint8_t *&#160;</td>
+          <td class="paramname"><em>b2</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint8_t *&#160;</td>
+          <td class="paramname"><em>a2</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Parse a foreground/background color pair from a config node. </p>
+<p>Reads two hex color strings from the node's attributes — the first as the foreground color, the second as the background color. Both must be in <code>#RRGGBB</code> or <code>#RRGGBBAA</code> format.</p>
+<p>Conventional config line form: </p><div class="fragment"><div class="line">button = pair, #FFFF00, #000000</div>
+</div><!-- fragment --><p> The value (<code>pair</code>) is a caller-chosen type tag; this function ignores it and reads directly from the attributes.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">node</td><td>Config node to read (may be NULL). </td></tr>
+    <tr><td class="paramname">r1</td><td>Output: foreground red. </td></tr>
+    <tr><td class="paramname">g1</td><td>Output: foreground green. </td></tr>
+    <tr><td class="paramname">b1</td><td>Output: foreground blue. </td></tr>
+    <tr><td class="paramname">a1</td><td>Output: foreground alpha (255 if no alpha digits). </td></tr>
+    <tr><td class="paramname">r2</td><td>Output: background red. </td></tr>
+    <tr><td class="paramname">g2</td><td>Output: background green. </td></tr>
+    <tr><td class="paramname">b2</td><td>Output: background blue. </td></tr>
+    <tr><td class="paramname">a2</td><td>Output: background alpha (255 if no alpha digits). </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>2 if both colors were parsed, 1 if only the first was parsed, 0 on failure.</dd></dl>
+<dl class="section since"><dt>Since</dt><dd>0.3.3</dd></dl>
+<div class="fragment"><div class="line">  <span class="comment">/*</span></div>
+<div class="line"><span class="comment">   * Config line: button = pair, #FFFF00, #000000</span></div>
+<div class="line"><span class="comment">   * First attribute is foreground, second is background.</span></div>
+<div class="line"><span class="comment">   */</span></div>
+<div class="line">  <span class="keyword">struct </span><a class="code hl_struct" href="canfigger_8h.html#structCanfigger">Canfigger</a> *list = <a class="code hl_function" href="canfigger_8h.html#a37053197894e04e253629a9bdae52da0">canfigger_parse_file</a>(<span class="stringliteral">&quot;colors.conf&quot;</span>, <span class="charliteral">&#39;,&#39;</span>);</div>
+<div class="line">  <span class="keywordflow">while</span> (list)</div>
+<div class="line">  {</div>
+<div class="line">    uint8_t r1, g1, b1, a1, r2, g2, b2, a2;</div>
+<div class="line">    <span class="keywordflow">if</span> (<a class="code hl_function" href="canfigger_8h.html#a975499f1a39d3225c6258ef3d8a0c676">canfigger_parse_color_pair</a>(list, &amp;r1, &amp;g1, &amp;b1, &amp;a1,</div>
+<div class="line">                                   &amp;r2, &amp;g2, &amp;b2, &amp;a2) == 2)</div>
+<div class="line">      fprintf(stderr, <span class="stringliteral">&quot;%s: fg=rgba(%u,%u,%u,%u) bg=rgba(%u,%u,%u,%u)\n&quot;</span>,</div>
+<div class="line">              list-&gt;key, r1, g1, b1, a1, r2, g2, b2, a2);</div>
+<div class="line">    <a class="code hl_function" href="canfigger_8h.html#af005f74a446bdbfb1d7aa252ab7d9738">canfigger_free_current_key_node_advance</a>(&amp;list);</div>
+<div class="line">  }</div>
+<div class="ttc" id="acanfigger_8h_html_a975499f1a39d3225c6258ef3d8a0c676"><div class="ttname"><a href="canfigger_8h.html#a975499f1a39d3225c6258ef3d8a0c676">canfigger_parse_color_pair</a></div><div class="ttdeci">int canfigger_parse_color_pair(const struct Canfigger *node, uint8_t *r1, uint8_t *g1, uint8_t *b1, uint8_t *a1, uint8_t *r2, uint8_t *g2, uint8_t *b2, uint8_t *a2)</div><div class="ttdoc">Parse a foreground/background color pair from a config node.</div><div class="ttdef"><b>Definition</b> <a href="canfigger_8c_source.html#l00636">canfigger.c:636</a></div></div>
+</div><!-- fragment --> 
+<p class="definition">Definition at line <a class="el" href="canfigger_8c_source.html#l00636">636</a> of file <a class="el" href="canfigger_8c_source.html">canfigger.c</a>.</p>
+
+</div>
+</div>
 <a id="a37053197894e04e253629a9bdae52da0" name="a37053197894e04e253629a9bdae52da0"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a37053197894e04e253629a9bdae52da0">&#9670;&#160;</a></span>canfigger_parse_file()</h2>
 
@@ -908,7 +1019,7 @@ value</td>
 <div class="line">    <a class="code hl_function" href="canfigger_8h.html#ad2f138abcb4faa2ec7619cca7d2cbfde">canfigger_free_list</a>(&amp;list);</div>
 <div class="line">  }</div>
 </div><!-- fragment --> 
-<p class="definition">Definition at line <a class="el" href="canfigger_8c_source.html#l00755">755</a> of file <a class="el" href="canfigger_8c_source.html">canfigger.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="canfigger_8c_source.html#l00800">800</a> of file <a class="el" href="canfigger_8c_source.html">canfigger.c</a>.</p>
 
 </div>
 </div>

@@ -15,6 +15,7 @@ var searchData=
   ['canfigger_5fget_5fint_5fattrs_12',['canfigger_get_int_attrs',['../canfigger_8h.html#a16a76eb1209349a26a5f90ff5fde84e6',1,'canfigger.c']]],
   ['canfigger_5fparse_5fcolor_13',['canfigger_parse_color',['../canfigger_8h.html#a6bf62392cad41e15effc23139c6e0cc7',1,'canfigger.c']]],
   ['canfigger_5fparse_5fcolor_5fhex_14',['canfigger_parse_color_hex',['../canfigger_8h.html#abf9a86f69aab5211cb8ccfb577ed3153',1,'canfigger.c']]],
-  ['canfigger_5fparse_5ffile_15',['canfigger_parse_file',['../canfigger_8h.html#a37053197894e04e253629a9bdae52da0',1,'canfigger.c']]],
-  ['canfigger_5fpath_5fjoin_16',['canfigger_path_join',['../canfigger_8h.html#aea0d9accc934afc7de5f4a94a246f0a2',1,'canfigger.c']]]
+  ['canfigger_5fparse_5fcolor_5fpair_15',['canfigger_parse_color_pair',['../canfigger_8h.html#a975499f1a39d3225c6258ef3d8a0c676',1,'canfigger.c']]],
+  ['canfigger_5fparse_5ffile_16',['canfigger_parse_file',['../canfigger_8h.html#a37053197894e04e253629a9bdae52da0',1,'canfigger.c']]],
+  ['canfigger_5fpath_5fjoin_17',['canfigger_path_join',['../canfigger_8h.html#aea0d9accc934afc7de5f4a94a246f0a2',1,'canfigger.c']]]
 ];

@@ -632,6 +632,51 @@ canfigger_parse_color(const struct Canfigger *node, uint8_t *r, uint8_t *g,
 }
 
 
+int
+canfigger_parse_color_pair(const struct Canfigger *node,
+                           uint8_t *r1, uint8_t *g1, uint8_t *b1, uint8_t *a1,
+                           uint8_t *r2, uint8_t *g2, uint8_t *b2, uint8_t *a2)
+{
+  if (!node || !node->attributes || !node->attributes->str
+      || !r1 || !g1 || !b1 || !a1 || !r2 || !g2 || !b2 || !a2)
+    return 0;
+
+  char buf[10];                 /* #RRGGBBAA + NUL */
+  char *p = node->attributes->str;
+
+  while (*p == ' ' || *p == '\t')
+    p++;
+  char *nl = strchr(p, '\n');
+  size_t len = nl ? (size_t) (nl - p) : strlen(p);
+  while (len > 0 && (p[len - 1] == ' ' || p[len - 1] == '\t'))
+    len--;
+  if (len == 0 || len >= sizeof(buf))
+    return 0;
+  memcpy(buf, p, len);
+  buf[len] = '\0';
+  if (!canfigger_parse_color_hex(buf, r1, g1, b1, a1))
+    return 0;
+
+  if (!nl)
+    return 1;
+  p = nl + 1;
+  while (*p == ' ' || *p == '\t')
+    p++;
+  nl = strchr(p, '\n');
+  len = nl ? (size_t) (nl - p) : strlen(p);
+  while (len > 0 && (p[len - 1] == ' ' || p[len - 1] == '\t'))
+    len--;
+  if (len == 0 || len >= sizeof(buf))
+    return 1;
+  memcpy(buf, p, len);
+  buf[len] = '\0';
+  if (!canfigger_parse_color_hex(buf, r2, g2, b2, a2))
+    return 1;
+
+  return 2;
+}
+
+
 #ifndef _WIN32
 static char *
 xdg_base_dir(const char *xdg_env, const char *fallback)

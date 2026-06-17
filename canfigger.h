@@ -394,6 +394,41 @@ extern "C"
   int canfigger_parse_color(const struct Canfigger *node, uint8_t * r,
                             uint8_t * g, uint8_t * b, uint8_t * a);
 
+/**
+ * @brief Parse a foreground/background color pair from a config node.
+ *
+ * Reads two hex color strings from the node's attributes — the first as the
+ * foreground color, the second as the background color.  Both must be in
+ * @c \#RRGGBB or @c \#RRGGBBAA format.
+ *
+ * Conventional config line form:
+ * @code
+ *   button = pair, #FFFF00, #000000
+ * @endcode
+ * The value (@c pair) is a caller-chosen type tag; this function ignores it
+ * and reads directly from the attributes.
+ *
+ * @param node  Config node to read (may be NULL).
+ * @param r1    Output: foreground red.
+ * @param g1    Output: foreground green.
+ * @param b1    Output: foreground blue.
+ * @param a1    Output: foreground alpha (255 if no alpha digits).
+ * @param r2    Output: background red.
+ * @param g2    Output: background green.
+ * @param b2    Output: background blue.
+ * @param a2    Output: background alpha (255 if no alpha digits).
+ * @return      2 if both colors were parsed, 1 if only the first was parsed,
+ *              0 on failure.
+ *
+ * @since 0.3.3
+ *
+ * @snippet examples/canfigger_parse_color_pair.c canfigger_parse_color_pair
+ */
+  int canfigger_parse_color_pair(const struct Canfigger *node,
+                                 uint8_t * r1, uint8_t * g1, uint8_t * b1,
+                                 uint8_t * a1, uint8_t * r2, uint8_t * g2,
+                                 uint8_t * b2, uint8_t * a2);
+
 #ifdef __cplusplus
 }
 #endif

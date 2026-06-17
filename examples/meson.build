@@ -6,6 +6,7 @@ snippet_examples = [
   'canfigger_get_double_attrs',
   'canfigger_parse_color_hex',
   'canfigger_parse_color',
+  'canfigger_parse_color_pair',
 ]
 
 foreach ex : snippet_examples

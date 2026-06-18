@@ -84,20 +84,19 @@ canfigger v0.3.3</h1>
 </ul>
 <h2><a class="anchor" id="autotoc_md1"></a>
 Format</h2>
-<p>The following config file example represents the format handled by canfigger:</p>
-<div class="fragment"><div class="line">foo = bar</div>
-<div class="line">blue = color, shiny</div>
-<div class="line">statement = hello world, obvious</div>
+<p>One entry per line — a key, an optional value, and optional attributes:</p>
+<div class="fragment"><div class="line"># key with value only</div>
+<div class="line">name = canfigger</div>
 <div class="line"> </div>
-<div class="line"># An option with no value or attributes</div>
+<div class="line"># key with no value or attributes</div>
 <div class="line">FeatureFooEnabled</div>
 <div class="line"> </div>
-<div class="line"># key, value with 2 attributes</div>
-<div class="line">dhcp-range = 192.168.0.50, 192.168.0.150, 12</div>
+<div class="line"># key with value and integer attributes (readable with canfigger_get_int_attrs)</div>
+<div class="line">board = rect, 10, 20, 640, 480</div>
 <div class="line"> </div>
-<div class="line"># key, value with 9 attributes</div>
-<div class="line">solar_system = sun, Mercury, Venus, Earth, Mars, Jupiter, Saturn, Neptune, Uranus, Pluto</div>
-</div><!-- fragment --><p>You can change the attribute delimiter character by passing it as the second argument: </p><pre class="fragment">canfigger_parse_file(filename_ptr, ':');
+<div class="line"># key with value and hex color attributes (readable with canfigger_parse_color_pair)</div>
+<div class="line">button = pair, #FFFF00, #000000</div>
+</div><!-- fragment --><p>The delimiter between value and attributes defaults to <code>,</code> but can be changed: </p><pre class="fragment">canfigger_parse_file(filename_ptr, ':');
 </pre> <h2><a class="anchor" id="autotoc_md2"></a>
 Platform path helpers</h2>
 <p><a class="el" href="canfigger_8h.html#structCanfigger" title="A single node in the parsed configuration linked list.">Canfigger</a> provides helpers for locating standard per-user paths on Linux (XDG), macOS, and Windows:</p>
@@ -123,7 +122,16 @@ Tests</h2>
 <pre class="fragment">meson test (-v)
 </pre> <h2><a class="anchor" id="autotoc_md6"></a>
 Example programs</h2>
-<p>Example programs will be built when you run <code>ninja</code>. If you want to try them with a different config file, give them the name of a config file as an argument. </p>
+<p>Example programs are built alongside the library. Each demonstrates one API function:</p>
+<ul>
+<li><code>example_canfigger_config_dir</code> — <code>canfigger_config_dir()</code></li>
+<li><code>example_canfigger_config_file</code> — <code>canfigger_config_file()</code></li>
+<li><code>example_canfigger_path_join</code> — <code>canfigger_path_join()</code></li>
+<li><code>example_canfigger_get_int_attrs</code> — <code>canfigger_get_int_attrs()</code></li>
+<li><code>example_canfigger_parse_color_hex</code> — <code>canfigger_parse_color_hex()</code></li>
+<li><code>example_canfigger_parse_color_pair</code> — <code>canfigger_parse_color_pair()</code></li>
+</ul>
+<p>See the <a href="https://andy5995.github.io/canfigger/">API documentation</a> for inline usage examples. </p>
 </div></div><!-- PageDoc -->
 </div><!-- contents -->
 <!-- start footer part -->

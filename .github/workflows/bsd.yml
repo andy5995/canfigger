@@ -32,7 +32,7 @@ jobs:
             install: sudo pkg_add meson ninja
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@v7
 
     - name: Test on ${{ matrix.os }} ${{ matrix.version }}
       uses: cross-platform-actions/action@v1

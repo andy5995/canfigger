@@ -3,7 +3,7 @@
 [![cirrus-badge]][cirrus-url]
 [![windows-badge]][windows-url]
 
-# canfigger v0.3.3
+# canfigger
 
 Canfigger is a lightweight C language library designed to parse configuration
 files. It provides functionality to read them and represent their contents as

@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['format_0',['Format',['../index.html#autotoc_md1',1,'']]]
+  ['helpers_0',['Platform path helpers',['../index.html#autotoc_md2',1,'']]]
 ];

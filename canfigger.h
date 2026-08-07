@@ -59,8 +59,6 @@ SOFTWARE.
 
 #pragma once
 
-#include <stddef.h>
-#include <stdint.h>
 #include "canfigger_version.h"
 
 /**
@@ -297,92 +295,6 @@ extern "C"
  * @snippet examples/canfigger_path_join.c canfigger_path_join
  */
   char *canfigger_path_join(const char *dir, const char *file);
-
-/**
- * @brief Parse a node's attributes as an array of integers.
- *
- * Reads the comma-separated (or user-delimited) attributes following a value
- * and fills @p out with up to @p max integer values parsed via strtol().
- * Stops at the first attribute that cannot be parsed as an integer, or when
- * @p max is reached.
- *
- * This accessor is independent of canfigger_free_current_attr_str_advance():
- * it reads from the beginning of the attribute string and does not advance
- * or free the string iterator.
- *
- * @param node  Node whose attributes are to be parsed (may be NULL).
- * @param out   Output array; must have room for at least @p max elements.
- * @param max   Maximum number of integers to store.
- * @return      Number of integers actually parsed; 0 if @p node has no
- *              attributes or arguments are invalid.
- *
- * @snippet examples/canfigger_get_int_attrs.c canfigger_get_int_attrs
- *
- * @since 0.3.3
- */
-  size_t canfigger_get_int_attrs(const struct Canfigger *node, int *out,
-                                 size_t max);
-
-/**
- * @brief Parse a hex color string into RGBA components.
- *
- * Accepts strings of the form @c \#RRGGBB or @c \#RRGGBBAA (case-insensitive).
- * If only six hex digits are given, @p a is set to 255.
- *
- * The string does not have to come from a node's @c value field — it works on
- * any raw string the caller holds (an attribute value, a command-line argument,
- * etc.).
- *
- * @param str  String to parse.  Must start with @c '#'.
- * @param r    Output: red component (0–255).
- * @param g    Output: green component.
- * @param b    Output: blue component.
- * @param a    Output: alpha component (255 if no alpha digits in string).
- * @return     3 if RGB was parsed, 4 if RGBA was parsed,
- *             0 on failure (NULL input, missing @c #, wrong length, or
- *             invalid hex digits).
- *
- * @since 0.3.3
- *
- * @snippet examples/canfigger_parse_color_hex.c canfigger_parse_color_hex
- */
-  int canfigger_parse_color_hex(const char *str, uint8_t * r, uint8_t * g,
-                                uint8_t * b, uint8_t * a);
-
-/**
- * @brief Parse a foreground/background color pair from a config node.
- *
- * Reads two hex color strings from the node's attributes — the first as the
- * foreground color, the second as the background color.  Both must be in
- * @c \#RRGGBB or @c \#RRGGBBAA format.
- *
- * Conventional config line form:
- * @code
- *   button = pair, #FFFF00, #000000
- * @endcode
- * The value (@c pair) is a caller-chosen type tag; this function ignores it
- * and reads directly from the attributes.
- *
- * @param node  Config node to read (may be NULL).
- * @param r1    Output: foreground red.
- * @param g1    Output: foreground green.
- * @param b1    Output: foreground blue.
- * @param a1    Output: foreground alpha (255 if no alpha digits).
- * @param r2    Output: background red.
- * @param g2    Output: background green.
- * @param b2    Output: background blue.
- * @param a2    Output: background alpha (255 if no alpha digits).
- * @return      2 if both colors were parsed, 1 if only the first was parsed,
- *              0 on failure.
- *
- * @since 0.3.3
- *
- * @snippet examples/canfigger_parse_color_pair.c canfigger_parse_color_pair
- */
-  int canfigger_parse_color_pair(const struct Canfigger *node,
-                                 uint8_t * r1, uint8_t * g1, uint8_t * b1,
-                                 uint8_t * a1, uint8_t * r2, uint8_t * g2,
-                                 uint8_t * b2, uint8_t * a2);
 
 #ifdef __cplusplus
 }

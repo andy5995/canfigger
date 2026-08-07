@@ -27,7 +27,6 @@ SOFTWARE.
 #include <ctype.h>              // isspace()
 #include <errno.h>
 #include <stdbool.h>
-#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>             // free(), malloc()
 #include <string.h>
@@ -507,115 +506,6 @@ canfigger_parse_file(const char *file, const int delimiter)
 
   free(file_contents);
   return root;
-}
-
-
-size_t
-canfigger_get_int_attrs(const struct Canfigger *node, int *out, size_t max)
-{
-  if (!node || !node->attributes || !node->attributes->str || !out || !max)
-    return 0;
-
-  size_t count = 0;
-  char *p = node->attributes->str;
-
-  while (count < max)
-  {
-    while (*p == ' ' || *p == '\t')
-      p++;
-
-    if (*p == '\0' || *p == '\n')
-      break;
-
-    char *endptr;
-    errno = 0;
-    long val = strtol(p, &endptr, 10);
-    if (endptr == p || errno == ERANGE)
-      break;
-    out[count++] = (int) val;
-
-    p = endptr;
-    while (*p == ' ' || *p == '\t')
-      p++;
-
-    if (*p == '\0')
-      break;
-    if (*p != '\n')
-      break;
-    p++;
-  }
-
-  return count;
-}
-
-
-int
-canfigger_parse_color_hex(const char *str, uint8_t *r, uint8_t *g, uint8_t *b,
-                          uint8_t *a)
-{
-  if (!str || *str != '#' || !r || !g || !b || !a)
-    return 0;
-  str++;
-  size_t len = strlen(str);
-  if (len != 6 && len != 8)
-    return 0;
-  if (strspn(str, "0123456789abcdefABCDEF") != len)
-    return 0;
-  unsigned int rv, gv, bv, av = 255;
-  if (sscanf(str, "%2x%2x%2x", &rv, &gv, &bv) != 3)
-    return 0;
-  if (len == 8 && sscanf(str + 6, "%2x", &av) != 1)
-    return 0;
-  *r = (uint8_t) rv;
-  *g = (uint8_t) gv;
-  *b = (uint8_t) bv;
-  *a = (uint8_t) av;
-  return len == 6 ? 3 : 4;
-}
-
-
-int
-canfigger_parse_color_pair(const struct Canfigger *node,
-                           uint8_t *r1, uint8_t *g1, uint8_t *b1, uint8_t *a1,
-                           uint8_t *r2, uint8_t *g2, uint8_t *b2, uint8_t *a2)
-{
-  if (!node || !node->attributes || !node->attributes->str
-      || !r1 || !g1 || !b1 || !a1 || !r2 || !g2 || !b2 || !a2)
-    return 0;
-
-  char buf[10];                 /* #RRGGBBAA + NUL */
-  char *p = node->attributes->str;
-
-  while (*p == ' ' || *p == '\t')
-    p++;
-  char *nl = strchr(p, '\n');
-  size_t len = nl ? (size_t) (nl - p) : strlen(p);
-  while (len > 0 && (p[len - 1] == ' ' || p[len - 1] == '\t'))
-    len--;
-  if (len == 0 || len >= sizeof(buf))
-    return 0;
-  memcpy(buf, p, len);
-  buf[len] = '\0';
-  if (!canfigger_parse_color_hex(buf, r1, g1, b1, a1))
-    return 0;
-
-  if (!nl)
-    return 1;
-  p = nl + 1;
-  while (*p == ' ' || *p == '\t')
-    p++;
-  nl = strchr(p, '\n');
-  len = nl ? (size_t) (nl - p) : strlen(p);
-  while (len > 0 && (p[len - 1] == ' ' || p[len - 1] == '\t'))
-    len--;
-  if (len == 0 || len >= sizeof(buf))
-    return 1;
-  memcpy(buf, p, len);
-  buf[len] = '\0';
-  if (!canfigger_parse_color_hex(buf, r2, g2, b2, a2))
-    return 1;
-
-  return 2;
 }
 
 

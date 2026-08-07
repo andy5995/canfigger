@@ -5,12 +5,12 @@
 
 # canfigger v0.3.3
 
-Canfigger is a C library for parsing configuration files. It reads a file and
-returns the contents as a linked list of key-value nodes. Each node can carry
-a list of attributes — extra values separated by a delimiter on the same line.
-The library includes helpers for reading attributes as integers and for parsing
-RGBA hex colors. It also provides functions for locating standard user
-directories on Linux (XDG), macOS, and Windows.
+Canfigger is a lightweight C language library designed to parse configuration
+files. It provides functionality to read them and represent their contents as
+a linked list of key-value pairs, along with associated attributes for each
+pair. It also includes utility functions for locating standard per-user
+directories (config, data, cache) and joining paths, with support for XDG on
+Linux/macOS and the Windows CSIDL equivalents.
 
 * [website/API documentation and examples](https://andy5995.github.io/canfigger/)
 * [source on GitHub](https://github.com/andy5995/canfigger/)
@@ -18,23 +18,25 @@ directories on Linux (XDG), macOS, and Windows.
 
 ## Format
 
-One entry per line — a key, an optional value, and optional attributes:
+The following config file example represents the format handled by canfigger:
 
 ```
-# key with value only
-name = canfigger
+foo = bar
+blue = color, shiny
+statement = hello world, obvious
 
-# key with no value or attributes
+# An option with no value or attributes
 FeatureFooEnabled
 
-# key with value and integer attributes (readable with canfigger_get_int_attrs)
-board = rect, 10, 20, 640, 480
+# key, value with 2 attributes
+dhcp-range = 192.168.0.50, 192.168.0.150, 12
 
-# key with value and hex color attributes (readable with canfigger_parse_color_pair)
-button = pair, #FFFF00, #000000
+# key, value with 9 attributes
+solar_system = sun, Mercury, Venus, Earth, Mars, Jupiter, Saturn, Neptune, Uranus, Pluto
 ```
 
-The delimiter between value and attributes defaults to `,` but can be changed:
+You can change the attribute delimiter character by passing it as the second
+argument:
 
     canfigger_parse_file(filename_ptr, ':');
 
@@ -78,16 +80,9 @@ docs](https://mesonbuild.com/) for detailed usage).
 
 ## Example programs
 
-Example programs are built alongside the library. Each demonstrates one API function:
-
-- `example_canfigger_config_dir` — `canfigger_config_dir()`
-- `example_canfigger_config_file` — `canfigger_config_file()`
-- `example_canfigger_path_join` — `canfigger_path_join()`
-- `example_canfigger_get_int_attrs` — `canfigger_get_int_attrs()`
-- `example_canfigger_parse_color_hex` — `canfigger_parse_color_hex()`
-- `example_canfigger_parse_color_pair` — `canfigger_parse_color_pair()`
-
-See the [API documentation](https://andy5995.github.io/canfigger/) for inline usage examples.
+Example programs will be built when you run `ninja`. If you want to try them
+with a different config file, give them the name of a config file as an
+argument.
 
 [codeql-badge]: https://github.com/andy5995/canfigger/workflows/CodeQL/badge.svg
 [codeql-url]: https://github.com/andy5995/canfigger/actions?query=workflow%3ACodeQL

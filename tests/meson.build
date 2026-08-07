@@ -1,8 +1,6 @@
 test_cases = [
   'check_version',
   'bom',
-  'color_hex',
-  'int_attrs',
   'colons',
   'config_file',
   'dirs',
@@ -10,7 +8,6 @@ test_cases = [
   'incomplete_parse_file',
   'multiple_attributes',
   'no_trailing_newline',
-  'parse_color_pair',
   'parse_file',
   'skip_attributes',
   'unicode',

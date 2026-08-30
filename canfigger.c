@@ -514,7 +514,11 @@ static char *
 xdg_base_dir(const char *xdg_env, const char *fallback)
 {
   const char *base = getenv(xdg_env);
-  if (base && *base)
+  /* The basedir spec requires these to be absolute and says a relative value is
+     invalid and must be ignored -- resolving it against the current directory
+     would put the file somewhere that depends on where the program was
+     started. Fall through to the $HOME default instead. */
+  if (base && *base == '/')
     return strclone(base, 0);
 
   const char *home = getenv("HOME");

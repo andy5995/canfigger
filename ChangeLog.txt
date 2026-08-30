@@ -1,5 +1,7 @@
 (in-progress):
 
+* bugfix: A relative path in an XDG environment variable is now ignored per the
+  spec, rather than resolved against the current directory
 * Doxyfile: Exclude tests (remove unused structs from docs)
 
 2026-05-11

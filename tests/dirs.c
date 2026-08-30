@@ -123,6 +123,15 @@ test_dirs(void)
   assert(strcmp(dir, "/tmp/testhome/.cache/myapp") == 0);
   free(dir);
 
+  // A relative value is invalid per the spec and must be ignored, not resolved
+  // against the current directory; the $HOME default is used instead.
+  setenv("XDG_CONFIG_HOME", "relative/path", 1);
+  dir = canfigger_config_dir("myapp");
+  assert(dir != NULL);
+  assert(strcmp(dir, "/tmp/testhome/.config/myapp") == 0);
+  free(dir);
+  unsetenv("XDG_CONFIG_HOME");
+
   // NULL / empty guards
   assert(canfigger_config_dir(NULL) == NULL);
   assert(canfigger_config_dir("") == NULL);

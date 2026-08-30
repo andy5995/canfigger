@@ -1,5 +1,11 @@
 (in-progress):
 
++ Add canfigger_state_dir(): $XDG_STATE_HOME/appname or
+  $HOME/.local/state/appname on POSIX; %LOCALAPPDATA%\appname on Windows
++ Add canfigger_runtime_dir(): $XDG_RUNTIME_DIR/appname, or NULL when unset or
+  failing the spec's ownership/0700 requirements; always NULL on Windows
++ Add canfigger_config_dirs(), canfigger_data_dirs(), canfigger_free_dirs():
+  the $XDG_CONFIG_DIRS / $XDG_DATA_DIRS search paths as a NULL-terminated array
 * bugfix: A relative path in an XDG environment variable is now ignored per the
   spec, rather than resolved against the current directory
 * Doxyfile: Exclude tests (remove unused structs from docs)

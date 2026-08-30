@@ -280,6 +280,104 @@ extern "C"
   char *canfigger_cache_dir(const char *appname);
 
 /**
+ * @brief Return the platform state directory for an application.
+ *
+ * For data that should persist between runs but is not configuration and is
+ * not worth backing up - logs, history, recently-used lists, and similar.
+ * On Unix, honours @c $XDG_STATE_HOME if set; otherwise uses
+ * @c $HOME/.local/state/appname.  On Windows, uses @c %LOCALAPPDATA%\\appname.
+ *
+ * The returned string is heap-allocated; the caller must free it.
+ *
+ * @param appname Application name appended as a subdirectory.
+ * @return Malloc'd path string, or NULL on failure or if @p appname is
+ *         NULL/empty.
+ *
+ * @since 0.3.3
+ */
+  char *canfigger_state_dir(const char *appname);
+
+/**
+ * @brief Return the runtime directory for an application, or NULL.
+ *
+ * For short-lived per-session files: sockets, lock and PID files, and secrets
+ * that should not outlive the login session.
+ *
+ * On Unix this is @c $XDG_RUNTIME_DIR.  Unlike the other directory helpers
+ * there is deliberately no @c $HOME fallback, because the specification
+ * attaches requirements to this directory that an arbitrary fallback would not
+ * meet: it must exist, be owned by the calling user, and have mode 0700.  Those
+ * conditions are checked, and NULL is returned if any of them fails or the
+ * variable is unset - a common case in cron, container and other sessions that
+ * never set one.
+ *
+ * On Windows there is no equivalent concept and NULL is always returned.  A
+ * path under @c %LOCALAPPDATA% would persist across sessions, so returning one
+ * would misrepresent what the caller asked for.
+ *
+ * A NULL return is therefore an ordinary outcome, not an error: choose a
+ * fallback appropriate to the data, such as canfigger_cache_dir() for anything
+ * that can be regenerated or safely lost.
+ *
+ * The returned string is heap-allocated; the caller must free it.
+ *
+ * @param appname Application name appended as a subdirectory.
+ * @return Malloc'd path string, or NULL if no usable runtime directory exists
+ *         or @p appname is NULL/empty.
+ *
+ * @since 0.3.3
+ */
+  char *canfigger_runtime_dir(const char *appname);
+
+/**
+ * @brief Return the system config search path, most important first.
+ *
+ * The directories in @c $XDG_CONFIG_DIRS, defaulting to @c /etc/xdg when it is
+ * unset or empty.  These are searched @e after canfigger_config_dir(), which
+ * always takes precedence.  Entries that are relative or empty are skipped, as
+ * the specification requires.
+ *
+ * On Windows there is no equivalent and NULL is always returned.
+ *
+ * @return Malloc'd NULL-terminated array of malloc'd strings, to be released
+ *         with canfigger_free_dirs(), or NULL on Windows or allocation
+ *         failure.
+ *
+ * @since 0.3.3
+ */
+  char **canfigger_config_dirs(void);
+
+/**
+ * @brief Return the system data search path, most important first.
+ *
+ * The directories in @c $XDG_DATA_DIRS, defaulting to
+ * @c /usr/local/share:/usr/share when it is unset or empty.  These are searched
+ * @e after canfigger_data_dir(), which always takes precedence.  Entries that
+ * are relative or empty are skipped, as the specification requires.
+ *
+ * On Windows there is no equivalent and NULL is always returned.
+ *
+ * @return Malloc'd NULL-terminated array of malloc'd strings, to be released
+ *         with canfigger_free_dirs(), or NULL on Windows or allocation
+ *         failure.
+ *
+ * @since 0.3.3
+ */
+  char **canfigger_data_dirs(void);
+
+/**
+ * @brief Free an array returned by canfigger_config_dirs() or
+ *        canfigger_data_dirs().
+ *
+ * Frees each string and then the array itself.  Passing NULL is a no-op.
+ *
+ * @param dirs Array to free.
+ *
+ * @since 0.3.3
+ */
+  void canfigger_free_dirs(char **dirs);
+
+/**
  * @brief Join a directory path and a filename with the platform separator.
  *
  * A separator is inserted between @p dir and @p file unless @p dir already

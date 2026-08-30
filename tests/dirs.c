@@ -1,8 +1,14 @@
 #ifndef _WIN32
-#define _POSIX_C_SOURCE 200112L
+#define _POSIX_C_SOURCE 200809L // mkdtemp(), mkstemp()
 #endif
 
 #include "tests/test.h"
+
+#ifndef _WIN32
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <unistd.h>
+#endif
 
 static void
 test_path_join(void)
@@ -67,12 +73,25 @@ test_dirs(void)
   assert(strstr(dir, "testapp") != NULL);
   free(dir);
 
+  dir = canfigger_state_dir("testapp");
+  assert(dir != NULL);
+  assert(strstr(dir, "testapp") != NULL);
+  free(dir);
+
+  // No runtime-directory concept on Windows, and no search-path lists.
+  assert(canfigger_runtime_dir("testapp") == NULL);
+  assert(canfigger_config_dirs() == NULL);
+  assert(canfigger_data_dirs() == NULL);
+  canfigger_free_dirs(NULL);
+
   assert(canfigger_config_dir(NULL) == NULL);
   assert(canfigger_config_dir("") == NULL);
   assert(canfigger_data_dir(NULL) == NULL);
   assert(canfigger_data_dir("") == NULL);
   assert(canfigger_cache_dir(NULL) == NULL);
   assert(canfigger_cache_dir("") == NULL);
+  assert(canfigger_state_dir(NULL) == NULL);
+  assert(canfigger_state_dir("") == NULL);
 }
 #else
 static void
@@ -123,6 +142,20 @@ test_dirs(void)
   assert(strcmp(dir, "/tmp/testhome/.cache/myapp") == 0);
   free(dir);
 
+  // XDG_STATE_HOME set
+  setenv("XDG_STATE_HOME", "/tmp/teststate", 1);
+  dir = canfigger_state_dir("myapp");
+  assert(dir != NULL);
+  assert(strcmp(dir, "/tmp/teststate/myapp") == 0);
+  free(dir);
+  unsetenv("XDG_STATE_HOME");
+
+  // XDG_STATE_HOME unset: fall back to $HOME/.local/state
+  dir = canfigger_state_dir("myapp");
+  assert(dir != NULL);
+  assert(strcmp(dir, "/tmp/testhome/.local/state/myapp") == 0);
+  free(dir);
+
   // A relative value is invalid per the spec and must be ignored, not resolved
   // against the current directory; the $HOME default is used instead.
   setenv("XDG_CONFIG_HOME", "relative/path", 1);
@@ -139,6 +172,111 @@ test_dirs(void)
   assert(canfigger_data_dir("") == NULL);
   assert(canfigger_cache_dir(NULL) == NULL);
   assert(canfigger_cache_dir("") == NULL);
+  assert(canfigger_state_dir(NULL) == NULL);
+  assert(canfigger_state_dir("") == NULL);
+}
+
+static void
+test_runtime_dir(void)
+{
+  char *dir;
+
+  // Unset is an ordinary outcome, not an error.
+  unsetenv("XDG_RUNTIME_DIR");
+  assert(canfigger_runtime_dir("myapp") == NULL);
+
+  // Relative is invalid.
+  setenv("XDG_RUNTIME_DIR", "relative/path", 1);
+  assert(canfigger_runtime_dir("myapp") == NULL);
+
+  // Absolute but nonexistent.
+  setenv("XDG_RUNTIME_DIR", "/tmp/canfigger-does-not-exist-12345", 1);
+  assert(canfigger_runtime_dir("myapp") == NULL);
+
+  // A real directory we own with mode 0700 is accepted.
+  char good[] = "/tmp/canfigger-rt-goodXXXXXX";
+  assert(mkdtemp(good) != NULL);        // mkdtemp creates it 0700
+  setenv("XDG_RUNTIME_DIR", good, 1);
+  dir = canfigger_runtime_dir("myapp");
+  assert(dir != NULL);
+  {
+    char expected[512];
+    snprintf(expected, sizeof expected, "%s/myapp", good);
+    assert(strcmp(dir, expected) == 0);
+  }
+  free(dir);
+
+  // Loosening the mode makes it unusable: the spec requires 0700, and anything
+  // wider means another user could read the sockets and secrets kept there.
+  assert(chmod(good, 0755) == 0);
+  assert(canfigger_runtime_dir("myapp") == NULL);
+
+  // A file rather than a directory is rejected too.
+  char file[] = "/tmp/canfigger-rt-fileXXXXXX";
+  int fd = mkstemp(file);
+  assert(fd >= 0);
+  close(fd);
+  setenv("XDG_RUNTIME_DIR", file, 1);
+  assert(canfigger_runtime_dir("myapp") == NULL);
+
+  assert(canfigger_runtime_dir(NULL) == NULL);
+  assert(canfigger_runtime_dir("") == NULL);
+
+  remove(file);
+  rmdir(good);
+  unsetenv("XDG_RUNTIME_DIR");
+}
+
+static void
+test_dir_lists(void)
+{
+  char **dirs;
+
+  // Unset: the spec's defaults.
+  unsetenv("XDG_CONFIG_DIRS");
+  dirs = canfigger_config_dirs();
+  assert(dirs != NULL);
+  assert(dirs[0] != NULL && strcmp(dirs[0], "/etc/xdg") == 0);
+  assert(dirs[1] == NULL);
+  canfigger_free_dirs(dirs);
+
+  unsetenv("XDG_DATA_DIRS");
+  dirs = canfigger_data_dirs();
+  assert(dirs != NULL);
+  assert(dirs[0] != NULL && strcmp(dirs[0], "/usr/local/share") == 0);
+  assert(dirs[1] != NULL && strcmp(dirs[1], "/usr/share") == 0);
+  assert(dirs[2] == NULL);
+  canfigger_free_dirs(dirs);
+
+  // Order is preserved, most important first.
+  setenv("XDG_CONFIG_DIRS", "/one:/two:/three", 1);
+  dirs = canfigger_config_dirs();
+  assert(dirs != NULL);
+  assert(strcmp(dirs[0], "/one") == 0);
+  assert(strcmp(dirs[1], "/two") == 0);
+  assert(strcmp(dirs[2], "/three") == 0);
+  assert(dirs[3] == NULL);
+  canfigger_free_dirs(dirs);
+
+  // Relative and empty entries are dropped, the valid ones survive: one bad
+  // entry in a search path should not cost the caller the good ones.
+  setenv("XDG_CONFIG_DIRS", "/good:relative::/also-good:", 1);
+  dirs = canfigger_config_dirs();
+  assert(dirs != NULL);
+  assert(strcmp(dirs[0], "/good") == 0);
+  assert(strcmp(dirs[1], "/also-good") == 0);
+  assert(dirs[2] == NULL);
+  canfigger_free_dirs(dirs);
+
+  // Every entry invalid: an empty list, not NULL.
+  setenv("XDG_CONFIG_DIRS", "relative:another", 1);
+  dirs = canfigger_config_dirs();
+  assert(dirs != NULL);
+  assert(dirs[0] == NULL);
+  canfigger_free_dirs(dirs);
+  unsetenv("XDG_CONFIG_DIRS");
+
+  canfigger_free_dirs(NULL);    // no-op
 }
 #endif
 
@@ -147,5 +285,9 @@ main(void)
 {
   test_path_join();
   test_dirs();
+#ifndef _WIN32
+  test_runtime_dir();
+  test_dir_lists();
+#endif
   return 0;
 }

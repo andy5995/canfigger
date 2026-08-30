@@ -24,6 +24,14 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+#ifndef _WIN32
+/* stat() and getuid() are hidden by -std=c99 without this; canfigger_runtime_dir
+   needs them to check that the runtime directory is really ours. */
+#ifndef _POSIX_C_SOURCE
+#define _POSIX_C_SOURCE 200809L
+#endif
+#endif
+
 #include <ctype.h>              // isspace()
 #include <errno.h>
 #include <stdbool.h>
@@ -34,6 +42,10 @@ SOFTWARE.
 #ifdef _WIN32
 #include <windows.h>
 #include <shlobj.h>
+#else
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <unistd.h>
 #endif
 
 // This is only required for version info and can be removed
@@ -629,6 +641,142 @@ canfigger_cache_dir(const char *appname)
 #else
   return dir_for_appname(appname, "XDG_CACHE_HOME", ".cache");
 #endif
+}
+
+
+char *
+canfigger_state_dir(const char *appname)
+{
+#ifdef _WIN32
+  return dir_for_appname(appname, CSIDL_LOCAL_APPDATA);
+#else
+  return dir_for_appname(appname, "XDG_STATE_HOME", ".local/state");
+#endif
+}
+
+
+char *
+canfigger_runtime_dir(const char *appname)
+{
+  if (!appname || *appname == '\0')
+    return NULL;
+
+#ifdef _WIN32
+  /* Windows has no runtime-directory concept. Returning NULL rather than a
+     LOCAL_APPDATA path keeps the contract honest: callers asking for a runtime
+     directory want one that goes away with the session, and a path under
+     LOCAL_APPDATA does not. Let them choose their own fallback. */
+  return NULL;
+#else
+  const char *base = getenv("XDG_RUNTIME_DIR");
+  if (!base || *base != '/')
+    return NULL;
+
+  /* The spec does not merely name this directory, it states what it must be:
+     owned by the user, accessible to nobody else, mode 0700. A directory that
+     fails those checks is not a safe place for the sockets, lock files and
+     short-lived secrets this is used for, so treat it as absent and let the
+     caller fall back rather than handing back a path that looks usable. */
+  struct stat st;
+  if (stat(base, &st) != 0)
+    return NULL;
+  if (!S_ISDIR(st.st_mode))
+    return NULL;
+  if (st.st_uid != getuid())
+    return NULL;
+  if ((st.st_mode & 07777) != 0700)
+    return NULL;
+
+  return canfigger_path_join(base, appname);
+#endif
+}
+
+
+#ifndef _WIN32
+/* Split a colon-separated XDG search path into a NULL-terminated array. */
+static char **
+xdg_dir_list(const char *xdg_env, const char *fallback)
+{
+  const char *value = getenv(xdg_env);
+  if (!value || *value == '\0')
+    value = fallback;
+
+  size_t max = 2;
+  const char *p;
+  for (p = value; *p != '\0'; p++)
+    if (*p == ':')
+      max++;
+
+  char **list = malloc_wrap(max * sizeof(*list));
+  if (!list)
+    return NULL;
+
+  size_t n = 0;
+  const char *start = value;
+  for (;;)
+  {
+    const char *end = strchr(start, ':');
+    size_t len = end ? (size_t) (end - start) : strlen(start);
+
+    /* Same rule as xdg_base_dir: a relative entry is invalid per the spec, and
+       an empty one ("a::b") is not a path. Skip both rather than failing the
+       whole list -- one bad entry in a search path should not cost the caller
+       the good ones. */
+    if (len > 0 && *start == '/')
+    {
+      list[n] = strclone(start, len);
+      if (!list[n])
+      {
+        list[n] = NULL;
+        canfigger_free_dirs(list);
+        return NULL;
+      }
+      n++;
+    }
+
+    if (!end)
+      break;
+    start = end + 1;
+  }
+
+  list[n] = NULL;
+  return list;
+}
+#endif
+
+
+char **
+canfigger_config_dirs(void)
+{
+#ifdef _WIN32
+  return NULL;
+#else
+  return xdg_dir_list("XDG_CONFIG_DIRS", "/etc/xdg");
+#endif
+}
+
+
+char **
+canfigger_data_dirs(void)
+{
+#ifdef _WIN32
+  return NULL;
+#else
+  return xdg_dir_list("XDG_DATA_DIRS", "/usr/local/share:/usr/share");
+#endif
+}
+
+
+void
+canfigger_free_dirs(char **dirs)
+{
+  if (!dirs)
+    return;
+
+  size_t i;
+  for (i = 0; dirs[i] != NULL; i++)
+    free(dirs[i]);
+  free(dirs);
 }
 
 

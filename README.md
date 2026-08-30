@@ -51,6 +51,20 @@ Canfigger provides helpers for locating standard per-user paths on Linux
   directory (`$XDG_DATA_HOME/appname` or `$HOME/.local/share/appname`)
 - `canfigger_cache_dir(appname)` — returns the per-application cache
   directory (`$XDG_CACHE_HOME/appname` or `$HOME/.cache/appname`)
+- `canfigger_state_dir(appname)` — returns the per-application state
+  directory (`$XDG_STATE_HOME/appname` or `$HOME/.local/state/appname`), for
+  data that persists between runs but is not configuration and is not worth
+  backing up
+- `canfigger_runtime_dir(appname)` — returns `$XDG_RUNTIME_DIR/appname` for
+  short-lived per-session files (sockets, lock files, secrets). Returns NULL
+  when there is no usable runtime directory — unset, or failing the spec's
+  requirements that it exist, be owned by the caller and have mode 0700 — and
+  always on Windows, which has no equivalent. A NULL return is an ordinary
+  outcome; pick a fallback suited to the data
+- `canfigger_config_dirs()` / `canfigger_data_dirs()` — return the system
+  search paths (`$XDG_CONFIG_DIRS`, `$XDG_DATA_DIRS`) as a NULL-terminated
+  array, searched *after* the per-user directories above. Free with
+  `canfigger_free_dirs()`. NULL on Windows
 - `canfigger_config_file(filename)` — returns a path directly under the
   base config directory, without an application subdirectory
   (`$XDG_CONFIG_HOME/filename` or `$HOME/.config/filename`); useful when

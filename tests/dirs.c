@@ -1,5 +1,15 @@
 #ifndef _WIN32
-#define _POSIX_C_SOURCE 200809L // mkdtemp(), mkstemp()
+#ifndef _POSIX_C_SOURCE
+#define _POSIX_C_SOURCE 200809L // mkstemp()
+#endif
+/* Darwin sets __DARWIN_C_LEVEL from _POSIX_C_SOURCE when that is defined on its
+   own, which HIDES mkdtemp(): Apple keeps it behind the full/BSD guard rather
+   than the POSIX-2008 band (mkstemp is unaffected -- POSIX-2001 put that in
+   stdlib.h). _DARWIN_C_SOURCE restores the full namespace and is ignored
+   elsewhere. Without it the macOS CI job fails to compile. */
+#ifdef __APPLE__
+#define _DARWIN_C_SOURCE
+#endif
 #endif
 
 #include "tests/test.h"

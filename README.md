@@ -5,12 +5,12 @@
 
 # canfigger
 
-Canfigger is a lightweight C language library designed to parse configuration
-files. It provides functionality to read them and represent their contents as
-a linked list of key-value pairs, along with associated attributes for each
-pair. It also includes utility functions for locating standard per-user
-directories (config, data, cache) and joining paths, with support for XDG on
-Linux/macOS and the Windows CSIDL equivalents.
+Canfigger is a small C library that parses configuration files. It reads a
+file and represents its contents as a linked list of key-value pairs, each of
+which can carry attributes. It also finds the standard directories a program
+keeps files in — config, data, cache, state, and the user's Desktop,
+Documents and Downloads — and joins paths, using XDG on Linux and macOS and
+the Windows equivalents.
 
 * [website/API documentation and examples](https://andy5995.github.io/canfigger/)
 * [source on GitHub](https://github.com/andy5995/canfigger/)
@@ -18,7 +18,7 @@ Linux/macOS and the Windows CSIDL equivalents.
 
 ## Format
 
-The following config file example represents the format handled by canfigger:
+This example shows the format canfigger handles:
 
 ```
 foo = bar
@@ -42,9 +42,6 @@ argument:
 
 ## Platform path helpers
 
-Canfigger provides helpers for locating standard per-user paths on Linux
-(XDG), macOS, and Windows:
-
 - `canfigger_config_dir(appname)` — returns the per-application config
   directory (`$XDG_CONFIG_HOME/appname` or `$HOME/.config/appname`)
 - `canfigger_data_dir(appname)` — returns the per-application data
@@ -64,16 +61,29 @@ Canfigger provides helpers for locating standard per-user paths on Linux
 - `canfigger_config_dirs()` / `canfigger_data_dirs()` — return the system
   search paths (`$XDG_CONFIG_DIRS`, `$XDG_DATA_DIRS`) as a NULL-terminated
   array, searched *after* the per-user directories above. Free with
-  `canfigger_free_dirs()`. NULL on Windows
+  `canfigger_free_dirs()`. On Windows the array holds one entry,
+  `%ProgramData%`
 - `canfigger_config_file(filename)` — returns a path directly under the
   base config directory, without an application subdirectory
   (`$XDG_CONFIG_HOME/filename` or `$HOME/.config/filename`); useful when
   the config file lives at the config root rather than in a per-application
   subdirectory
+- `canfigger_find_config_file(appname, filename)` — looks for an existing
+  config file. It checks the user's own config directory first, then each
+  directory from `canfigger_config_dirs()` in turn, and returns the path of
+  the first file it finds. A file in the user's own directory is used instead
+  of a system-wide one. Pass NULL for `appname` to look directly under the
+  config roots
+- `canfigger_user_dir(which)` — returns one of the user's visible home
+  directories: Desktop, Downloads, Templates, Public share, Documents, Music,
+  Pictures or Videos. On Unix the paths come from the `user-dirs.dirs` file
+  that the desktop writes. The desktop translates these names, so the desktop
+  directory is `~/Desktop` on an English system and `~/Skrivebord` on a Danish
+  one. When the file is missing, the result is `$HOME`
 - `canfigger_path_join(dir, file)` — joins a directory and filename with
   the platform separator
 
-See the API documentation for details.
+See the [API documentation](https://andy5995.github.io/canfigger/) for details.
 
 ## Dependencies
 

@@ -547,9 +547,25 @@ xdg_base_dir(const char *xdg_env, const char *fallback)
 #endif
 
 
+/* All the Windows helpers below go through SHGetFolderPathA, which is both
+   deprecated and ANSI-only. This is accepted rather than overlooked: when the
+   profile path cannot be represented in the active code page (a non-ASCII
+   account name on a non-UTF-8 system) the call fails and the helper returns
+   NULL, which is a clean failure rather than a corrupt path. Its replacement,
+   SHGetKnownFolderPath, hands back UTF-16, and a UTF-8 char * built from that
+   is not something MSVC's fopen will open -- so moving to it means a parallel
+   wide-char API, not a drop-in swap. An application shipping a UTF-8
+   active-code-page manifest (Windows 10 1903+) gets UTF-8 paths from this code
+   as it stands. */
 #ifdef _WIN32
+/* @p subdir may be NULL. It exists because Windows has no separate cache or
+   state root: everything below LOCAL_APPDATA would otherwise land on the same
+   path, so canfigger_cache_dir() and canfigger_state_dir() would return exactly
+   what canfigger_data_dir() does and a file written through one would be the
+   file written through another. The subdirectory keeps them distinct, matching
+   what Qt's QStandardPaths does for the same reason. */
 static char *
-dir_for_appname(const char *appname, int csidl)
+dir_for_appname(const char *appname, int csidl, const char *subdir)
 {
   if (!appname || *appname == '\0')
     return NULL;
@@ -559,10 +575,15 @@ dir_for_appname(const char *appname, int csidl)
     return NULL;
 
   size_t len = strlen(base) + 1 + strlen(appname) + 1;
+  if (subdir)
+    len += strlen(subdir) + 1;
   char *result = malloc_wrap(len);
   if (!result)
     return NULL;
-  snprintf(result, len, "%s\\%s", base, appname);
+  if (subdir)
+    snprintf(result, len, "%s\\%s\\%s", base, appname, subdir);
+  else
+    snprintf(result, len, "%s\\%s", base, appname);
   return result;
 }
 #else
@@ -587,7 +608,7 @@ char *
 canfigger_config_dir(const char *appname)
 {
 #ifdef _WIN32
-  return dir_for_appname(appname, CSIDL_APPDATA);
+  return dir_for_appname(appname, CSIDL_APPDATA, NULL);
 #else
   return dir_for_appname(appname, "XDG_CONFIG_HOME", ".config");
 #endif
@@ -626,7 +647,7 @@ char *
 canfigger_data_dir(const char *appname)
 {
 #ifdef _WIN32
-  return dir_for_appname(appname, CSIDL_LOCAL_APPDATA);
+  return dir_for_appname(appname, CSIDL_LOCAL_APPDATA, NULL);
 #else
   return dir_for_appname(appname, "XDG_DATA_HOME", ".local/share");
 #endif
@@ -637,7 +658,7 @@ char *
 canfigger_cache_dir(const char *appname)
 {
 #ifdef _WIN32
-  return dir_for_appname(appname, CSIDL_LOCAL_APPDATA);
+  return dir_for_appname(appname, CSIDL_LOCAL_APPDATA, "Cache");
 #else
   return dir_for_appname(appname, "XDG_CACHE_HOME", ".cache");
 #endif
@@ -648,7 +669,7 @@ char *
 canfigger_state_dir(const char *appname)
 {
 #ifdef _WIN32
-  return dir_for_appname(appname, CSIDL_LOCAL_APPDATA);
+  return dir_for_appname(appname, CSIDL_LOCAL_APPDATA, "State");
 #else
   return dir_for_appname(appname, "XDG_STATE_HOME", ".local/state");
 #endif
@@ -690,6 +711,35 @@ canfigger_runtime_dir(const char *appname)
   return canfigger_path_join(base, appname);
 #endif
 }
+
+
+#ifdef _WIN32
+/* Windows has no search *path*: ProgramData is the one system-wide location for
+   settings and data shared by every user, so the list always holds exactly one
+   entry. It is still handed back as a list so a caller can walk
+   canfigger_config_dirs() / canfigger_data_dirs() the same way on both
+   platforms instead of bracketing the loop in #ifdefs. */
+static char **
+common_appdata_list(void)
+{
+  char base[MAX_PATH];
+  if (FAILED(SHGetFolderPathA(NULL, CSIDL_COMMON_APPDATA, NULL, 0, base)))
+    return NULL;
+
+  char **list = malloc_wrap(2 * sizeof(*list));
+  if (!list)
+    return NULL;
+
+  list[0] = strclone(base, 0);
+  if (!list[0])
+  {
+    free(list);
+    return NULL;
+  }
+  list[1] = NULL;
+  return list;
+}
+#endif
 
 
 #ifndef _WIN32
@@ -749,7 +799,7 @@ char **
 canfigger_config_dirs(void)
 {
 #ifdef _WIN32
-  return NULL;
+  return common_appdata_list();
 #else
   return xdg_dir_list("XDG_CONFIG_DIRS", "/etc/xdg");
 #endif
@@ -760,7 +810,7 @@ char **
 canfigger_data_dirs(void)
 {
 #ifdef _WIN32
-  return NULL;
+  return common_appdata_list();
 #else
   return xdg_dir_list("XDG_DATA_DIRS", "/usr/local/share:/usr/share");
 #endif
@@ -808,4 +858,241 @@ canfigger_path_join(const char *dir, const char *file)
     snprintf(result, total, "%s%s", dir, file);
 
   return result;
+}
+
+
+/* Does the path name an existing regular file? A directory of the right name is
+   not a config file, so it must not stop the search short of one further down
+   the path. */
+static bool
+path_is_file(const char *path)
+{
+#ifdef _WIN32
+  DWORD attr = GetFileAttributesA(path);
+  return attr != INVALID_FILE_ATTRIBUTES
+    && !(attr & FILE_ATTRIBUTE_DIRECTORY);
+#else
+  struct stat st;
+  return stat(path, &st) == 0 && S_ISREG(st.st_mode);
+#endif
+}
+
+
+char *
+canfigger_find_config_file(const char *appname, const char *filename)
+{
+  if (!filename || !*filename)
+    return NULL;
+
+  char *candidate = NULL;
+
+  /* The user's own config always wins, whatever the system copies hold. */
+  if (appname && *appname)
+  {
+    char *dir = canfigger_config_dir(appname);
+    if (dir)
+    {
+      candidate = canfigger_path_join(dir, filename);
+      free(dir);
+    }
+  }
+  else
+    candidate = canfigger_config_file(filename);
+
+  if (candidate && path_is_file(candidate))
+    return candidate;
+  free(candidate);
+
+  char **dirs = canfigger_config_dirs();
+  if (!dirs)
+    return NULL;
+
+  char *found = NULL;
+  size_t i;
+  for (i = 0; dirs[i] != NULL && !found; i++)
+  {
+    char *base = NULL;
+    if (appname && *appname)
+    {
+      base = canfigger_path_join(dirs[i], appname);
+      if (!base)
+        continue;
+    }
+
+    candidate = canfigger_path_join(base ? base : dirs[i], filename);
+    free(base);
+
+    if (candidate && path_is_file(candidate))
+      found = candidate;
+    else
+      free(candidate);
+  }
+
+  canfigger_free_dirs(dirs);
+  return found;
+}
+
+
+/* Keyed by enum canfigger_user_dir so the rows cannot silently shift if the
+   enum is ever reordered. A new enumerator with no row here still compiles: the
+   entry is a null pointer, which canfigger_user_dir() turns into its ordinary
+   NULL return rather than a crash. */
+#ifndef _WIN32
+static const char *const user_dir_keys[] = {
+  [CANFIGGER_USER_DIR_DESKTOP] = "XDG_DESKTOP_DIR",
+  [CANFIGGER_USER_DIR_DOWNLOAD] = "XDG_DOWNLOAD_DIR",
+  [CANFIGGER_USER_DIR_TEMPLATES] = "XDG_TEMPLATES_DIR",
+  [CANFIGGER_USER_DIR_PUBLICSHARE] = "XDG_PUBLICSHARE_DIR",
+  [CANFIGGER_USER_DIR_DOCUMENTS] = "XDG_DOCUMENTS_DIR",
+  [CANFIGGER_USER_DIR_MUSIC] = "XDG_MUSIC_DIR",
+  [CANFIGGER_USER_DIR_PICTURES] = "XDG_PICTURES_DIR",
+  [CANFIGGER_USER_DIR_VIDEOS] = "XDG_VIDEOS_DIR"
+};
+
+
+/* user-dirs.dirs is a shell fragment sourced by the desktop session, not a
+   canfigger file, so it cannot go through canfigger_parse_file(): its values
+   are double-quoted, may contain backslash escapes, and the "$HOME/" prefix has
+   to be expanded. This mirrors the reference xdg-user-dir-lookup implementation
+   -- deliberately, since matching whatever the desktop itself resolves matters
+   more here than being lenient. */
+static char *
+user_dir_from_file(const char *key)
+{
+  char *path = canfigger_config_file("user-dirs.dirs");
+  if (!path)
+    return NULL;
+
+  FILE *fp = fopen(path, "r");
+  free(path);
+  if (!fp)
+    return NULL;
+
+  static const char home_prefix[] = "$HOME/";
+  const char *home = getenv("HOME");
+  size_t keylen = strlen(key);
+  char line[1024];
+  char *result = NULL;
+
+  while (!result && fgets(line, sizeof line, fp) != NULL)
+  {
+    char *p = line;
+    while (isspace((unsigned char) *p))
+      p++;
+    if (strncmp(p, key, keylen) != 0)
+      continue;
+
+    p += keylen;
+    while (isspace((unsigned char) *p))
+      p++;
+    if (*p != '=')
+      continue;
+    p++;
+    while (isspace((unsigned char) *p))
+      p++;
+    if (*p != '"')
+      continue;
+    p++;
+
+    bool relative_to_home = false;
+    if (strncmp(p, home_prefix, sizeof home_prefix - 1) == 0)
+    {
+      relative_to_home = true;
+      p += sizeof home_prefix - 1;
+    }
+    /* Anything neither absolute nor under $HOME is unusable: an entry like
+       "Desktop" would resolve against the current directory. */
+    else if (*p != '/')
+      break;
+
+    size_t prefix = 0;
+    if (relative_to_home)
+    {
+      if (!home || !*home)
+        break;
+      prefix = strlen(home) + 1;
+    }
+
+    char *out = malloc_wrap(prefix + strlen(p) + 1);
+    if (!out)
+      break;
+    if (relative_to_home)
+      snprintf(out, prefix + 1, "%s/", home);
+
+    char *d = out + prefix;
+    while (*p != '\0' && *p != '"')
+    {
+      if (*p == '\\' && *(p + 1) != '\0')
+        p++;
+      *d++ = *p++;
+    }
+    *d = '\0';
+
+    /* An empty value (XDG_DESKTOP_DIR="") disables the directory; treat it as
+       absent so the caller gets the $HOME fallback rather than "". */
+    if (*out == '\0')
+    {
+      free(out);
+      break;
+    }
+    result = out;
+  }
+
+  fclose(fp);
+  return result;
+}
+#else
+/* Keyed by enum canfigger_user_dir, as user_dir_keys[] is. CSIDL_PROFILE stands
+   in for Downloads, which has no CSIDL at all (it arrived with the Vista-era
+   KNOWNFOLDERID API); the name is appended below. Unlike the POSIX table a
+   missing row is not detectable here -- 0 is CSIDL_DESKTOP -- so every
+   enumerator needs one. */
+static const int user_dir_csidl[] = {
+  [CANFIGGER_USER_DIR_DESKTOP] = CSIDL_DESKTOPDIRECTORY,
+  [CANFIGGER_USER_DIR_DOWNLOAD] = CSIDL_PROFILE,
+  [CANFIGGER_USER_DIR_TEMPLATES] = CSIDL_TEMPLATES,
+  [CANFIGGER_USER_DIR_PUBLICSHARE] = CSIDL_COMMON_DOCUMENTS,
+  [CANFIGGER_USER_DIR_DOCUMENTS] = CSIDL_PERSONAL,
+  [CANFIGGER_USER_DIR_MUSIC] = CSIDL_MYMUSIC,
+  [CANFIGGER_USER_DIR_PICTURES] = CSIDL_MYPICTURES,
+  [CANFIGGER_USER_DIR_VIDEOS] = CSIDL_MYVIDEO
+};
+#endif
+
+
+char *
+canfigger_user_dir(enum canfigger_user_dir which)
+{
+#ifdef _WIN32
+  if ((unsigned) which >= sizeof user_dir_csidl / sizeof *user_dir_csidl)
+    return NULL;
+
+  char base[MAX_PATH];
+  if (FAILED(SHGetFolderPathA(NULL, user_dir_csidl[which], NULL, 0, base)))
+    return NULL;
+
+  if (which == CANFIGGER_USER_DIR_DOWNLOAD)
+    return canfigger_path_join(base, "Downloads");
+  return strclone(base, 0);
+#else
+  if ((unsigned) which >= sizeof user_dir_keys / sizeof *user_dir_keys)
+    return NULL;
+
+  if (!user_dir_keys[which])
+    return NULL;
+
+  char *dir = user_dir_from_file(user_dir_keys[which]);
+  if (dir)
+    return dir;
+
+  const char *home = getenv("HOME");
+  if (!home || !*home)
+    return NULL;
+
+  /* The reference implementation falls back to $HOME for every type but the
+     desktop, which keeps its historical $HOME/Desktop default. */
+  if (which == CANFIGGER_USER_DIR_DESKTOP)
+    return canfigger_path_join(home, "Desktop");
+  return strclone(home, 0);
+#endif
 }

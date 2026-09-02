@@ -78,20 +78,33 @@ test_dirs(void)
   assert(strstr(dir, "testapp") != NULL);
   free(dir);
 
+  // Windows has no cache or state root separate from its data root, so these
+  // carry a subdirectory; without it all three would be the same path and a
+  // file written through one would be the file written through another.
   dir = canfigger_cache_dir("testapp");
   assert(dir != NULL);
-  assert(strstr(dir, "testapp") != NULL);
+  assert(strstr(dir, "testapp\\Cache") != NULL);
   free(dir);
 
   dir = canfigger_state_dir("testapp");
   assert(dir != NULL);
-  assert(strstr(dir, "testapp") != NULL);
+  assert(strstr(dir, "testapp\\State") != NULL);
   free(dir);
 
-  // No runtime-directory concept on Windows, and no search-path lists.
+  // No runtime-directory concept on Windows.
   assert(canfigger_runtime_dir("testapp") == NULL);
-  assert(canfigger_config_dirs() == NULL);
-  assert(canfigger_data_dirs() == NULL);
+
+  // The search-path lists hold the single ProgramData entry.
+  char **dirs = canfigger_config_dirs();
+  assert(dirs != NULL);
+  assert(dirs[0] != NULL && dirs[1] == NULL);
+  canfigger_free_dirs(dirs);
+
+  dirs = canfigger_data_dirs();
+  assert(dirs != NULL);
+  assert(dirs[0] != NULL && dirs[1] == NULL);
+  canfigger_free_dirs(dirs);
+
   canfigger_free_dirs(NULL);
 
   assert(canfigger_config_dir(NULL) == NULL);

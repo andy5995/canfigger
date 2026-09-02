@@ -5,12 +5,14 @@ test_cases = [
   'config_file',
   'dirs',
   'file_open_err',
+  'find_config',
   'incomplete_parse_file',
   'multiple_attributes',
   'no_trailing_newline',
   'parse_file',
   'skip_attributes',
   'unicode',
+  'user_dirs',
 ]
 
 foreach case : test_cases

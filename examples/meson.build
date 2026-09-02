@@ -1,6 +1,7 @@
 snippet_examples = [
   'canfigger_config_dir',
   'canfigger_config_file',
+  'canfigger_find_config_file',
   'canfigger_path_join',
 ]
 

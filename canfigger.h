@@ -30,6 +30,12 @@
  *   }
  * @endcode
  *
+ * **Windows note.** The path helpers return the ANSI form of a path.  On a
+ * system whose active code page cannot represent the user's profile path - a
+ * non-ASCII account name, on a system not set to UTF-8 - they return NULL
+ * rather than a path that will not open.  An application that ships a UTF-8
+ * active-code-page manifest (Windows 10 1903 and later) is unaffected.
+ *
  * Part of canfigger (https://github.com/andy5995/canfigger).
  **/
 /* This file is part of canfigger<https://github.com/andy5995/canfigger>
@@ -243,6 +249,8 @@ extern "C"
  * @return Malloc'd path string, or NULL on failure or if @p filename is
  *         NULL or empty.
  *
+ * @since 0.3.2
+ *
  * @snippet examples/canfigger_config_file.c canfigger_config_file
  */
   char *canfigger_config_file(const char *filename);
@@ -267,7 +275,10 @@ extern "C"
  * @brief Return the platform cache directory for an application.
  *
  * On Unix, honours @c $XDG_CACHE_HOME if set; otherwise uses
- * @c $HOME/.cache/appname.  On Windows, uses @c %LOCALAPPDATA%\\appname.
+ * @c $HOME/.cache/appname.  On Windows, uses
+ * @c %LOCALAPPDATA%\\appname\\Cache - Windows has no cache root separate from
+ * its data root, so without the subdirectory this would return the same path as
+ * canfigger_data_dir().
  *
  * The returned string is heap-allocated; the caller must free it.
  *
@@ -285,7 +296,9 @@ extern "C"
  * For data that should persist between runs but is not configuration and is
  * not worth backing up - logs, history, recently-used lists, and similar.
  * On Unix, honours @c $XDG_STATE_HOME if set; otherwise uses
- * @c $HOME/.local/state/appname.  On Windows, uses @c %LOCALAPPDATA%\\appname.
+ * @c $HOME/.local/state/appname.  On Windows, uses
+ * @c %LOCALAPPDATA%\\appname\\State, for the same collision reason described
+ * under canfigger_cache_dir().
  *
  * The returned string is heap-allocated; the caller must free it.
  *
@@ -337,11 +350,11 @@ extern "C"
  * always takes precedence.  Entries that are relative or empty are skipped, as
  * the specification requires.
  *
- * On Windows there is no equivalent and NULL is always returned.
+ * On Windows the list holds the single entry @c %ProgramData%, the system-wide
+ * location for settings shared by every user.
  *
  * @return Malloc'd NULL-terminated array of malloc'd strings, to be released
- *         with canfigger_free_dirs(), or NULL on Windows or allocation
- *         failure.
+ *         with canfigger_free_dirs(), or NULL on allocation failure.
  *
  * @since 0.3.3
  */
@@ -355,15 +368,100 @@ extern "C"
  * @e after canfigger_data_dir(), which always takes precedence.  Entries that
  * are relative or empty are skipped, as the specification requires.
  *
- * On Windows there is no equivalent and NULL is always returned.
+ * On Windows the list holds the single entry @c %ProgramData%, the system-wide
+ * location for data shared by every user.
  *
  * @return Malloc'd NULL-terminated array of malloc'd strings, to be released
- *         with canfigger_free_dirs(), or NULL on Windows or allocation
- *         failure.
+ *         with canfigger_free_dirs(), or NULL on allocation failure.
  *
  * @since 0.3.3
  */
   char **canfigger_data_dirs(void);
+
+/**
+ * @brief Find an existing config file along the full config search path.
+ *
+ * Returns the first readable file found, checking the user's own config
+ * directory first and then each entry of canfigger_config_dirs() in order, so
+ * a per-user file always overrides a system-wide one.  This is the search the
+ * base directory specification describes.
+ *
+ * With @p appname given, the paths checked are
+ * @c <config-dir>/appname/filename; with @p appname NULL or empty they are
+ * @c <config-dir>/filename, matching canfigger_config_file() for programs that
+ * keep a single file directly under the config root.
+ *
+ * Only existing regular files match - a directory of the same name does not
+ * stop the search.  The result is a path, not an open file: it may still fail
+ * to open, and it may be gone by the time it is used.
+ *
+ * The returned string is heap-allocated; the caller must free it.
+ *
+ * @param appname Application subdirectory to look in, or NULL for none.
+ * @param filename Config file name to look for.
+ * @return Malloc'd path to the first matching file, or NULL if none exists or
+ *         @p filename is NULL/empty.
+ *
+ * @since 0.3.3
+ *
+ * @snippet examples/canfigger_find_config_file.c canfigger_find_config_file
+ */
+  char *canfigger_find_config_file(const char *appname, const char *filename);
+
+/**
+ * @brief The well-known user directories, as named by the XDG user directories
+ *        specification.
+ *
+ * Passed to canfigger_user_dir().  These are the visible directories in a
+ * user's home - where a program should put a screenshot, an export or a
+ * downloaded file - and are unrelated to the base directories the rest of this
+ * API deals with.
+ *
+ * @since 0.3.3
+ */
+  enum canfigger_user_dir
+  {
+    CANFIGGER_USER_DIR_DESKTOP,
+    CANFIGGER_USER_DIR_DOWNLOAD,
+    CANFIGGER_USER_DIR_TEMPLATES,
+    CANFIGGER_USER_DIR_PUBLICSHARE,
+    CANFIGGER_USER_DIR_DOCUMENTS,
+    CANFIGGER_USER_DIR_MUSIC,
+    CANFIGGER_USER_DIR_PICTURES,
+    CANFIGGER_USER_DIR_VIDEOS
+  };
+
+/**
+ * @brief Return one of the user's well-known directories.
+ *
+ * On Unix the answer comes from @c user-dirs.dirs in the config directory,
+ * which the desktop session writes and localises - so the desktop directory is
+ * @c ~/Desktop on an English system and @c ~/Skrivebord on a Danish one.  Never
+ * assume the English name.  That file is a shell fragment, not a
+ * canfigger file, so it is parsed separately: values are double-quoted, a
+ * leading @c $HOME/ is expanded, and entries that are neither absolute nor
+ * under @c $HOME are ignored.
+ *
+ * When the file is missing or the entry is unset - a headless, container or
+ * minimal-desktop session, where nothing writes it - the result is @c $HOME,
+ * except for @c CANFIGGER_USER_DIR_DESKTOP which keeps its historical
+ * @c $HOME/Desktop default.  This mirrors the reference @c xdg-user-dir tool.
+ *
+ * On Windows the equivalent shell folder is returned (Desktop, Documents,
+ * Music, Pictures, Videos, Templates, and the public documents folder for
+ * @c CANFIGGER_USER_DIR_PUBLICSHARE).
+ *
+ * The directory is not created and is not guaranteed to exist.
+ *
+ * The returned string is heap-allocated; the caller must free it.
+ *
+ * @param which Which directory to return.
+ * @return Malloc'd path string, or NULL if @p which is out of range, @c $HOME
+ *         is unset, or allocation fails.
+ *
+ * @since 0.3.3
+ */
+  char *canfigger_user_dir(enum canfigger_user_dir which);
 
 /**
  * @brief Free an array returned by canfigger_config_dirs() or

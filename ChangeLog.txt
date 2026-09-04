@@ -1,21 +1,23 @@
-(in-progress):
+2026-09-04
 
-+ Add canfigger_state_dir(): $XDG_STATE_HOME/appname or
-  $HOME/.local/state/appname on POSIX; %LOCALAPPDATA%\appname\State on Windows
-+ Add canfigger_runtime_dir(): $XDG_RUNTIME_DIR/appname, or NULL when unset or
-  failing the spec's ownership/0700 requirements; always NULL on Windows
-+ Add canfigger_config_dirs(), canfigger_data_dirs(), canfigger_free_dirs():
-  the $XDG_CONFIG_DIRS / $XDG_DATA_DIRS search paths as a NULL-terminated array;
-  on Windows a single-entry list holding %ProgramData%
-+ Add canfigger_find_config_file(): the first config file that exists along the
-  user config directory followed by $XDG_CONFIG_DIRS
-+ Add canfigger_user_dir(): the XDG user directories (Desktop, Downloads,
-  Documents, ...) read from user-dirs.dirs, falling back to $HOME
-* bugfix: On Windows canfigger_cache_dir() returned the same path as
-  canfigger_data_dir(); it now appends a Cache subdirectory
-* bugfix: A relative path in an XDG environment variable is now ignored per the
-  spec, rather than resolved against the current directory
-* Doxyfile: Exclude tests (remove unused structs from docs)
+- canfigger (v0.3.3):
+  + Add canfigger_state_dir(): $XDG_STATE_HOME/appname or
+    $HOME/.local/state/appname on POSIX; %LOCALAPPDATA%\appname\State on
+    Windows
+  + Add canfigger_runtime_dir(): $XDG_RUNTIME_DIR/appname, or NULL when unset
+    or failing the spec's ownership/0700 requirements; always NULL on Windows
+  + Add canfigger_config_dirs(), canfigger_data_dirs(), canfigger_free_dirs():
+    the $XDG_CONFIG_DIRS / $XDG_DATA_DIRS search paths as a NULL-terminated
+    array; on Windows a single-entry list holding %ProgramData%
+  + Add canfigger_find_config_file(): the first config file that exists along
+    the user config directory followed by $XDG_CONFIG_DIRS
+  + Add canfigger_user_dir(): the XDG user directories (Desktop, Downloads,
+    Documents, ...) read from user-dirs.dirs, falling back to $HOME
+  * bugfix: On Windows canfigger_cache_dir() returned the same path as
+    canfigger_data_dir(); it now appends a Cache subdirectory
+  * bugfix: A relative path in an XDG environment variable is now ignored per
+    the spec, rather than resolved against the current directory
+  * Doxyfile: Exclude tests (remove unused structs from docs)
 
 2026-05-11
 

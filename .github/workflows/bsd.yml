@@ -25,10 +25,10 @@ jobs:
       matrix:
         include:
           - os: freebsd
-            version: '15.0'
+            version: '15.1'
             install: sudo pkg install -y meson ninja
           - os: openbsd
-            version: '7.8'
+            version: '7.9'
             install: sudo pkg_add meson ninja
     runs-on: ubuntu-latest
     steps:

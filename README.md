@@ -1,7 +1,6 @@
-[![codeql-badge]][codeql-url]
 [![actions-c-badge]][actions-c-url]
-[![cirrus-badge]][cirrus-url]
 [![windows-badge]][windows-url]
+[![bsd-badge]][bsd-url]
 
 # canfigger
 
@@ -108,11 +107,9 @@ Example programs will be built when you run `ninja`. If you want to try them
 with a different config file, give them the name of a config file as an
 argument.
 
-[codeql-badge]: https://github.com/andy5995/canfigger/workflows/CodeQL/badge.svg
-[codeql-url]: https://github.com/andy5995/canfigger/actions?query=workflow%3ACodeQL
 [actions-c-badge]: https://github.com/andy5995/canfigger/actions/workflows/c-cpp.yml/badge.svg
 [actions-c-url]: https://github.com/andy5995/canfigger/actions/workflows/c-cpp.yml
-[cirrus-badge]:https://api.cirrus-ci.com/github/andy5995/canfigger.svg
-[cirrus-url]:https://cirrus-ci.com/github/andy5995/canfigger
 [windows-badge]:https://github.com/andy5995/canfigger/actions/workflows/windows.yml/badge.svg
 [windows-url]:https://github.com/andy5995/canfigger/actions/workflows/windows.yml
+[bsd-badge]:https://github.com/andy5995/canfigger/actions/workflows/bsd.yml/badge.svg
+[bsd-url]:https://github.com/andy5995/canfigger/actions/workflows/bsd.yml

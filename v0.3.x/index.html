@@ -73,10 +73,10 @@ $(function() {
   <div class="headertitle"><div class="title">canfigger </div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p><a class="anchor" id="md_README"></a> <a href="https://github.com/andy5995/canfigger/actions?query=workflow%3ACodeQL">![codeql-badge]</a> <a href="https://github.com/andy5995/canfigger/actions/workflows/c-cpp.yml">![actions-c-badge]</a> <a href="https://cirrus-ci.com/github/andy5995/canfigger">![cirrus-badge]</a> <a href="https://github.com/andy5995/canfigger/actions/workflows/windows.yml">![windows-badge]</a></p>
+<div class="textblock"><p><a class="anchor" id="md_README"></a> <a href="https://github.com/andy5995/canfigger/actions/workflows/c-cpp.yml">![actions-c-badge]</a> <a href="https://github.com/andy5995/canfigger/actions/workflows/windows.yml">![windows-badge]</a> <a href="https://github.com/andy5995/canfigger/actions/workflows/bsd.yml">![bsd-badge]</a></p>
 <h1><a class="anchor" id="autotoc_md0"></a>
 canfigger</h1>
-<p><a class="el" href="canfigger_8h.html#structCanfigger" title="A single node in the parsed configuration linked list.">Canfigger</a> is a lightweight C language library designed to parse configuration files. It provides functionality to read them and represent their contents as a linked list of key-value pairs, along with associated attributes for each pair. It also includes utility functions for locating standard per-user directories (config, data, cache) and joining paths, with support for XDG on Linux/macOS and the Windows CSIDL equivalents.</p>
+<p><a class="el" href="canfigger_8h.html#structCanfigger" title="A single node in the parsed configuration linked list.">Canfigger</a> is a small C library that parses configuration files. It reads a file and represents its contents as a linked list of key-value pairs, each of which can carry attributes. It also finds the standard directories a program keeps files in — config, data, cache, state, and the user's Desktop, Documents and Downloads — and joins paths, using XDG on Linux and macOS and the Windows equivalents.</p>
 <ul>
 <li><a href="https://andy5995.github.io/canfigger/">website/API documentation and examples</a></li>
 <li><a href="https://github.com/andy5995/canfigger/">source on GitHub</a></li>
@@ -84,7 +84,7 @@ canfigger</h1>
 </ul>
 <h2><a class="anchor" id="autotoc_md1"></a>
 Format</h2>
-<p>The following config file example represents the format handled by canfigger:</p>
+<p>This example shows the format canfigger handles:</p>
 <div class="fragment"><div class="line">foo = bar</div>
 <div class="line">blue = color, shiny</div>
 <div class="line">statement = hello world, obvious</div>
@@ -100,18 +100,19 @@ Format</h2>
 </div><!-- fragment --><p>You can change the attribute delimiter character by passing it as the second argument: </p><pre class="fragment">canfigger_parse_file(filename_ptr, ':');
 </pre> <h2><a class="anchor" id="autotoc_md2"></a>
 Platform path helpers</h2>
-<p><a class="el" href="canfigger_8h.html#structCanfigger" title="A single node in the parsed configuration linked list.">Canfigger</a> provides helpers for locating standard per-user paths on Linux (XDG), macOS, and Windows:</p>
 <ul>
 <li><code>canfigger_config_dir(appname)</code> — returns the per-application config directory (<code>$XDG_CONFIG_HOME/appname</code> or <code>$HOME/.config/appname</code>)</li>
 <li><code>canfigger_data_dir(appname)</code> — returns the per-application data directory (<code>$XDG_DATA_HOME/appname</code> or <code>$HOME/.local/share/appname</code>)</li>
 <li><code>canfigger_cache_dir(appname)</code> — returns the per-application cache directory (<code>$XDG_CACHE_HOME/appname</code> or <code>$HOME/.cache/appname</code>)</li>
 <li><code>canfigger_state_dir(appname)</code> — returns the per-application state directory (<code>$XDG_STATE_HOME/appname</code> or <code>$HOME/.local/state/appname</code>), for data that persists between runs but is not configuration and is not worth backing up</li>
 <li><code>canfigger_runtime_dir(appname)</code> — returns <code>$XDG_RUNTIME_DIR/appname</code> for short-lived per-session files (sockets, lock files, secrets). Returns NULL when there is no usable runtime directory — unset, or failing the spec's requirements that it exist, be owned by the caller and have mode 0700 — and always on Windows, which has no equivalent. A NULL return is an ordinary outcome; pick a fallback suited to the data</li>
-<li><code>canfigger_config_dirs()</code> / <code>canfigger_data_dirs()</code> — return the system search paths (<code>$XDG_CONFIG_DIRS</code>, <code>$XDG_DATA_DIRS</code>) as a NULL-terminated array, searched <em>after</em> the per-user directories above. Free with <code>canfigger_free_dirs()</code>. NULL on Windows</li>
+<li><code>canfigger_config_dirs()</code> / <code>canfigger_data_dirs()</code> — return the system search paths (<code>$XDG_CONFIG_DIRS</code>, <code>$XDG_DATA_DIRS</code>) as a NULL-terminated array, searched <em>after</em> the per-user directories above. Free with <code>canfigger_free_dirs()</code>. On Windows the array holds one entry, <code>ProgramData%</code></li>
 <li><code>canfigger_config_file(filename)</code> — returns a path directly under the base config directory, without an application subdirectory (<code>$XDG_CONFIG_HOME/filename</code> or <code>$HOME/.config/filename</code>); useful when the config file lives at the config root rather than in a per-application subdirectory</li>
+<li><code>canfigger_find_config_file(appname, filename)</code> — looks for an existing config file. It checks the user's own config directory first, then each directory from <code>canfigger_config_dirs()</code> in turn, and returns the path of the first file it finds. A file in the user's own directory is used instead of a system-wide one. Pass NULL for <code>appname</code> to look directly under the config roots</li>
+<li><code><a class="el" href="canfigger_8h.html#a636cdd18b7c2f8352b6b8524e22d671e" title="The well-known user directories, as named by the XDG user directories specification.">canfigger_user_dir(which)</a></code> — returns one of the user's visible home directories: Desktop, Downloads, Templates, Public share, Documents, Music, Pictures or Videos. On Unix the paths come from the <code>user-dirs.dirs</code> file that the desktop writes. The desktop translates these names, so the desktop directory is <code>~/Desktop</code> on an English system and <code>~/Skrivebord</code> on a Danish one. When the file is missing, the result is <code>$HOME</code></li>
 <li><code>canfigger_path_join(dir, file)</code> — joins a directory and filename with the platform separator</li>
 </ul>
-<p>See the API documentation for details.</p>
+<p>See the <a href="https://andy5995.github.io/canfigger/">API documentation</a> for details.</p>
 <h2><a class="anchor" id="autotoc_md3"></a>
 Dependencies</h2>
 <p>None</p>

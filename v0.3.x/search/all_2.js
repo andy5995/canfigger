@@ -9,12 +9,14 @@ var searchData=
   ['canfigger_5fconfig_5ffile_6',['canfigger_config_file',['../canfigger_8h.html#a19e1f1869c0e3d3e077f094d160a9c42',1,'canfigger.c']]],
   ['canfigger_5fdata_5fdir_7',['canfigger_data_dir',['../canfigger_8h.html#a58e961b2de560017bff89ece4f854c25',1,'canfigger.c']]],
   ['canfigger_5fdata_5fdirs_8',['canfigger_data_dirs',['../canfigger_8h.html#a1c879b4096480a7a3c257d243bceb16a',1,'canfigger.c']]],
-  ['canfigger_5ffree_5fcurrent_5fattr_5fstr_5fadvance_9',['canfigger_free_current_attr_str_advance',['../canfigger_8h.html#ae6d70f9e366beaa126a989bb2b4457b8',1,'canfigger.c']]],
-  ['canfigger_5ffree_5fcurrent_5fkey_5fnode_5fadvance_10',['canfigger_free_current_key_node_advance',['../canfigger_8h.html#af005f74a446bdbfb1d7aa252ab7d9738',1,'canfigger.c']]],
-  ['canfigger_5ffree_5fdirs_11',['canfigger_free_dirs',['../canfigger_8h.html#a11e2e7d2d2ea5bd9432aedd8ce0b4307',1,'canfigger.c']]],
-  ['canfigger_5ffree_5flist_12',['canfigger_free_list',['../canfigger_8h.html#ad2f138abcb4faa2ec7619cca7d2cbfde',1,'canfigger.c']]],
-  ['canfigger_5fparse_5ffile_13',['canfigger_parse_file',['../canfigger_8h.html#a37053197894e04e253629a9bdae52da0',1,'canfigger.c']]],
-  ['canfigger_5fpath_5fjoin_14',['canfigger_path_join',['../canfigger_8h.html#aea0d9accc934afc7de5f4a94a246f0a2',1,'canfigger.c']]],
-  ['canfigger_5fruntime_5fdir_15',['canfigger_runtime_dir',['../canfigger_8h.html#af2e60e932123fcc0f4fdbdc883ec90eb',1,'canfigger.c']]],
-  ['canfigger_5fstate_5fdir_16',['canfigger_state_dir',['../canfigger_8h.html#a41371a0a2763b70ba5e2ace76e9ef301',1,'canfigger.c']]]
+  ['canfigger_5ffind_5fconfig_5ffile_9',['canfigger_find_config_file',['../canfigger_8h.html#a8032d7853868f514ff750870bebb3211',1,'canfigger.c']]],
+  ['canfigger_5ffree_5fcurrent_5fattr_5fstr_5fadvance_10',['canfigger_free_current_attr_str_advance',['../canfigger_8h.html#ae6d70f9e366beaa126a989bb2b4457b8',1,'canfigger.c']]],
+  ['canfigger_5ffree_5fcurrent_5fkey_5fnode_5fadvance_11',['canfigger_free_current_key_node_advance',['../canfigger_8h.html#af005f74a446bdbfb1d7aa252ab7d9738',1,'canfigger.c']]],
+  ['canfigger_5ffree_5fdirs_12',['canfigger_free_dirs',['../canfigger_8h.html#a11e2e7d2d2ea5bd9432aedd8ce0b4307',1,'canfigger.c']]],
+  ['canfigger_5ffree_5flist_13',['canfigger_free_list',['../canfigger_8h.html#ad2f138abcb4faa2ec7619cca7d2cbfde',1,'canfigger.c']]],
+  ['canfigger_5fparse_5ffile_14',['canfigger_parse_file',['../canfigger_8h.html#a37053197894e04e253629a9bdae52da0',1,'canfigger.c']]],
+  ['canfigger_5fpath_5fjoin_15',['canfigger_path_join',['../canfigger_8h.html#aea0d9accc934afc7de5f4a94a246f0a2',1,'canfigger.c']]],
+  ['canfigger_5fruntime_5fdir_16',['canfigger_runtime_dir',['../canfigger_8h.html#af2e60e932123fcc0f4fdbdc883ec90eb',1,'canfigger.c']]],
+  ['canfigger_5fstate_5fdir_17',['canfigger_state_dir',['../canfigger_8h.html#a41371a0a2763b70ba5e2ace76e9ef301',1,'canfigger.c']]],
+  ['canfigger_5fuser_5fdir_18',['canfigger_user_dir',['../canfigger_8h.html#a636cdd18b7c2f8352b6b8524e22d671e',1,'canfigger_user_dir:&#160;canfigger.h'],['../canfigger_8h.html#aa365c0ce237302a7d163d9781c2d33c9',1,'canfigger_user_dir(enum canfigger_user_dir which):&#160;canfigger.c']]]
 ];

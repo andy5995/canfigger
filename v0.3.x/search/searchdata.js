@@ -5,7 +5,8 @@ var indexSectionsWithContent =
   2: "c",
   3: "c",
   4: "c",
-  5: "c"
+  5: "c",
+  6: "c"
 };
 
 var indexSectionNames =
@@ -14,8 +15,9 @@ var indexSectionNames =
   1: "classes",
   2: "files",
   3: "functions",
-  4: "defines",
-  5: "pages"
+  4: "enums",
+  5: "defines",
+  6: "pages"
 };
 
 var indexSectionLabels =
@@ -24,7 +26,8 @@ var indexSectionLabels =
   1: "Data Structures",
   2: "Files",
   3: "Functions",
-  4: "Macros",
-  5: "Pages"
+  4: "Enumerations",
+  5: "Macros",
+  6: "Pages"
 };
 

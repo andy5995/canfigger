@@ -61,7 +61,7 @@ jobs:
 
         - name: Test
           shell: msys2 {0}
-          run: meson test -C builddir || cat builddir\meson-logs\testlog.txt
+          run: meson test -C builddir || { cat builddir/meson-logs/testlog.txt; exit 1; }
 
   VisualStudio:
     runs-on: windows-latest
@@ -100,4 +100,4 @@ jobs:
         shell: cmd
         env:
           PYTHONUTF8: 1
-        run: meson test --no-stdsplit -v -C builddir || (if exist builddir\meson-logs\testlog.txt type builddir\meson-logs\testlog.txt)
+        run: meson test --no-stdsplit -v -C builddir || (if exist builddir\meson-logs\testlog.txt type builddir\meson-logs\testlog.txt & exit /b 1)

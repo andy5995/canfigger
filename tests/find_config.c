@@ -92,6 +92,17 @@ main(void)
   assert(strcmp(found, user_file) == 0);
   free(found);
 
+  // An unreadable user copy is still returned, not skipped in favour of a
+  // system copy: the caller's open should fail and report it, rather than the
+  // program silently running on the system config. Holds when run as root too,
+  // since the check is existence, not permission.
+  assert(chmod(user_file, 0) == 0);
+  found = canfigger_find_config_file("myapp", "app.conf");
+  assert(chmod(user_file, 0644) == 0);
+  assert(found != NULL);
+  assert(strcmp(found, user_file) == 0);
+  free(found);
+
   // A NULL appname looks directly under the config roots.
   assert(canfigger_find_config_file(NULL, "flat.conf") == NULL);
   make_file(flat_file, sizeof flat_file, "%s/%s/flat.conf", "sys1", NULL);

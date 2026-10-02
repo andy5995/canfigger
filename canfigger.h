@@ -447,6 +447,11 @@ extern "C"
  * stop the search.  The result is a path, not an open file: it may still fail
  * to open, and it may be gone by the time it is used.
  *
+ * Read permission is deliberately not checked.  An unreadable file is still
+ * returned rather than skipped, so a user's own config that cannot be opened
+ * produces an error the caller can report, instead of the search quietly
+ * falling back to a system-wide copy.
+ *
  * The returned string is heap-allocated; the caller must free it.
  *
  * @param appname Application subdirectory to look in, or NULL for none.

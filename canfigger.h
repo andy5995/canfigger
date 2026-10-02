@@ -18,8 +18,12 @@
  *
  * The `=` sign separates the key from the value. The delimiter character
  * (passed to canfigger_parse_file()) separates the value from the first
- * attribute, and each subsequent attribute from the next.  A UTF-8 BOM at the
- * start of the file is silently skipped.
+ * attribute, and each subsequent attribute from the next.  Whitespace around
+ * the key, value and each attribute is trimmed.  A UTF-8 BOM at the start of
+ * the file is silently skipped.
+ *
+ * A @c # starts a comment only at the beginning of a line; there are no inline
+ * comments, so @c "key = value # note" has the value @c "value # note".
  *
  * **Typical usage:**
  * @code
@@ -80,12 +84,41 @@ SOFTWARE.
  *   #endif
  * @endcode
  *
+ * This compares major and minor only.  Most of the functions below arrived in
+ * a patch release (see their @c \@since tags); test for those with
+ * CANFIGGER_CHECK_VERSION_PATCH().
+ *
  * @param maj Required major version.
  * @param min Required minor version.
  */
 #define CANFIGGER_CHECK_VERSION(maj, min) \
   (CANFIGGER_VERSION_MAJOR > (maj) || \
    (CANFIGGER_VERSION_MAJOR == (maj) && CANFIGGER_VERSION_MINOR >= (min)))
+
+/**
+ * @brief Compile-time version check including the patch number.
+ *
+ * Evaluates to a non-zero value if the canfigger headers are at least version
+ * @p maj.@p min.@p patch.
+ *
+ * @code
+ *   #if CANFIGGER_CHECK_VERSION_PATCH(0, 3, 3)
+ *     char *dir = canfigger_state_dir("myapp");
+ *   #endif
+ * @endcode
+ *
+ * @param maj   Required major version.
+ * @param min   Required minor version.
+ * @param patch Required patch version.
+ *
+ * @since 0.3.3
+ */
+#define CANFIGGER_CHECK_VERSION_PATCH(maj, min, patch) \
+  (CANFIGGER_VERSION_MAJOR > (maj) || \
+   (CANFIGGER_VERSION_MAJOR == (maj) && \
+    (CANFIGGER_VERSION_MINOR > (min) || \
+     (CANFIGGER_VERSION_MINOR == (min) && \
+      CANFIGGER_VERSION_PATCH >= (patch)))))
 
 #ifdef __cplusplus
 extern "C"
@@ -99,18 +132,17 @@ extern "C"
  * This struct is allocated and owned by the library. Callers should not
  * read or modify its fields directly; use
  * canfigger_free_current_attr_str_advance() to iterate.
- *
- * @var attributes::str    Heap-allocated copy of the raw attribute string.
- * @var attributes::current Last attribute string returned to the caller;
- *                          freed on the next call to
- *                          canfigger_free_current_attr_str_advance().
- * @var attributes::iter_ptr Read position within @p str; advanced by each
- *                           call to canfigger_free_current_attr_str_advance().
  */
   struct attributes
   {
+    /** Heap-allocated copy of the attribute text, with each delimiter
+        replaced by a newline. */
     char *str;
+    /** Last attribute string returned to the caller; freed on the next call
+        to canfigger_free_current_attr_str_advance(). */
     char *current;
+    /** Read position within @c str; advanced by each call to
+        canfigger_free_current_attr_str_advance(). */
     char *iter_ptr;
   };
 
@@ -121,19 +153,17 @@ extern "C"
  * Each node represents one key-value entry from the configuration file.
  * Nodes are heap-allocated by canfigger_parse_file() and must be freed
  * with canfigger_free_current_key_node_advance() or canfigger_free_list().
- *
- * @var Canfigger::key        The key string (never NULL).
- * @var Canfigger::value      The value string, or NULL if no @c = sign was
- *                            present on the line.
- * @var Canfigger::attributes Attribute list, or NULL if the line had no
- *                            attributes following the value.
- * @var Canfigger::next       Next node, or NULL at end of list.
  */
   struct Canfigger
   {
+    /** The key string (never NULL; empty for a line such as @c "= value"). */
     char *key;
+    /** The value string, or NULL if no @c = sign was present on the line.
+        Empty, not NULL, for @c "key =". */
     char *value;
+    /** Attribute list, or NULL if no delimiter followed the value. */
     struct attributes *attributes;
+    /** Next node, or NULL at end of list. */
     struct Canfigger *next;
   };
 
@@ -145,8 +175,9 @@ extern "C"
  * beginning with @c # or @c [ and blank lines are ignored.
  *
  * The @p delimiter character separates the value from the first attribute
- * and each subsequent attribute from the next.  Pass a character that does
- * not appear in your values if you do not use attributes (e.g. @c ',').
+ * and each subsequent attribute from the next.  Any occurrence of it in a
+ * value starts the attributes, so if you do not use attributes, pass a
+ * character your values never contain.
  *
  * The caller owns the returned list and must free it with
  * canfigger_free_current_key_node_advance() (while iterating) or
@@ -154,8 +185,9 @@ extern "C"
  *
  * @param file      Path to the configuration file.
  * @param delimiter Character that separates the value from attributes on a line.
- * @return Head of the linked list, or NULL if the file cannot be opened,
- *         is empty, or a memory allocation failure occurs.
+ * @return Head of the linked list, or NULL if the file cannot be opened or
+ *         read, holds no entries (only blank lines, comments and section
+ *         headers), or a memory allocation failure occurs.
  */
   struct Canfigger *canfigger_parse_file(const char *file,
                                          const int delimiter);
@@ -180,10 +212,20 @@ extern "C"
 /**
  * @brief Free the current attribute string and advance to the next attribute.
  *
- * On the first call for a given node, @c *attr must be NULL; the function
- * loads the first attribute into @c *attr.  On each subsequent call it frees
- * the previous attribute string and loads the next.  Sets @c *attr to NULL
- * when no more attributes remain, or if @p attributes is NULL.
+ * The first call for a node loads its first attribute into @c *attr.  Each
+ * later call frees the previous attribute string and loads the next.  Sets
+ * @c *attr to NULL when no more attributes remain, or if @p attributes is
+ * NULL.  The incoming value of @c *attr is not read.
+ *
+ * An empty attribute (@c "a,,b") is returned as an empty string.  A trailing
+ * delimiter (@c "a, b,") does not add one.
+ *
+ * The attributes can be walked only once: there is no way to rewind.  The
+ * string in @c *attr belongs to the library and stays valid until the next
+ * call or until the node is freed.
+ *
+ * If a string copy fails for lack of memory, @c *attr is set to NULL, the same
+ * as at the end of the list; a message is printed to @c stderr.
  *
  * Typical usage:
  * @code
@@ -197,8 +239,8 @@ extern "C"
  *
  * @param attributes Pointer to the attributes structure of the current node
  *                   (may be NULL, in which case @c *attr is set to NULL).
- * @param attr       Output parameter; set to the next attribute string on
- *                   success, or NULL when the list is exhausted.
+ * @param attr       Output parameter; set to the next attribute string, or
+ *                   NULL when the list is exhausted.
  */
   void canfigger_free_current_attr_str_advance(struct attributes *attributes,
                                                char **attr);
@@ -218,14 +260,18 @@ extern "C"
 /**
  * @brief Return the platform config directory for an application.
  *
- * On Unix, honours @c $XDG_CONFIG_HOME if set; otherwise uses
- * @c $HOME/.config/appname.  On Windows, uses @c %APPDATA%\\appname.
+ * On Unix, uses @c $XDG_CONFIG_HOME/appname if that variable holds an
+ * absolute path (a relative one is ignored, as the specification requires);
+ * otherwise @c $HOME/.config/appname.  On Windows, uses
+ * @c %APPDATA%\\appname.
  *
  * The returned string is heap-allocated; the caller must free it.
  *
  * @param appname Application name appended as a subdirectory.
  * @return Malloc'd path string, or NULL on failure or if @p appname is
  *         NULL/empty.
+ *
+ * @since 0.3.1
  *
  * @snippet examples/canfigger_config_dir.c canfigger_config_dir
  */
@@ -235,8 +281,9 @@ extern "C"
  * @brief Return the path to a config file in the platform base config directory.
  *
  * Joins the base config directory with @p filename, without inserting an
- * application-name subdirectory.  On Unix, honours @c $XDG_CONFIG_HOME if
- * set; otherwise uses @c $HOME/.config/filename.  On Windows, uses
+ * application-name subdirectory.  On Unix, uses @c $XDG_CONFIG_HOME/filename
+ * if that variable holds an absolute path; otherwise
+ * @c $HOME/.config/filename.  On Windows, uses
  * @c %APPDATA%\\filename.
  *
  * Use this when the config file lives directly under the config root rather
@@ -258,24 +305,27 @@ extern "C"
 /**
  * @brief Return the platform data directory for an application.
  *
- * Intended for user-generated data (saves, state, cache) — not bundled
- * application assets.  On Unix, honours @c $XDG_DATA_HOME if set; otherwise
- * uses @c $HOME/.local/share/appname.  On Windows, uses
- * @c %LOCALAPPDATA%\\appname.
+ * Intended for user-generated data such as saved games or documents - not
+ * bundled application assets.  Use canfigger_cache_dir() for anything that can
+ * be regenerated and canfigger_state_dir() for logs and history.  On Unix, uses
+ * @c $XDG_DATA_HOME/appname if that variable holds an absolute path; otherwise
+ * @c $HOME/.local/share/appname.  On Windows, uses @c %LOCALAPPDATA%\\appname.
  *
  * The returned string is heap-allocated; the caller must free it.
  *
  * @param appname Application name appended as a subdirectory.
  * @return Malloc'd path string, or NULL on failure or if @p appname is
  *         NULL/empty.
+ *
+ * @since 0.3.1
  */
   char *canfigger_data_dir(const char *appname);
 
 /**
  * @brief Return the platform cache directory for an application.
  *
- * On Unix, honours @c $XDG_CACHE_HOME if set; otherwise uses
- * @c $HOME/.cache/appname.  On Windows, uses
+ * On Unix, uses @c $XDG_CACHE_HOME/appname if that variable holds an absolute
+ * path; otherwise @c $HOME/.cache/appname.  On Windows, uses
  * @c %LOCALAPPDATA%\\appname\\Cache - Windows has no cache root separate from
  * its data root, so without the subdirectory this would return the same path as
  * canfigger_data_dir().
@@ -295,8 +345,8 @@ extern "C"
  *
  * For data that should persist between runs but is not configuration and is
  * not worth backing up - logs, history, recently-used lists, and similar.
- * On Unix, honours @c $XDG_STATE_HOME if set; otherwise uses
- * @c $HOME/.local/state/appname.  On Windows, uses
+ * On Unix, uses @c $XDG_STATE_HOME/appname if that variable holds an absolute
+ * path; otherwise @c $HOME/.local/state/appname.  On Windows, uses
  * @c %LOCALAPPDATA%\\appname\\State, for the same collision reason described
  * under canfigger_cache_dir().
  *
@@ -354,7 +404,8 @@ extern "C"
  * location for settings shared by every user.
  *
  * @return Malloc'd NULL-terminated array of malloc'd strings, to be released
- *         with canfigger_free_dirs(), or NULL on allocation failure.
+ *         with canfigger_free_dirs(), or NULL on failure.  The array is empty
+ *         (its first element NULL) when every entry was skipped.
  *
  * @since 0.3.3
  */
@@ -372,7 +423,8 @@ extern "C"
  * location for data shared by every user.
  *
  * @return Malloc'd NULL-terminated array of malloc'd strings, to be released
- *         with canfigger_free_dirs(), or NULL on allocation failure.
+ *         with canfigger_free_dirs(), or NULL on failure.  The array is empty
+ *         (its first element NULL) when every entry was skipped.
  *
  * @since 0.3.3
  */
@@ -381,7 +433,7 @@ extern "C"
 /**
  * @brief Find an existing config file along the full config search path.
  *
- * Returns the first readable file found, checking the user's own config
+ * Returns the first existing file found, checking the user's own config
  * directory first and then each entry of canfigger_config_dirs() in order, so
  * a per-user file always overrides a system-wide one.  This is the search the
  * base directory specification describes.
@@ -449,7 +501,9 @@ extern "C"
  *
  * On Windows the equivalent shell folder is returned (Desktop, Documents,
  * Music, Pictures, Videos, Templates, and the public documents folder for
- * @c CANFIGGER_USER_DIR_PUBLICSHARE).
+ * @c CANFIGGER_USER_DIR_PUBLICSHARE).  Downloads has no shell-folder ID in the
+ * API used here, so @c CANFIGGER_USER_DIR_DOWNLOAD is always
+ * @c %USERPROFILE%\\Downloads, even if the user has moved that folder.
  *
  * The directory is not created and is not guaranteed to exist.
  *
@@ -457,7 +511,8 @@ extern "C"
  *
  * @param which Which directory to return.
  * @return Malloc'd path string, or NULL if @p which is out of range, @c $HOME
- *         is unset, or allocation fails.
+ *         is unset (Unix), the shell folder cannot be found (Windows), or
+ *         allocation fails.
  *
  * @since 0.3.3
  */
@@ -487,6 +542,8 @@ extern "C"
  * @param file Filename (or relative sub-path) to append.
  * @return Malloc'd joined path string, or NULL if either argument is NULL or
  *         empty, or on allocation failure.
+ *
+ * @since 0.3.1
  *
  * @snippet examples/canfigger_path_join.c canfigger_path_join
  */

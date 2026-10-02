@@ -68,29 +68,42 @@ struct line
 /** \endcond */
 
 
+static void *
+malloc_wrap(size_t size)
+{
+  void *retval = malloc(size);
+  if (retval)
+    return retval;
+
+  perror("canfigger: malloc");
+
+  return NULL;
+}
+
+
+/* Copy the first @p n bytes of @p src into a new NUL-terminated string. @p n
+   is always the length to copy: it once doubled as a "copy the whole string"
+   sentinel when 0, which made an empty field (",," or "= value") swallow the
+   rest of the line. */
 static char *
 strclone(const char *src, size_t n)
 {
-  char *dest = NULL;
-  if (n == 0)
-  {
-    dest = malloc(strlen(src) + 1);
-    if (dest)
-      strcpy(dest, src);
-  }
-  else
-  {
-    dest = malloc(n + 1);
-    if (dest)
-    {
-      memcpy(dest, src, n);
-      dest[n] = '\0';
-    }
-  }
-
+  char *dest = malloc_wrap(n + 1);
   if (!dest)
-    perror("canfigger: malloc");
+    return NULL;
+
+  memcpy(dest, src, n);
+  dest[n] = '\0';
   return dest;
+}
+
+
+/* Copy all of @p src. Kept separate from strclone() so a whole-string copy
+   and a copy of a counted length can never be confused again. */
+static char *
+strclone_str(const char *src)
+{
+  return strclone(src, strlen(src));
 }
 
 
@@ -118,17 +131,19 @@ canfigger_free_current_attr_str_advance(struct attributes *attributes,
   attributes->iter_ptr = grab_str_segment(attributes->iter_ptr,
                                           &attributes->current, '\n');
 
-  if (*attributes->current)
+  /* A trailing delimiter ("a, b,") leaves an empty final segment. Treat it as
+     the end, as earlier releases did, rather than as one more attribute. An
+     empty attribute anywhere else ("a,,b") is returned as "". */
+  if (attributes->current && *attributes->current == '\0'
+      && !attributes->iter_ptr)
   {
-    *attr = attributes->current;
-    return;
+    free(attributes->current);
+    attributes->current = NULL;
   }
 
-  // If we're here, that means strdup() failed to allocate memory in grab_str_segment()
-  // If an expected attribute isn't returned, the caller may want to terminate
-  // the remainder of the loop that's iterating through the entire linked list
-  // and exit the program.
-  *attr = NULL;
+  /* current is also NULL when the copy in grab_str_segment() failed; the
+     caller then sees the end of the list, which the header documents. */
+  *attr = attributes->current;
   return;
 }
 
@@ -187,28 +202,6 @@ canfigger_free_list(struct Canfigger **node)
 }
 
 
-/*
- * returns a pointer to the first character after lc
- * If lc appears more than once, the pointer
- * will move past that as well.
- *
- * Ex1: "__Hello World": the pointer will be set to the 'H'.
- * Ex2: "_H_ello World": Again, the pointer will be set to the 'H'.
- */
-static char *
-erase_lead_char(const int lc, char *haystack)
-{
-  char *ptr = haystack;
-  if (*ptr != lc)
-    return ptr;
-
-  while (*ptr == lc)
-    ptr++;
-
-  return ptr;
-}
-
-
 static void
 truncate_whitespace(char *str)
 {
@@ -244,12 +237,16 @@ truncate_whitespace(char *str)
 static char *
 grab_str_segment(char *a, char **dest, const int c)
 {
-  a = erase_lead_char(' ', a);
+  /* Spaces and tabs only, not isspace(): attribute iteration calls this with
+     '\n' as the delimiter, and skipping it would swallow an empty attribute
+     ("a,,b"). */
+  while (*a == ' ' || *a == '\t')
+    a++;
 
   char *b = strchr(a, c);
   if (!b)
   {
-    *dest = strclone(a, 0);
+    *dest = strclone_str(a);
     return b;
   }
 
@@ -262,24 +259,20 @@ grab_str_segment(char *a, char **dest, const int c)
   return b + 1;
 }
 
-static void *
-malloc_wrap(size_t size)
-{
-  void *retval = malloc(size);
-  if (retval)
-    return retval;
-
-  perror("canfigger: malloc");
-
-  return NULL;
-}
-
 static void
 add_key_node(struct Canfigger **root, struct Canfigger **cur_node)
 {
   struct Canfigger *tmp_node = malloc_wrap(sizeof(struct Canfigger));
   if (!tmp_node)
     return;
+
+  /* The node is linked in before its fields are filled, so they must be safe
+     to free from the start: a failure part-way through the line leaves it for
+     canfigger_free_list() to release along with the rest of the list. */
+  tmp_node->key = NULL;
+  tmp_node->value = NULL;
+  tmp_node->attributes = NULL;
+  tmp_node->next = NULL;
 
   if (*root)
     (*cur_node)->next = tmp_node;
@@ -341,29 +334,6 @@ done:
 }
 
 
-static void
-free_incomplete_node(struct Canfigger **node)
-{
-  if (*node)
-  {
-    if ((*node)->key)
-      free((*node)->key);
-
-    if ((*node)->value)
-      free((*node)->value);
-
-    if ((*node)->attributes)
-    {
-      free((*node)->attributes->str);
-      free((*node)->attributes);
-    }
-  }
-  free(*node);
-
-  return;
-}
-
-
 struct Canfigger *
 canfigger_parse_file(const char *file, const int delimiter)
 {
@@ -417,7 +387,7 @@ canfigger_parse_file(const char *file, const int delimiter)
     truncate_whitespace(line_ptr);
 
     while (isspace((unsigned char) *line_ptr))
-      line_ptr = erase_lead_char(*line_ptr, line_ptr);
+      line_ptr++;
 
     if (*line_ptr == '\0' || *line_ptr == '#' || *line_ptr == '[')
     {
@@ -437,25 +407,20 @@ canfigger_parse_file(const char *file, const int delimiter)
     }
 
     // Get key
-    cur_node->key = NULL;
     line_ptr = grab_str_segment(line_ptr, &cur_node->key, '=');
     if (!cur_node->key)
     {
       free(tmp_line);
-      free_incomplete_node(&cur_node);
       break;
     }
 
     // Get value
-    cur_node->value = NULL;
-
     if (line_ptr)
     {
       line_ptr = grab_str_segment(line_ptr, &cur_node->value, delimiter);
       if (!cur_node->value)
       {
         free(tmp_line);
-        free_incomplete_node(&cur_node);
         break;
       }
     }
@@ -467,18 +432,16 @@ canfigger_parse_file(const char *file, const int delimiter)
       if (!cur_node->attributes)
       {
         free(tmp_line);
-        free_incomplete_node(&cur_node);
         break;
       }
 
       struct attributes *attr_ptr = cur_node->attributes;
       attr_ptr->current = NULL;
 
-      attr_ptr->str = strclone(line_ptr, 0);
+      attr_ptr->str = strclone_str(line_ptr);
       if (!attr_ptr->str)
       {
         free(tmp_line);
-        free_incomplete_node(&cur_node);
         break;
       }
 
@@ -493,10 +456,7 @@ canfigger_parse_file(const char *file, const int delimiter)
         delimiter_ptr = strchr(delimiter_ptr, delimiter);
       }
     }
-    else
-      cur_node->attributes = NULL;
 
-    cur_node->next = NULL;
     node_complete = true;
     free(tmp_line);
     if (!line.end)
@@ -531,7 +491,7 @@ xdg_base_dir(const char *xdg_env, const char *fallback)
      would put the file somewhere that depends on where the program was
      started. Fall through to the $HOME default instead. */
   if (base && *base == '/')
-    return strclone(base, 0);
+    return strclone_str(base);
 
   const char *home = getenv("HOME");
   if (!home || !*home)
@@ -730,7 +690,7 @@ common_appdata_list(void)
   if (!list)
     return NULL;
 
-  list[0] = strclone(base, 0);
+  list[0] = strclone_str(base);
   if (!list[0])
   {
     free(list);
@@ -1073,7 +1033,7 @@ canfigger_user_dir(enum canfigger_user_dir which)
 
   if (which == CANFIGGER_USER_DIR_DOWNLOAD)
     return canfigger_path_join(base, "Downloads");
-  return strclone(base, 0);
+  return strclone_str(base);
 #else
   if ((unsigned) which >= sizeof user_dir_keys / sizeof *user_dir_keys)
     return NULL;
@@ -1093,6 +1053,6 @@ canfigger_user_dir(enum canfigger_user_dir which)
      desktop, which keeps its historical $HOME/Desktop default. */
   if (which == CANFIGGER_USER_DIR_DESKTOP)
     return canfigger_path_join(home, "Desktop");
-  return strclone(home, 0);
+  return strclone_str(home);
 #endif
 }

@@ -13,11 +13,20 @@
     the user config directory followed by $XDG_CONFIG_DIRS
   + Add canfigger_user_dir(): the XDG user directories (Desktop, Downloads,
     Documents, ...) read from user-dirs.dirs, falling back to $HOME
+  + Add CANFIGGER_CHECK_VERSION_PATCH(): version check including the patch
+    number
   * bugfix: On Windows canfigger_cache_dir() returned the same path as
     canfigger_data_dir(); it now appends a Cache subdirectory
   * bugfix: A relative path in an XDG environment variable is now ignored per
     the spec, rather than resolved against the current directory
+  * bugfix: An empty key, value or attribute copied the rest of the line
+  * A leading tab on a value or attribute is now trimmed, as a space was
+  * bugfix: Use-after-free and frees of uninitialised pointers when memory ran
+    out part-way through parsing a line
+  * bugfix: NULL dereference in canfigger_free_current_attr_str_advance() when
+    memory ran out
   * Doxyfile: Exclude tests (remove unused structs from docs)
+  * API docs: corrections; struct member docs now appear in the HTML output
 
 2026-05-11
 

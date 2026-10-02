@@ -23,7 +23,6 @@
       <tab type="interfacehierarchy" visible="yes" title="" intro=""/>
     </tab>
     <tab type="classlist" visible="yes" title="Structures" intro=""/>
-    </tab>
     <tab type="structs" visible="yes" title="">
       <tab type="structlist" visible="yes" title="" intro=""/>
       <tab type="structindex" visible="$ALPHABETICAL_INDEX" title=""/>

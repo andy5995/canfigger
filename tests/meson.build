@@ -4,6 +4,7 @@ test_cases = [
   'colons',
   'config_file',
   'dirs',
+  'empty_fields',
   'file_open_err',
   'find_config',
   'incomplete_parse_file',

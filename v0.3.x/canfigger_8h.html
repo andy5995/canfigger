@@ -405,7 +405,7 @@ value</td>
 <p>Passed to <a class="el" href="canfigger_8h.html#a636cdd18b7c2f8352b6b8524e22d671e" title="The well-known user directories, as named by the XDG user directories specification.">canfigger_user_dir()</a>. These are the visible directories in a user's home - where a program should put a screenshot, an export or a downloaded file - and are unrelated to the base directories the rest of this API deals with.</p>
 <dl class="section since"><dt>Since</dt><dd>0.3.3 </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="canfigger_8h_source.html#l00474">474</a> of file <a class="el" href="canfigger_8h_source.html">canfigger.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="canfigger_8h_source.html#l00479">479</a> of file <a class="el" href="canfigger_8h_source.html">canfigger.h</a>.</p>
 
 </div>
 </div>
@@ -641,6 +641,7 @@ value</td>
 <p>Returns the first existing file found, checking the user's own config directory first and then each entry of <a class="el" href="canfigger_8h.html#a438eafd818b5e977b5db6422147ede30" title="Return the system config search path, most important first.">canfigger_config_dirs()</a> in order, so a per-user file always overrides a system-wide one. This is the search the base directory specification describes.</p>
 <p>With <code>appname</code> given, the paths checked are <code>&lt;config-dir&gt;/appname/filename</code>; with <code>appname</code> NULL or empty they are <code>&lt;config-dir&gt;/filename</code>, matching <a class="el" href="canfigger_8h.html#a19e1f1869c0e3d3e077f094d160a9c42" title="Return the path to a config file in the platform base config directory.">canfigger_config_file()</a> for programs that keep a single file directly under the config root.</p>
 <p>Only existing regular files match - a directory of the same name does not stop the search. The result is a path, not an open file: it may still fail to open, and it may be gone by the time it is used.</p>
+<p>Read permission is deliberately not checked. An unreadable file is still returned rather than skipped, so a user's own config that cannot be opened produces an error the caller can report, instead of the search quietly falling back to a system-wide copy.</p>
 <p>The returned string is heap-allocated; the caller must free it.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">

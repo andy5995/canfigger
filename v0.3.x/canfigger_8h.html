@@ -99,6 +99,9 @@ Macros</h2></td></tr>
 <tr class="memitem:abb6ff099480fd7510018651b718a60c1" id="r_abb6ff099480fd7510018651b718a60c1"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="canfigger_8h.html#abb6ff099480fd7510018651b718a60c1">CANFIGGER_CHECK_VERSION</a>(maj,  min)</td></tr>
 <tr class="memdesc:abb6ff099480fd7510018651b718a60c1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compile-time version check.  <br /></td></tr>
 <tr class="separator:abb6ff099480fd7510018651b718a60c1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a42c88358a3dbc33d41a254ed6fef3b69" id="r_a42c88358a3dbc33d41a254ed6fef3b69"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="canfigger_8h.html#a42c88358a3dbc33d41a254ed6fef3b69">CANFIGGER_CHECK_VERSION_PATCH</a>(maj,  min,  patch)</td></tr>
+<tr class="memdesc:a42c88358a3dbc33d41a254ed6fef3b69"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compile-time version check including the patch number.  <br /></td></tr>
+<tr class="separator:a42c88358a3dbc33d41a254ed6fef3b69"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
 Enumerations</h2></td></tr>
@@ -176,15 +179,16 @@ Functions</h2></td></tr>
 <div class="line">key = list, item1, item2, item3</div>
 <div class="line"><span class="preprocessor"># comment lines are ignored</span></div>
 <div class="line">[section headers are ignored]</div>
-</div><!-- fragment --><p>The <code>=</code> sign separates the key from the value. The delimiter character (passed to <a class="el" href="canfigger_8h.html#a37053197894e04e253629a9bdae52da0" title="Parse a configuration file into a linked list of key-value nodes.">canfigger_parse_file()</a>) separates the value from the first attribute, and each subsequent attribute from the next. A UTF-8 BOM at the start of the file is silently skipped.</p>
+</div><!-- fragment --><p>The <code>=</code> sign separates the key from the value. The delimiter character (passed to <a class="el" href="canfigger_8h.html#a37053197894e04e253629a9bdae52da0" title="Parse a configuration file into a linked list of key-value nodes.">canfigger_parse_file()</a>) separates the value from the first attribute, and each subsequent attribute from the next. Whitespace around the key, value and each attribute is trimmed. A UTF-8 BOM at the start of the file is silently skipped.</p>
+<p>A <code>#</code> starts a comment only at the beginning of a line; there are no inline comments, so <code>"key = value # note"</code> has the value <code>"value # note"</code>.</p>
 <p><b>Typical usage:</b> </p><div class="fragment"><div class="line"><span class="keyword">struct </span><a class="code hl_struct" href="canfigger_8h.html#structCanfigger">Canfigger</a> *list = <a class="code hl_function" href="canfigger_8h.html#a37053197894e04e253629a9bdae52da0">canfigger_parse_file</a>(<span class="stringliteral">&quot;app.conf&quot;</span>, <span class="charliteral">&#39;,&#39;</span>);</div>
 <div class="line"><span class="keywordflow">while</span> (list) {</div>
 <div class="line">  <span class="comment">// use list-&gt;key and list-&gt;value</span></div>
 <div class="line">  <a class="code hl_function" href="canfigger_8h.html#af005f74a446bdbfb1d7aa252ab7d9738">canfigger_free_current_key_node_advance</a>(&amp;list);</div>
 <div class="line">}</div>
-<div class="ttc" id="acanfigger_8h_html_a37053197894e04e253629a9bdae52da0"><div class="ttname"><a href="canfigger_8h.html#a37053197894e04e253629a9bdae52da0">canfigger_parse_file</a></div><div class="ttdeci">struct Canfigger * canfigger_parse_file(const char *file, const int delimiter)</div><div class="ttdoc">Parse a configuration file into a linked list of key-value nodes.</div><div class="ttdef"><b>Definition</b> <a href="canfigger_8c_source.html#l00368">canfigger.c:368</a></div></div>
-<div class="ttc" id="acanfigger_8h_html_af005f74a446bdbfb1d7aa252ab7d9738"><div class="ttname"><a href="canfigger_8h.html#af005f74a446bdbfb1d7aa252ab7d9738">canfigger_free_current_key_node_advance</a></div><div class="ttdeci">void canfigger_free_current_key_node_advance(struct Canfigger **node)</div><div class="ttdoc">Free the current node and advance the list pointer to the next node.</div><div class="ttdef"><b>Definition</b> <a href="canfigger_8c_source.html#l00137">canfigger.c:137</a></div></div>
-<div class="ttc" id="acanfigger_8h_html_structCanfigger"><div class="ttname"><a href="canfigger_8h.html#structCanfigger">Canfigger</a></div><div class="ttdoc">A single node in the parsed configuration linked list.</div><div class="ttdef"><b>Definition</b> <a href="canfigger_8h_source.html#l00132">canfigger.h:133</a></div></div>
+<div class="ttc" id="acanfigger_8h_html_a37053197894e04e253629a9bdae52da0"><div class="ttname"><a href="canfigger_8h.html#a37053197894e04e253629a9bdae52da0">canfigger_parse_file</a></div><div class="ttdeci">struct Canfigger * canfigger_parse_file(const char *file, const int delimiter)</div><div class="ttdoc">Parse a configuration file into a linked list of key-value nodes.</div><div class="ttdef"><b>Definition</b> <a href="canfigger_8c_source.html#l00338">canfigger.c:338</a></div></div>
+<div class="ttc" id="acanfigger_8h_html_af005f74a446bdbfb1d7aa252ab7d9738"><div class="ttname"><a href="canfigger_8h.html#af005f74a446bdbfb1d7aa252ab7d9738">canfigger_free_current_key_node_advance</a></div><div class="ttdeci">void canfigger_free_current_key_node_advance(struct Canfigger **node)</div><div class="ttdoc">Free the current node and advance the list pointer to the next node.</div><div class="ttdef"><b>Definition</b> <a href="canfigger_8c_source.html#l00152">canfigger.c:152</a></div></div>
+<div class="ttc" id="acanfigger_8h_html_structCanfigger"><div class="ttname"><a href="canfigger_8h.html#structCanfigger">Canfigger</a></div><div class="ttdoc">A single node in the parsed configuration linked list.</div><div class="ttdef"><b>Definition</b> <a href="canfigger_8h_source.html#l00157">canfigger.h:158</a></div></div>
 </div><!-- fragment --><p><b>Windows note.</b> The path helpers return the ANSI form of a path. On a system whose active code page cannot represent the user's profile path - a non-ASCII account name, on a system not set to UTF-8 - they return NULL rather than a path that will not open. An application that ships a UTF-8 active-code-page manifest (Windows 10 1903 and later) is unaffected.</p>
 <p>Part of canfigger (<a href="https://github.com/andy5995/canfigger">https://github.com/andy5995/canfigger</a>). </p>
 
@@ -204,7 +208,7 @@ Functions</h2></td></tr>
 <div class="textblock"><p>Internal iteration state for a node's attribute list. </p>
 <p>This struct is allocated and owned by the library. Callers should not read or modify its fields directly; use canfigger_free_current_attr_str_advance() to iterate. </p>
 
-<p class="definition">Definition at line <a class="el" href="canfigger_8h_source.html#l00110">110</a> of file <a class="el" href="canfigger_8h_source.html">canfigger.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="canfigger_8h_source.html#l00136">136</a> of file <a class="el" href="canfigger_8h_source.html">canfigger.h</a>.</p>
 </div><table class="fieldtable">
 <tr><th colspan="3">Data Fields</th></tr>
 <tr><td class="fieldtype">
@@ -212,18 +216,21 @@ Functions</h2></td></tr>
 <td class="fieldname">
 current</td>
 <td class="fielddoc">
+<p>Last attribute string returned to the caller; freed on the next call to canfigger_free_current_attr_str_advance(). </p>
 </td></tr>
 <tr><td class="fieldtype">
 <a id="ad2d945bb56f5cbe33e3f0469520378e0" name="ad2d945bb56f5cbe33e3f0469520378e0"></a>char *</td>
 <td class="fieldname">
 iter_ptr</td>
 <td class="fielddoc">
+<p>Read position within <code>str</code>; advanced by each call to canfigger_free_current_attr_str_advance(). </p>
 </td></tr>
 <tr><td class="fieldtype">
 <a id="a5efa00864fcd65e8899bb81e3f0ff7b6" name="a5efa00864fcd65e8899bb81e3f0ff7b6"></a>char *</td>
 <td class="fieldname">
 str</td>
 <td class="fielddoc">
+<p>Heap-allocated copy of the attribute text, with each delimiter replaced by a newline. </p>
 </td></tr>
 </table>
 
@@ -243,7 +250,7 @@ str</td>
 <div class="textblock"><p>A single node in the parsed configuration linked list. </p>
 <p>Each node represents one key-value entry from the configuration file. Nodes are heap-allocated by canfigger_parse_file() and must be freed with canfigger_free_current_key_node_advance() or canfigger_free_list(). </p>
 
-<p class="definition">Definition at line <a class="el" href="canfigger_8h_source.html#l00132">132</a> of file <a class="el" href="canfigger_8h_source.html">canfigger.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="canfigger_8h_source.html#l00157">157</a> of file <a class="el" href="canfigger_8h_source.html">canfigger.h</a>.</p>
 </div><table class="fieldtable">
 <tr><th colspan="3">Data Fields</th></tr>
 <tr><td class="fieldtype">
@@ -251,24 +258,28 @@ str</td>
 <td class="fieldname">
 attributes</td>
 <td class="fielddoc">
+<p>Attribute list, or NULL if no delimiter followed the value. </p>
 </td></tr>
 <tr><td class="fieldtype">
 <a id="adb9c5ac2d6f77c4301afbe989b086e6a" name="adb9c5ac2d6f77c4301afbe989b086e6a"></a>char *</td>
 <td class="fieldname">
 key</td>
 <td class="fielddoc">
+<p>The key string (never NULL; empty for a line such as <code>"= value"</code>). </p>
 </td></tr>
 <tr><td class="fieldtype">
 <a id="a186bf4a5499a1ada7cec93dd21a60696" name="a186bf4a5499a1ada7cec93dd21a60696"></a>struct <a class="el" href="canfigger_8h.html#structCanfigger">Canfigger</a> *</td>
 <td class="fieldname">
 next</td>
 <td class="fielddoc">
+<p>Next node, or NULL at end of list. </p>
 </td></tr>
 <tr><td class="fieldtype">
 <a id="ae6e13a1a75dd75e9d06117add5dbe9db" name="ae6e13a1a75dd75e9d06117add5dbe9db"></a>char *</td>
 <td class="fieldname">
 value</td>
 <td class="fielddoc">
+<p>The value string, or NULL if no <code>=</code> sign was present on the line. Empty, not NULL, for <code>"key ="</code>. </p>
 </td></tr>
 </table>
 
@@ -308,7 +319,8 @@ value</td>
 <div class="fragment"><div class="line"><span class="preprocessor">#if CANFIGGER_CHECK_VERSION(0, 4)</span></div>
 <div class="line">  <span class="comment">// use API added in 0.4</span></div>
 <div class="line"><span class="preprocessor">#endif</span></div>
-</div><!-- fragment --><dl class="params"><dt>Parameters</dt><dd>
+</div><!-- fragment --><p>This compares major and minor only. Most of the functions below arrived in a patch release (see their <code>@since</code> tags); test for those with <a class="el" href="canfigger_8h.html#a42c88358a3dbc33d41a254ed6fef3b69" title="Compile-time version check including the patch number.">CANFIGGER_CHECK_VERSION_PATCH()</a>.</p>
+<dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">maj</td><td>Required major version. </td></tr>
     <tr><td class="paramname">min</td><td>Required minor version. </td></tr>
@@ -316,7 +328,63 @@ value</td>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="canfigger_8h_source.html#l00086">86</a> of file <a class="el" href="canfigger_8h_source.html">canfigger.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="canfigger_8h_source.html#l00094">94</a> of file <a class="el" href="canfigger_8h_source.html">canfigger.h</a>.</p>
+
+</div>
+</div>
+<a id="a42c88358a3dbc33d41a254ed6fef3b69" name="a42c88358a3dbc33d41a254ed6fef3b69"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a42c88358a3dbc33d41a254ed6fef3b69">&#9670;&#160;</a></span>CANFIGGER_CHECK_VERSION_PATCH</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CANFIGGER_CHECK_VERSION_PATCH</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">maj, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">min, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">patch&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Value:</b><div class="fragment"><div class="line">  (CANFIGGER_VERSION_MAJOR &gt; (maj) || \</div>
+<div class="line">   (CANFIGGER_VERSION_MAJOR == (maj) &amp;&amp; \</div>
+<div class="line">    (CANFIGGER_VERSION_MINOR &gt; (min) || \</div>
+<div class="line">     (CANFIGGER_VERSION_MINOR == (min) &amp;&amp; \</div>
+<div class="line">      CANFIGGER_VERSION_PATCH &gt;= (patch)))))</div>
+</div><!-- fragment -->
+<p>Compile-time version check including the patch number. </p>
+<p>Evaluates to a non-zero value if the canfigger headers are at least version <code>maj</code>.<code>min</code>.<code>patch</code>.</p>
+<div class="fragment"><div class="line"><span class="preprocessor">#if CANFIGGER_CHECK_VERSION_PATCH(0, 3, 3)</span></div>
+<div class="line">  <span class="keywordtype">char</span> *dir = canfigger_state_dir(<span class="stringliteral">&quot;myapp&quot;</span>);</div>
+<div class="line"><span class="preprocessor">#endif</span></div>
+</div><!-- fragment --><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">maj</td><td>Required major version. </td></tr>
+    <tr><td class="paramname">min</td><td>Required minor version. </td></tr>
+    <tr><td class="paramname">patch</td><td>Required patch version.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section since"><dt>Since</dt><dd>0.3.3 </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="canfigger_8h_source.html#l00116">116</a> of file <a class="el" href="canfigger_8h_source.html">canfigger.h</a>.</p>
 
 </div>
 </div>
@@ -337,7 +405,7 @@ value</td>
 <p>Passed to <a class="el" href="canfigger_8h.html#a636cdd18b7c2f8352b6b8524e22d671e" title="The well-known user directories, as named by the XDG user directories specification.">canfigger_user_dir()</a>. These are the visible directories in a user's home - where a program should put a screenshot, an export or a downloaded file - and are unrelated to the base directories the rest of this API deals with.</p>
 <dl class="section since"><dt>Since</dt><dd>0.3.3 </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="canfigger_8h_source.html#l00422">422</a> of file <a class="el" href="canfigger_8h_source.html">canfigger.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="canfigger_8h_source.html#l00474">474</a> of file <a class="el" href="canfigger_8h_source.html">canfigger.h</a>.</p>
 
 </div>
 </div>
@@ -359,7 +427,7 @@ value</td>
 </div><div class="memdoc">
 
 <p>Return the platform cache directory for an application. </p>
-<p>On Unix, honours <code>$XDG_CACHE_HOME</code> if set; otherwise uses <code>$HOME/</code>.cache/appname. On Windows, uses <code>LOCALAPPDATA%\appname\Cache</code> - Windows has no cache root separate from its data root, so without the subdirectory this would return the same path as <a class="el" href="canfigger_8h.html#a58e961b2de560017bff89ece4f854c25" title="Return the platform data directory for an application.">canfigger_data_dir()</a>.</p>
+<p>On Unix, uses <code>$XDG_CACHE_HOME/appname</code> if that variable holds an absolute path; otherwise <code>$HOME/</code>.cache/appname. On Windows, uses <code>LOCALAPPDATA%\appname\Cache</code> - Windows has no cache root separate from its data root, so without the subdirectory this would return the same path as <a class="el" href="canfigger_8h.html#a58e961b2de560017bff89ece4f854c25" title="Return the platform data directory for an application.">canfigger_data_dir()</a>.</p>
 <p>The returned string is heap-allocated; the caller must free it.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
@@ -370,7 +438,7 @@ value</td>
 <dl class="section return"><dt>Returns</dt><dd>Malloc'd path string, or NULL on failure or if <code>appname</code> is NULL/empty.</dd></dl>
 <dl class="section since"><dt>Since</dt><dd>0.3.2 </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="canfigger_8c_source.html#l00658">658</a> of file <a class="el" href="canfigger_8c_source.html">canfigger.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="canfigger_8c_source.html#l00618">618</a> of file <a class="el" href="canfigger_8c_source.html">canfigger.c</a>.</p>
 
 </div>
 </div>
@@ -391,7 +459,7 @@ value</td>
 </div><div class="memdoc">
 
 <p>Return the platform config directory for an application. </p>
-<p>On Unix, honours <code>$XDG_CONFIG_HOME</code> if set; otherwise uses <code>$HOME/</code>.config/appname. On Windows, uses <code>APPDATA%\appname</code>.</p>
+<p>On Unix, uses <code>$XDG_CONFIG_HOME/appname</code> if that variable holds an absolute path (a relative one is ignored, as the specification requires); otherwise <code>$HOME/</code>.config/appname. On Windows, uses <code>APPDATA%\appname</code>.</p>
 <p>The returned string is heap-allocated; the caller must free it.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
@@ -400,6 +468,7 @@ value</td>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Malloc'd path string, or NULL on failure or if <code>appname</code> is NULL/empty.</dd></dl>
+<dl class="section since"><dt>Since</dt><dd>0.3.1</dd></dl>
 <div class="fragment"><div class="line">  <span class="keywordtype">char</span> *dir = canfigger_config_dir(<span class="stringliteral">&quot;myapp&quot;</span>);</div>
 <div class="line">  <span class="keywordflow">if</span> (dir)</div>
 <div class="line">  {</div>
@@ -412,9 +481,9 @@ value</td>
 <div class="line">      <a class="code hl_function" href="canfigger_8h.html#ad2f138abcb4faa2ec7619cca7d2cbfde">canfigger_free_list</a>(&amp;list);</div>
 <div class="line">    }</div>
 <div class="line">  }</div>
-<div class="ttc" id="acanfigger_8h_html_ad2f138abcb4faa2ec7619cca7d2cbfde"><div class="ttname"><a href="canfigger_8h.html#ad2f138abcb4faa2ec7619cca7d2cbfde">canfigger_free_list</a></div><div class="ttdeci">void canfigger_free_list(struct Canfigger **node)</div><div class="ttdoc">Free all remaining nodes in the list.</div><div class="ttdef"><b>Definition</b> <a href="canfigger_8c_source.html#l00178">canfigger.c:178</a></div></div>
+<div class="ttc" id="acanfigger_8h_html_ad2f138abcb4faa2ec7619cca7d2cbfde"><div class="ttname"><a href="canfigger_8h.html#ad2f138abcb4faa2ec7619cca7d2cbfde">canfigger_free_list</a></div><div class="ttdeci">void canfigger_free_list(struct Canfigger **node)</div><div class="ttdoc">Free all remaining nodes in the list.</div><div class="ttdef"><b>Definition</b> <a href="canfigger_8c_source.html#l00193">canfigger.c:193</a></div></div>
 </div><!-- fragment --> 
-<p class="definition">Definition at line <a class="el" href="canfigger_8c_source.html#l00608">608</a> of file <a class="el" href="canfigger_8c_source.html">canfigger.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="canfigger_8c_source.html#l00568">568</a> of file <a class="el" href="canfigger_8c_source.html">canfigger.c</a>.</p>
 
 </div>
 </div>
@@ -437,10 +506,10 @@ value</td>
 <p>Return the system config search path, most important first. </p>
 <p>The directories in <code>$XDG_CONFIG_DIRS</code>, defaulting to <code>/etc/xdg</code> when it is unset or empty. These are searched <em>after</em> <a class="el" href="canfigger_8h.html#ae86f14e5545edad23f3b00674dc1a558" title="Return the platform config directory for an application.">canfigger_config_dir()</a>, which always takes precedence. Entries that are relative or empty are skipped, as the specification requires.</p>
 <p>On Windows the list holds the single entry <code>ProgramData%</code>, the system-wide location for settings shared by every user.</p>
-<dl class="section return"><dt>Returns</dt><dd>Malloc'd NULL-terminated array of malloc'd strings, to be released with <a class="el" href="canfigger_8h.html#a11e2e7d2d2ea5bd9432aedd8ce0b4307" title="Free an array returned by canfigger_config_dirs() or canfigger_data_dirs().">canfigger_free_dirs()</a>, or NULL on allocation failure.</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>Malloc'd NULL-terminated array of malloc'd strings, to be released with <a class="el" href="canfigger_8h.html#a11e2e7d2d2ea5bd9432aedd8ce0b4307" title="Free an array returned by canfigger_config_dirs() or canfigger_data_dirs().">canfigger_free_dirs()</a>, or NULL on failure. The array is empty (its first element NULL) when every entry was skipped.</dd></dl>
 <dl class="section since"><dt>Since</dt><dd>0.3.3 </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="canfigger_8c_source.html#l00799">799</a> of file <a class="el" href="canfigger_8c_source.html">canfigger.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="canfigger_8c_source.html#l00759">759</a> of file <a class="el" href="canfigger_8c_source.html">canfigger.c</a>.</p>
 
 </div>
 </div>
@@ -461,7 +530,7 @@ value</td>
 </div><div class="memdoc">
 
 <p>Return the path to a config file in the platform base config directory. </p>
-<p>Joins the base config directory with <code>filename</code>, without inserting an application-name subdirectory. On Unix, honours <code>$XDG_CONFIG_HOME</code> if set; otherwise uses <code>$HOME/</code>.config/filename. On Windows, uses <code>APPDATA%\filename</code>.</p>
+<p>Joins the base config directory with <code>filename</code>, without inserting an application-name subdirectory. On Unix, uses <code>$XDG_CONFIG_HOME/filename</code> if that variable holds an absolute path; otherwise <code>$HOME/</code>.config/filename. On Windows, uses <code>APPDATA%\filename</code>.</p>
 <p>Use this when the config file lives directly under the config root rather than in a per-application subdirectory (e.g. <code>$HOME/</code>.config/apprc rather than <code>$HOME/</code>.config/app/apprc).</p>
 <p>The returned string is heap-allocated; the caller must free it.</p>
 <dl class="params"><dt>Parameters</dt><dd>
@@ -480,7 +549,7 @@ value</td>
 <div class="line">    <a class="code hl_function" href="canfigger_8h.html#ad2f138abcb4faa2ec7619cca7d2cbfde">canfigger_free_list</a>(&amp;list);</div>
 <div class="line">  }</div>
 </div><!-- fragment --> 
-<p class="definition">Definition at line <a class="el" href="canfigger_8c_source.html#l00619">619</a> of file <a class="el" href="canfigger_8c_source.html">canfigger.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="canfigger_8c_source.html#l00579">579</a> of file <a class="el" href="canfigger_8c_source.html">canfigger.c</a>.</p>
 
 </div>
 </div>
@@ -501,7 +570,7 @@ value</td>
 </div><div class="memdoc">
 
 <p>Return the platform data directory for an application. </p>
-<p>Intended for user-generated data (saves, state, cache) — not bundled application assets. On Unix, honours <code>$XDG_DATA_HOME</code> if set; otherwise uses <code>$HOME/</code>.local/share/appname. On Windows, uses <code>LOCALAPPDATA%\appname</code>.</p>
+<p>Intended for user-generated data such as saved games or documents - not bundled application assets. Use <a class="el" href="canfigger_8h.html#a4fedec9e686e2ef810db0f0f3f2933cd" title="Return the platform cache directory for an application.">canfigger_cache_dir()</a> for anything that can be regenerated and <a class="el" href="canfigger_8h.html#a41371a0a2763b70ba5e2ace76e9ef301" title="Return the platform state directory for an application.">canfigger_state_dir()</a> for logs and history. On Unix, uses <code>$XDG_DATA_HOME/appname</code> if that variable holds an absolute path; otherwise <code>$HOME/</code>.local/share/appname. On Windows, uses <code>LOCALAPPDATA%\appname</code>.</p>
 <p>The returned string is heap-allocated; the caller must free it.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
@@ -509,9 +578,10 @@ value</td>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>Malloc'd path string, or NULL on failure or if <code>appname</code> is NULL/empty. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>Malloc'd path string, or NULL on failure or if <code>appname</code> is NULL/empty.</dd></dl>
+<dl class="section since"><dt>Since</dt><dd>0.3.1 </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="canfigger_8c_source.html#l00647">647</a> of file <a class="el" href="canfigger_8c_source.html">canfigger.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="canfigger_8c_source.html#l00607">607</a> of file <a class="el" href="canfigger_8c_source.html">canfigger.c</a>.</p>
 
 </div>
 </div>
@@ -534,10 +604,10 @@ value</td>
 <p>Return the system data search path, most important first. </p>
 <p>The directories in <code>$XDG_DATA_DIRS</code>, defaulting to <code>/usr/local/share</code>:/usr/share when it is unset or empty. These are searched <em>after</em> <a class="el" href="canfigger_8h.html#a58e961b2de560017bff89ece4f854c25" title="Return the platform data directory for an application.">canfigger_data_dir()</a>, which always takes precedence. Entries that are relative or empty are skipped, as the specification requires.</p>
 <p>On Windows the list holds the single entry <code>ProgramData%</code>, the system-wide location for data shared by every user.</p>
-<dl class="section return"><dt>Returns</dt><dd>Malloc'd NULL-terminated array of malloc'd strings, to be released with <a class="el" href="canfigger_8h.html#a11e2e7d2d2ea5bd9432aedd8ce0b4307" title="Free an array returned by canfigger_config_dirs() or canfigger_data_dirs().">canfigger_free_dirs()</a>, or NULL on allocation failure.</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>Malloc'd NULL-terminated array of malloc'd strings, to be released with <a class="el" href="canfigger_8h.html#a11e2e7d2d2ea5bd9432aedd8ce0b4307" title="Free an array returned by canfigger_config_dirs() or canfigger_data_dirs().">canfigger_free_dirs()</a>, or NULL on failure. The array is empty (its first element NULL) when every entry was skipped.</dd></dl>
 <dl class="section since"><dt>Since</dt><dd>0.3.3 </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="canfigger_8c_source.html#l00810">810</a> of file <a class="el" href="canfigger_8c_source.html">canfigger.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="canfigger_8c_source.html#l00770">770</a> of file <a class="el" href="canfigger_8c_source.html">canfigger.c</a>.</p>
 
 </div>
 </div>
@@ -568,7 +638,7 @@ value</td>
 </div><div class="memdoc">
 
 <p>Find an existing config file along the full config search path. </p>
-<p>Returns the first readable file found, checking the user's own config directory first and then each entry of <a class="el" href="canfigger_8h.html#a438eafd818b5e977b5db6422147ede30" title="Return the system config search path, most important first.">canfigger_config_dirs()</a> in order, so a per-user file always overrides a system-wide one. This is the search the base directory specification describes.</p>
+<p>Returns the first existing file found, checking the user's own config directory first and then each entry of <a class="el" href="canfigger_8h.html#a438eafd818b5e977b5db6422147ede30" title="Return the system config search path, most important first.">canfigger_config_dirs()</a> in order, so a per-user file always overrides a system-wide one. This is the search the base directory specification describes.</p>
 <p>With <code>appname</code> given, the paths checked are <code>&lt;config-dir&gt;/appname/filename</code>; with <code>appname</code> NULL or empty they are <code>&lt;config-dir&gt;/filename</code>, matching <a class="el" href="canfigger_8h.html#a19e1f1869c0e3d3e077f094d160a9c42" title="Return the path to a config file in the platform base config directory.">canfigger_config_file()</a> for programs that keep a single file directly under the config root.</p>
 <p>Only existing regular files match - a directory of the same name does not stop the search. The result is a path, not an open file: it may still fail to open, and it may be gone by the time it is used.</p>
 <p>The returned string is heap-allocated; the caller must free it.</p>
@@ -591,7 +661,7 @@ value</td>
 <div class="line">    <a class="code hl_function" href="canfigger_8h.html#ad2f138abcb4faa2ec7619cca7d2cbfde">canfigger_free_list</a>(&amp;list);</div>
 <div class="line">  }</div>
 </div><!-- fragment --> 
-<p class="definition">Definition at line <a class="el" href="canfigger_8c_source.html#l00882">882</a> of file <a class="el" href="canfigger_8c_source.html">canfigger.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="canfigger_8c_source.html#l00842">842</a> of file <a class="el" href="canfigger_8c_source.html">canfigger.c</a>.</p>
 
 </div>
 </div>
@@ -622,7 +692,10 @@ value</td>
 </div><div class="memdoc">
 
 <p>Free the current attribute string and advance to the next attribute. </p>
-<p>On the first call for a given node, <code>*attr</code> must be NULL; the function loads the first attribute into <code>*attr</code>. On each subsequent call it frees the previous attribute string and loads the next. Sets <code>*attr</code> to NULL when no more attributes remain, or if <code>attributes</code> is NULL.</p>
+<p>The first call for a node loads its first attribute into <code>*attr</code>. Each later call frees the previous attribute string and loads the next. Sets <code>*attr</code> to NULL when no more attributes remain, or if <code>attributes</code> is NULL. The incoming value of <code>*attr</code> is not read.</p>
+<p>An empty attribute (<code>"a,,b"</code>) is returned as an empty string. A trailing delimiter (<code>"a, b,"</code>) does not add one.</p>
+<p>The attributes can be walked only once: there is no way to rewind. The string in <code>*attr</code> belongs to the library and stays valid until the next call or until the node is freed.</p>
+<p>If a string copy fails for lack of memory, <code>*attr</code> is set to NULL, the same as at the end of the list; a message is printed to <code>stderr</code>.</p>
 <p>Typical usage: </p><div class="fragment"><div class="line"><span class="keywordtype">char</span> *attr = NULL;</div>
 <div class="line">canfigger_free_current_attr_str_advance(node-&gt;attributes, &amp;attr);</div>
 <div class="line"><span class="keywordflow">while</span> (attr) {</div>
@@ -632,12 +705,12 @@ value</td>
 </div><!-- fragment --><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">attributes</td><td>Pointer to the attributes structure of the current node (may be NULL, in which case <code>*attr</code> is set to NULL). </td></tr>
-    <tr><td class="paramname">attr</td><td>Output parameter; set to the next attribute string on success, or NULL when the list is exhausted. </td></tr>
+    <tr><td class="paramname">attr</td><td>Output parameter; set to the next attribute string, or NULL when the list is exhausted. </td></tr>
   </table>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="canfigger_8c_source.html#l00098">98</a> of file <a class="el" href="canfigger_8c_source.html">canfigger.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="canfigger_8c_source.html#l00111">111</a> of file <a class="el" href="canfigger_8c_source.html">canfigger.c</a>.</p>
 
 </div>
 </div>
@@ -668,7 +741,7 @@ value</td>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="canfigger_8c_source.html#l00137">137</a> of file <a class="el" href="canfigger_8c_source.html">canfigger.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="canfigger_8c_source.html#l00152">152</a> of file <a class="el" href="canfigger_8c_source.html">canfigger.c</a>.</p>
 
 </div>
 </div>
@@ -698,7 +771,7 @@ value</td>
 </dl>
 <dl class="section since"><dt>Since</dt><dd>0.3.3 </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="canfigger_8c_source.html#l00821">821</a> of file <a class="el" href="canfigger_8c_source.html">canfigger.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="canfigger_8c_source.html#l00781">781</a> of file <a class="el" href="canfigger_8c_source.html">canfigger.c</a>.</p>
 
 </div>
 </div>
@@ -727,7 +800,7 @@ value</td>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="canfigger_8c_source.html#l00178">178</a> of file <a class="el" href="canfigger_8c_source.html">canfigger.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="canfigger_8c_source.html#l00193">193</a> of file <a class="el" href="canfigger_8c_source.html">canfigger.c</a>.</p>
 
 </div>
 </div>
@@ -759,7 +832,7 @@ value</td>
 
 <p>Parse a configuration file into a linked list of key-value nodes. </p>
 <p>Reads <code>file</code>, strips a leading UTF-8 BOM if present, and returns a singly-linked list where each node holds one key-value entry. Lines beginning with <code>#</code> or <code></code>[ and blank lines are ignored.</p>
-<p>The <code>delimiter</code> character separates the value from the first attribute and each subsequent attribute from the next. Pass a character that does not appear in your values if you do not use attributes (e.g. <code>'</code>,').</p>
+<p>The <code>delimiter</code> character separates the value from the first attribute and each subsequent attribute from the next. Any occurrence of it in a value starts the attributes, so if you do not use attributes, pass a character your values never contain.</p>
 <p>The caller owns the returned list and must free it with <a class="el" href="canfigger_8h.html#af005f74a446bdbfb1d7aa252ab7d9738" title="Free the current node and advance the list pointer to the next node.">canfigger_free_current_key_node_advance()</a> (while iterating) or <a class="el" href="canfigger_8h.html#ad2f138abcb4faa2ec7619cca7d2cbfde" title="Free all remaining nodes in the list.">canfigger_free_list()</a> (to discard the whole list at once).</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
@@ -768,9 +841,9 @@ value</td>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>Head of the linked list, or NULL if the file cannot be opened, is empty, or a memory allocation failure occurs. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>Head of the linked list, or NULL if the file cannot be opened or read, holds no entries (only blank lines, comments and section headers), or a memory allocation failure occurs. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="canfigger_8c_source.html#l00368">368</a> of file <a class="el" href="canfigger_8c_source.html">canfigger.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="canfigger_8c_source.html#l00338">338</a> of file <a class="el" href="canfigger_8c_source.html">canfigger.c</a>.</p>
 
 </div>
 </div>
@@ -811,6 +884,7 @@ value</td>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Malloc'd joined path string, or NULL if either argument is NULL or empty, or on allocation failure.</dd></dl>
+<dl class="section since"><dt>Since</dt><dd>0.3.1</dd></dl>
 <div class="fragment"><div class="line">  <span class="keywordtype">char</span> *path =</div>
 <div class="line">    canfigger_path_join(<span class="stringliteral">&quot;/home/user/.config/myapp&quot;</span>, <span class="stringliteral">&quot;settings.conf&quot;</span>);</div>
 <div class="line">  <span class="keywordflow">if</span> (path)</div>
@@ -820,7 +894,7 @@ value</td>
 <div class="line">    <a class="code hl_function" href="canfigger_8h.html#ad2f138abcb4faa2ec7619cca7d2cbfde">canfigger_free_list</a>(&amp;list);</div>
 <div class="line">  }</div>
 </div><!-- fragment --> 
-<p class="definition">Definition at line <a class="el" href="canfigger_8c_source.html#l00834">834</a> of file <a class="el" href="canfigger_8c_source.html">canfigger.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="canfigger_8c_source.html#l00794">794</a> of file <a class="el" href="canfigger_8c_source.html">canfigger.c</a>.</p>
 
 </div>
 </div>
@@ -855,7 +929,7 @@ value</td>
 <dl class="section return"><dt>Returns</dt><dd>Malloc'd path string, or NULL if no usable runtime directory exists or <code>appname</code> is NULL/empty.</dd></dl>
 <dl class="section since"><dt>Since</dt><dd>0.3.3 </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="canfigger_8c_source.html#l00680">680</a> of file <a class="el" href="canfigger_8c_source.html">canfigger.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="canfigger_8c_source.html#l00640">640</a> of file <a class="el" href="canfigger_8c_source.html">canfigger.c</a>.</p>
 
 </div>
 </div>
@@ -876,7 +950,7 @@ value</td>
 </div><div class="memdoc">
 
 <p>Return the platform state directory for an application. </p>
-<p>For data that should persist between runs but is not configuration and is not worth backing up - logs, history, recently-used lists, and similar. On Unix, honours <code>$XDG_STATE_HOME</code> if set; otherwise uses <code>$HOME/</code>.local/state/appname. On Windows, uses <code>LOCALAPPDATA%\appname\State</code>, for the same collision reason described under <a class="el" href="canfigger_8h.html#a4fedec9e686e2ef810db0f0f3f2933cd" title="Return the platform cache directory for an application.">canfigger_cache_dir()</a>.</p>
+<p>For data that should persist between runs but is not configuration and is not worth backing up - logs, history, recently-used lists, and similar. On Unix, uses <code>$XDG_STATE_HOME/appname</code> if that variable holds an absolute path; otherwise <code>$HOME/</code>.local/state/appname. On Windows, uses <code>LOCALAPPDATA%\appname\State</code>, for the same collision reason described under <a class="el" href="canfigger_8h.html#a4fedec9e686e2ef810db0f0f3f2933cd" title="Return the platform cache directory for an application.">canfigger_cache_dir()</a>.</p>
 <p>The returned string is heap-allocated; the caller must free it.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
@@ -887,7 +961,7 @@ value</td>
 <dl class="section return"><dt>Returns</dt><dd>Malloc'd path string, or NULL on failure or if <code>appname</code> is NULL/empty.</dd></dl>
 <dl class="section since"><dt>Since</dt><dd>0.3.3 </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="canfigger_8c_source.html#l00669">669</a> of file <a class="el" href="canfigger_8c_source.html">canfigger.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="canfigger_8c_source.html#l00629">629</a> of file <a class="el" href="canfigger_8c_source.html">canfigger.c</a>.</p>
 
 </div>
 </div>
@@ -910,7 +984,7 @@ value</td>
 <p>Return one of the user's well-known directories. </p>
 <p>On Unix the answer comes from <code>user-dirs.dirs</code> in the config directory, which the desktop session writes and localises - so the desktop directory is <code>~/Desktop</code> on an English system and <code>~/Skrivebord</code> on a Danish one. Never assume the English name. That file is a shell fragment, not a canfigger file, so it is parsed separately: values are double-quoted, a leading <code>$HOME/</code> is expanded, and entries that are neither absolute nor under <code>$HOME</code> are ignored.</p>
 <p>When the file is missing or the entry is unset - a headless, container or minimal-desktop session, where nothing writes it - the result is <code>$HOME</code>, except for <code>CANFIGGER_USER_DIR_DESKTOP</code> which keeps its historical <code>$HOME/Desktop</code> default. This mirrors the reference <code>xdg-user-dir</code> tool.</p>
-<p>On Windows the equivalent shell folder is returned (Desktop, Documents, Music, Pictures, Videos, Templates, and the public documents folder for <code>CANFIGGER_USER_DIR_PUBLICSHARE</code>).</p>
+<p>On Windows the equivalent shell folder is returned (Desktop, Documents, Music, Pictures, Videos, Templates, and the public documents folder for <code>CANFIGGER_USER_DIR_PUBLICSHARE</code>). Downloads has no shell-folder ID in the API used here, so <code>CANFIGGER_USER_DIR_DOWNLOAD</code> is always <code>USERPROFILE%\Downloads</code>, even if the user has moved that folder.</p>
 <p>The directory is not created and is not guaranteed to exist.</p>
 <p>The returned string is heap-allocated; the caller must free it.</p>
 <dl class="params"><dt>Parameters</dt><dd>
@@ -919,10 +993,10 @@ value</td>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>Malloc'd path string, or NULL if <code>which</code> is out of range, <code>$HOME</code> is unset, or allocation fails.</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>Malloc'd path string, or NULL if <code>which</code> is out of range, <code>$HOME</code> is unset (Unix), the shell folder cannot be found (Windows), or allocation fails.</dd></dl>
 <dl class="section since"><dt>Since</dt><dd>0.3.3 </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="canfigger_8c_source.html#l01064">1064</a> of file <a class="el" href="canfigger_8c_source.html">canfigger.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="canfigger_8c_source.html#l01024">1024</a> of file <a class="el" href="canfigger_8c_source.html">canfigger.c</a>.</p>
 
 </div>
 </div>
